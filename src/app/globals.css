@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+/*
+ * GAIA design tokens.
+ * Navy (the GAIA corporate color) + golden-hour sun. One accent only: sun.
+ * Light surfaces are a cool morning sky, not cream, so the warm gold reads as light, not paper.
+ */
+@theme {
+  --color-navy-950: #070f26;
+  --color-navy-900: #0d1a3a;
+  --color-navy-800: #16264f;
+  --color-navy-700: #223769;
+  --color-navy-600: #34508c;
+  --color-navy-200: #c9d4ea;
+  --color-navy-100: #e4eaf6;
+
+  --color-sky-50: #f5f8fd;
+  --color-sky-100: #eaf0f9;
+
+  --color-sun-200: #fbe6b4;
+  --color-sun-300: #f7d58a;
+  --color-sun-400: #f0bc55;
+  --color-sun-500: #e2a030;
+  --color-sun-700: #8f5c08; /* gold text on light: 5.6:1 on white */
+  --color-sun-edge: #a86c12;
+
+  --color-dusk: #ee9a78;
+  --color-seal: #b8392a;
+  --color-leaf: #217a5b;
+
+  --font-sans: var(--font-noto-sans), var(--font-noto-sans-jp), var(--font-myanmar), var(--font-sinhala), var(--font-khmer), system-ui, sans-serif;
+  --font-serif: var(--font-noto-serif), var(--font-noto-serif-jp), var(--font-myanmar), var(--font-sinhala), var(--font-khmer), serif;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--color-sky-50);
+  color: var(--color-navy-900);
+  font-family: var(--font-sans);
+  line-height: 1.7;
+}
+
+/* Japanese, Burmese, Sinhala and Khmer scripts need taller lines than Latin. */
+:lang(ja) body,
+:lang(my) body,
+:lang(si) body,
+:lang(km) body {
+  line-height: 1.85;
+}
+:lang(ja) h1,
+:lang(ja) h2,
+:lang(ja) h3 {
+  word-break: auto-phrase; /* break Japanese headlines between phrases, not inside words */
+}
+:lang(ja) {
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-sun-400);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* The 3D registration button: a gold face sitting on a darker edge that presses down. */
+.btn-3d {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 52px;
+  padding: 0 1.75rem;
+  border-radius: 14px;
+  font-weight: 700;
+  color: var(--color-navy-950);
+  background: linear-gradient(180deg, var(--color-sun-300) 0%, var(--color-sun-400) 55%, var(--color-sun-500) 100%);
+  box-shadow:
+    0 6px 0 var(--color-sun-edge),
+    0 14px 28px -10px rgb(168 108 18 / 0.55),
+    inset 0 1px 0 rgb(255 255 255 / 0.6);
+  transition:
+    transform 160ms var(--ease-out-soft),
+    box-shadow 160ms var(--ease-out-soft),
+    filter 160ms;
+  cursor: pointer;
+}
+.btn-3d:hover {
+  filter: brightness(1.04);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 0 var(--color-sun-edge),
+    0 18px 32px -10px rgb(168 108 18 / 0.6),
+    inset 0 1px 0 rgb(255 255 255 / 0.6);
+}
+.btn-3d:active {
+  transform: translateY(5px);
+  box-shadow:
+    0 1px 0 var(--color-sun-edge),
+    0 4px 10px -6px rgb(168 108 18 / 0.5),
+    inset 0 1px 0 rgb(255 255 255 / 0.5);
+}
+/* Slow light sweep across the face, the only ambient motion on the page. */
+.btn-3d::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.55) 50%, transparent 65%);
+  background-size: 250% 100%;
+  background-position: 120% 0;
+  animation: sweep 5.5s var(--ease-out-soft) infinite;
+  pointer-events: none;
+}
+@keyframes sweep {
+  0%,
+  70% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -120% 0;
+  }
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 52px;
+  padding: 0 1.5rem;
+  border-radius: 14px;
+  font-weight: 600;
+  border: 1.5px solid currentColor;
+  transition: background-color 160ms, color 160ms;
+  cursor: pointer;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .btn-3d:hover {
+    transform: none;
+  }
+}
