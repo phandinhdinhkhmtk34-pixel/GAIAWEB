@@ -335,9 +335,10 @@
       "rateLimited": "Too many attempts. Wait a few minutes and try again.",
       "required": "Fill in the required fields.",
       "emailFormat": "Check the email address format.",
-      "linkInvalid": "This link has expired or was already used. Please try again.",
+      "linkInvalid": "This link has expired or was already used. If your email is already confirmed, just sign in.",
       "mfaWrong": "That code is wrong or expired. Enter the latest code from the app.",
       "generic": "That didn't work. Try again in a few minutes."
-    }
+    },
+    "acceptingInvite": "Checking your invitation…"
   }
 }

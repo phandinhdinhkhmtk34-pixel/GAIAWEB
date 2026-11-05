@@ -48,7 +48,8 @@ export async function inviteEmployeeAction(_: ActionState, fd: FormData): Promis
 
   const { error } = await admin.auth.admin.inviteUserByEmail(email, {
     data: { invited_org_id: viewer.org.id, locale },
-    redirectTo: `${siteUrl()}/api/auth/callback?next=${encodeURIComponent(`/${locale}/set-password`)}`,
+    // Default Supabase invite emails put the session in the URL fragment; /accept-invite reads it in the browser.
+    redirectTo: `${siteUrl()}/${locale}/accept-invite`,
   });
   if (error) {
     await admin.from("invitations").delete().eq("org_id", viewer.org.id).eq("email", email);

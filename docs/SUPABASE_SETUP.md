@@ -19,21 +19,14 @@ Tên các nút trên Supabase/Vercel có thể khác đôi chút theo phiên b�
 - **Authentication → Sign In / Providers → Email:** bật, và bật **Confirm email**.
 - **Authentication → Multi-Factor (MFA):** bảo đảm **TOTP (Authenticator app)** đang bật.
 
-## 4. Mẫu email (để link trong email mở được trên mọi thiết bị)
-**Authentication → Emails → Templates.** Thay đường link trong 3 mẫu sau (giữ phần chữ, chỉ thay `href`):
+## 4. Mẫu email: không cần sửa
+Supabase khoá chức năng sửa mẫu email với project miễn phí dùng email mặc định (nút **Source** bị mờ).
+Web đã được viết để chạy với **mẫu mặc định**:
+- Xác nhận đăng ký và đặt lại mật khẩu: mở link **trên cùng trình duyệt** đã dùng để đăng ký / bấm "quên mật khẩu".
+  Nếu mở ở máy khác và báo link hết hạn, email vẫn đã được xác nhận — chỉ cần đăng nhập.
+- Lời mời nhân viên: link đưa tới trang `/accept-invite`, trang này tự đăng nhập rồi chuyển sang đặt mật khẩu.
 
-| Mẫu | Link mới |
-|---|---|
-| **Invite user** (bắt buộc) | `{{ .SiteURL }}/api/auth/callback?token_hash={{ .TokenHash }}&type=invite&next=/ja/set-password` |
-| **Confirm signup** | `{{ .SiteURL }}/api/auth/callback?token_hash={{ .TokenHash }}&type=email&next=/ja/dashboard` |
-| **Reset password** | `{{ .SiteURL }}/api/auth/callback?token_hash={{ .TokenHash }}&type=recovery&next=/ja/set-password` |
-
-Ví dụ mẫu Invite user:
-```html
-<h2>GAIA LEARNING への招待</h2>
-<p>下のリンクからパスワードを設定してください。 / Bấm link dưới để đặt mật khẩu.</p>
-<p><a href="{{ .SiteURL }}/api/auth/callback?token_hash={{ .TokenHash }}&type=invite&next=/ja/set-password">招待を受ける / Nhận lời mời</a></p>
-```
+Khi có tên miền riêng sẽ cài SMTP riêng để gửi email tiếng Nhật đẹp hơn (mẫu sẵn trong lịch sử của file này).
 
 ## 5. Dán khoá vào Vercel
 1. Supabase: **Project Settings → API Keys** (hoặc **API**). Copy 3 giá trị:

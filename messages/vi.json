@@ -335,9 +335,10 @@
       "rateLimited": "Thử quá nhiều lần trong thời gian ngắn. Đợi vài phút rồi thử lại.",
       "required": "Hãy điền các mục bắt buộc.",
       "emailFormat": "Kiểm tra lại định dạng email.",
-      "linkInvalid": "Link đã hết hạn hoặc đã được dùng. Hãy thử lại.",
+      "linkInvalid": "Link đã hết hạn hoặc đã được dùng. Nếu bạn đã xác nhận email, hãy đăng nhập luôn.",
       "mfaWrong": "Mã không đúng hoặc đã hết hạn. Hãy nhập mã mới nhất trong app.",
       "generic": "Không xử lý được. Hãy thử lại sau ít phút."
-    }
+    },
+    "acceptingInvite": "Đang xác nhận lời mời…"
   }
 }
