@@ -51,3 +51,24 @@ JA/VI/EN written in full; the other four are AI drafts flagged for native review
 A user may play a premium video only if their account (or their company) has a subscription where
 `status = 'active'` **and** `current_period_end > now()` **and** the latest payment is verified.
 This is checked on the server for every playback token request.
+
+## Rollout plan (confirmed)
+**Trial phase — everything free:**
+| Part | Service |
+|---|---|
+| Hosting | Vercel Hobby (internal trial only, no real customer payments) |
+| Database / Auth | Supabase Free (500 MB DB; pauses after 1 week idle) |
+| Video | Supabase Storage with short-lived signed URLs (under 1 GB total) |
+| Payments | Stripe test mode |
+| Email | Resend free tier |
+| Domain | Vercel subdomain |
+
+The video layer is written behind one interface so production can switch to Cloudflare Stream by configuration.
+
+**Go-live — same code and UI, new hosting and domain:**
+- Hosting: Vercel → Hostinger VPS (same GitHub repo).
+- Domain: client's own domain; no code change.
+- Database: upgrade the **same** Supabase project to Pro, so accounts, content and settings carry over.
+- Video: Supabase Storage → Cloudflare Stream (re-upload or migration script).
+- Payments: Stripe test keys → live keys (Stripe Japan account).
+- Trial accounts and test transactions are wiped before launch unless the client asks to keep them.
