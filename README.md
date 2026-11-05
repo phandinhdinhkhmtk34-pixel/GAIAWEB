@@ -2,9 +2,12 @@
 
 Corporate e-learning platform: anime-led training videos for companies in Japan, in seven languages.
 
-> **Status: Phase 1 — navigable prototype.** All four pages are built and interactive, but every number,
-> person, payment and video shown is **demo data** (labelled デモ / Demo on screen). There is no login,
-> database, payment or real video streaming yet. Those arrive in Phases 2–4 (see `docs/REQUIREMENTS.md`).
+> **Status: Phase 2 — accounts.** Sign-up (individual / company), sign-in, email confirmation, password reset,
+> company invitations with seat limits, and an admin center guarded by role + 2-step verification (TOTP) are built
+> on Supabase. Subscriptions, learning records, payments and videos still show **demo data** (labelled デモ / Demo)
+> until Phases 3–4. Without Supabase environment variables the site runs as the Phase 1 prototype.
+>
+> Setup for the free trial: **`docs/SUPABASE_SETUP.md`** (Vietnamese).
 
 ## Pages
 
@@ -13,6 +16,7 @@ Corporate e-learning platform: anime-led training videos for companies in Japan,
 | `/{locale}` | Homepage | Hero, intro, features, featured videos, categories, 3 pricing cards, live price calculator |
 | `/{locale}/library` | Video library | Search, category + subtitle-language filters, rows, locked/unlocked player dialog, favorites. A prototype switch shows guest / member / payment-pending access |
 | `/{locale}/dashboard` | My page | Subscription status, learning stats + chart, history, favorites, payment history with 領収書 resend, employee invitations with seat limits, profile |
+| `/{locale}/login`, `/signup`, `/forgot-password`, `/set-password`, `/mfa` | Accounts | Real with Supabase configured |
 | `/{locale}/admin` | Admin center | KPIs + charts, bank-transfer approval, members, videos, homepage editor with live preview, audit log. A prototype switch shows the 3 admin roles |
 
 Locales: `ja` (default), `vi`, `en`, `my`, `id`, `si`, `km`. Japanese, Vietnamese and English are complete;

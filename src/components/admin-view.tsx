@@ -13,13 +13,16 @@ import {
 import { DEFAULT_PRICES, quote } from "@/lib/pricing";
 import { formatDate, formatDateTime, formatNumber, formatYen } from "@/lib/format";
 import { DemoTag } from "./demo-banner";
+import { LiveAdmins, type LiveAdmin } from "./admin-live";
+
+export type { LiveAdmin };
 
 type Role = "super" | "accounting" | "editor";
-type Tab = "overview" | "payments" | "users" | "videos" | "content" | "audit";
+type Tab = "overview" | "payments" | "users" | "videos" | "content" | "audit" | "admins";
 
 /** Same role → permission map the server will enforce in Phase 2 (RLS + route guards). */
 const ACCESS: Record<Role, Tab[]> = {
-  super: ["overview", "payments", "users", "videos", "content", "audit"],
+  super: ["overview", "payments", "users", "videos", "content", "audit", "admins"],
   accounting: ["overview", "payments", "users", "audit"],
   editor: ["overview", "videos", "content"],
 };
@@ -30,13 +33,16 @@ const TAB_KEY: Record<Tab, string> = {
   videos: "tabVideos",
   content: "tabContent",
   audit: "tabAudit",
+  admins: "tabAdmins",
 };
 
-export function AdminView() {
+export function AdminView({ live }: { live?: LiveAdmin }) {
   const t = useTranslations("admin");
-  const [role, setRole] = useState<Role>("super");
+  const [demoRole, setRole] = useState<Role>("super");
+  const role: Role = live ? live.role : demoRole;
   const [tab, setTab] = useState<Tab>("overview");
-  const tabs = ACCESS[role];
+  // The admins tab only exists once real accounts exist.
+  const tabs = ACCESS[role].filter((id) => id !== "admins" || Boolean(live));
   const current = tabs.includes(tab) ? tab : "overview";
 
   return (
@@ -46,6 +52,12 @@ export function AdminView() {
           <h1 className="font-serif text-3xl font-bold sm:text-4xl">{t("title")}</h1>
           <p className="mt-2 text-navy-900/65">{t("subtitle")}</p>
         </div>
+        {live ? (
+          <p className="inline-flex items-center gap-2 rounded-full bg-navy-900 px-3 py-1.5 text-sm text-white">
+            <ShieldCheck size={15} className="text-sun-300" aria-hidden />
+            {t(role === "super" ? "roleSuper" : role === "accounting" ? "roleAccounting" : "roleEditor")}
+          </p>
+        ) : (
         <div className="rounded-xl border border-dashed border-sun-500/60 bg-white p-3">
           <p id="role-label" className="mb-2 flex items-center gap-1.5 text-xs font-medium text-sun-700">
             <FlaskConical size={13} aria-hidden />
@@ -69,6 +81,7 @@ export function AdminView() {
             ))}
           </div>
         </div>
+        )}
       </div>
 
       <div role="tablist" aria-label={t("title")} className="no-scrollbar mt-8 -mx-4 flex gap-1 overflow-x-auto border-b border-navy-900/10 px-4 sm:mx-0 sm:px-0">
@@ -93,26 +106,27 @@ export function AdminView() {
       </div>
 
       <div id="admin-panel" role="tabpanel" className="pt-8">
-        {current === "overview" && <Overview role={role} />}
+        {current === "overview" && <Overview role={role} live={live} />}
         {current === "payments" && <Payments />}
-        {current === "users" && <Members />}
+        {current === "users" && <Members live={live} />}
         {current === "videos" && <Videos />}
         {current === "content" && <Content />}
-        {current === "audit" && <Audit />}
+        {current === "audit" && <Audit live={live} />}
+        {current === "admins" && live && <LiveAdmins live={live} />}
       </div>
     </div>
   );
 }
 
-function Overview({ role }: { role: Role }) {
+function Overview({ role, live }: { role: Role; live?: LiveAdmin }) {
   const t = useTranslations("admin");
   const locale = useLocale();
   const money = role !== "editor";
   const n = (v: number) => formatNumber(v, locale);
   const kpis = [
-    { icon: Users, label: t("kpiUsers"), value: n(adminKpis.users) },
+    { icon: Users, label: t("kpiUsers"), value: n(live ? live.counts.users : adminKpis.users) },
     { icon: BadgeCheck, label: t("kpiPaid"), value: n(adminKpis.paid) },
-    { icon: Building2, label: t("kpiCompanies"), value: n(adminKpis.companies) },
+    { icon: Building2, label: t("kpiCompanies"), value: n(live ? live.counts.companies : adminKpis.companies) },
     { icon: Repeat, label: t("kpiActiveSubs"), value: n(adminKpis.activeSubs) },
     { icon: Wallet, label: t("kpiMrr"), value: formatYen(adminKpis.mrr, locale), money: true, lead: true },
     { icon: PiggyBank, label: t("kpiTotal"), value: formatYen(adminKpis.total, locale), money: true },
@@ -126,8 +140,9 @@ function Overview({ role }: { role: Role }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <DemoTag />
+        {live && <p className="text-sm text-navy-900/60">{t("liveKpiNote")}</p>}
       </div>
       <dl className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
         {kpis.map(({ icon: Icon, label, value, lead }) => (
@@ -262,7 +277,7 @@ const STATUS_STYLE: Record<string, string> = {
   expired: "bg-seal/10 text-seal",
 };
 
-function Members() {
+function Members({ live }: { live?: LiveAdmin }) {
   const t = useTranslations("admin");
   const td = useTranslations("dashboard");
   const locale = useLocale();
@@ -270,7 +285,7 @@ function Members() {
     <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-bold">{t("users")}</h2>
-        <DemoTag />
+        {!live && <DemoTag />}
       </div>
       <div className="-mx-6 overflow-x-auto px-6">
         <table className="w-full min-w-[620px] text-left text-sm">
@@ -284,13 +299,17 @@ function Members() {
             </tr>
           </thead>
           <tbody>
-            {adminMembers.map((m) => (
-              <tr key={m.name} className="border-b border-navy-900/6 last:border-0">
+            {(live ? live.members : adminMembers).map((m, i) => (
+              <tr key={`${m.name}-${i}`} className="border-b border-navy-900/6 last:border-0">
                 <td className="py-3.5 font-semibold">{m.name}</td>
                 <td className="py-3.5">{t(m.type === "company" ? "company" : "individual")}</td>
                 <td className="py-3.5 text-right tabular-nums">{m.seats}</td>
                 <td className="py-3.5">
-                  <span className={clsx("rounded-full px-2.5 py-1 text-xs font-semibold", STATUS_STYLE[m.status])}>{td(m.status)}</span>
+                  {m.status === "none" ? (
+                    "—"
+                  ) : (
+                    <span className={clsx("rounded-full px-2.5 py-1 text-xs font-semibold", STATUS_STYLE[m.status])}>{td(m.status)}</span>
+                  )}
                 </td>
                 <td className="py-3.5 whitespace-nowrap">{formatDate(m.since, locale)}</td>
               </tr>
@@ -429,18 +448,19 @@ function Content() {
   );
 }
 
-function Audit() {
+function Audit({ live }: { live?: LiveAdmin }) {
   const t = useTranslations("admin");
   const locale = useLocale();
   return (
     <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-bold">{t("auditTitle")}</h2>
-        <DemoTag />
+        {!live && <DemoTag />}
       </div>
+      {live && live.audit.length === 0 && <p className="text-navy-900/60">{t("noAudit")}</p>}
       <ol className="space-y-4">
-        {auditLog.map((a) => (
-          <li key={a.when} className="grid gap-1 border-l-2 border-navy-900/15 pl-4 sm:grid-cols-[180px_1fr_200px] sm:gap-4">
+        {(live ? live.audit : auditLog).map((a, i) => (
+          <li key={`${a.when}-${i}`} className="grid gap-1 border-l-2 border-navy-900/15 pl-4 sm:grid-cols-[180px_1fr_200px] sm:gap-4">
             <time dateTime={a.when} className="text-sm text-navy-900/55">
               {formatDateTime(a.when, locale)}
             </time>

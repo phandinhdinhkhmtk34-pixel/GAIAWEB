@@ -3,10 +3,31 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import clsx from "clsx";
-import { Globe, Menu, X } from "lucide-react";
+import { Globe, LogIn, LogOut, Menu, X } from "lucide-react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { locales, localeNames, draftLocales, type Locale } from "@/i18n/routing";
 import { Logo } from "./logo";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/browser";
+
+/** Who is signed in, read in the browser so public pages stay static. Demo mode shows every page. */
+function useSession() {
+  const [s, setS] = useState<{ signedIn: boolean; isAdmin: boolean }>({ signedIn: false, isAdmin: !isSupabaseConfigured });
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    const supabase = createClient();
+    const load = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) return setS({ signedIn: false, isAdmin: false });
+      const { data: admin } = await supabase.from("admins").select("role").eq("user_id", data.user.id).maybeSingle();
+      setS({ signedIn: true, isAdmin: Boolean(admin) });
+    };
+    load();
+    const { data: sub } = supabase.auth.onAuthStateChange(() => load());
+    return () => sub.subscription.unsubscribe();
+  }, []);
+  return s;
+}
 
 const NAV = [
   { href: "/", key: "home" },
@@ -20,6 +41,14 @@ export function SiteHeader({ tone = "light" }: { tone?: "light" | "dark" }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const dark = tone === "dark";
+  const session = useSession();
+  const router = useRouter();
+  const nav = NAV.filter((item) => item.key !== "admin" || session.isAdmin);
+  const signOut = async () => {
+    await createClient().auth.signOut();
+    router.replace("/");
+    router.refresh();
+  };
 
   useEffect(() => setOpen(false), [pathname]);
 
@@ -36,7 +65,7 @@ export function SiteHeader({ tone = "light" }: { tone?: "light" | "dark" }) {
         </Link>
 
         <nav aria-label={t("nav.menu")} className="hidden flex-1 items-center gap-1 md:flex">
-          {NAV.map((item) => {
+          {nav.map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             return (
               <Link
@@ -62,6 +91,31 @@ export function SiteHeader({ tone = "light" }: { tone?: "light" | "dark" }) {
 
         <div className="ml-auto flex items-center gap-2">
           <LocaleSwitcher dark={dark} />
+          {isSupabaseConfigured &&
+            (session.signedIn ? (
+              <button
+                type="button"
+                onClick={signOut}
+                className={clsx(
+                  "hidden h-11 items-center gap-1.5 rounded-lg px-3 text-sm font-medium sm:inline-flex",
+                  dark ? "text-white/80 hover:bg-white/10" : "text-navy-900/75 hover:bg-navy-900/6",
+                )}
+              >
+                <LogOut size={17} aria-hidden />
+                {t("auth.signOut")}
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className={clsx(
+                  "hidden h-11 items-center gap-1.5 rounded-lg px-3 text-sm font-medium sm:inline-flex",
+                  dark ? "text-white/80 hover:bg-white/10" : "text-navy-900/75 hover:bg-navy-900/6",
+                )}
+              >
+                <LogIn size={17} aria-hidden />
+                {t("common.signIn")}
+              </Link>
+            ))}
           <Link
             href="/#pricing"
             className={clsx(
@@ -86,11 +140,21 @@ export function SiteHeader({ tone = "light" }: { tone?: "light" | "dark" }) {
 
       {open && (
         <nav id="mobile-nav" aria-label={t("nav.menu")} className="border-t border-current/10 px-4 pb-4 md:hidden">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <Link key={item.href} href={item.href} className="block rounded-lg px-3 py-3 text-base font-medium">
               {t(`nav.${item.key}`)}
             </Link>
           ))}
+          {isSupabaseConfigured &&
+            (session.signedIn ? (
+              <button type="button" onClick={signOut} className="block w-full rounded-lg px-3 py-3 text-left text-base font-medium">
+                {t("auth.signOut")}
+              </button>
+            ) : (
+              <Link href="/login" className="block rounded-lg px-3 py-3 text-base font-medium">
+                {t("common.signIn")}
+              </Link>
+            ))}
           <Link href="/#pricing" className="btn-3d mt-3 w-full">
             {t("common.register")}
           </Link>

@@ -11,6 +11,7 @@ import { formatDate, formatYen } from "@/lib/format";
 import { localeNames, locales, type Locale } from "@/i18n/routing";
 import { DemoTag } from "./demo-banner";
 import { VideoThumb } from "./video-thumb";
+import { LiveCompany, LiveProfile, type LiveMember } from "./dashboard-live";
 
 const TABS = ["overview", "learning", "billing", "company", "profile"] as const;
 type Tab = (typeof TABS)[number];
@@ -22,25 +23,35 @@ const TAB_KEY: Record<Tab, string> = {
   profile: "tabProfile",
 };
 
-export function DashboardView() {
+export function DashboardView({ live }: { live?: LiveMember }) {
   const t = useTranslations("dashboard");
   const [tab, setTab] = useState<Tab>("overview");
+  // Only company managers manage employees.
+  const tabs = TABS.filter((id) => id !== "company" || !live || (live.memberRole === "owner" && live.org.kind === "company"));
+  const roleLabel = !live
+    ? t("roleOwner")
+    : live.org.kind === "individual"
+      ? t("roleIndividual")
+      : live.memberRole === "owner"
+        ? t("roleOwner")
+        : t("roleEmployee");
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-navy-900/60">{demoMember.company}</p>
-          <h1 className="mt-1 font-serif text-3xl font-bold sm:text-4xl">{t("greeting", { name: demoMember.name })}</h1>
+          <p className="text-sm text-navy-900/60">{live ? live.org.name : demoMember.company}</p>
+          <h1 className="mt-1 font-serif text-3xl font-bold sm:text-4xl">{t("greeting", { name: live ? live.name : demoMember.name })}</h1>
         </div>
         <span className="inline-flex items-center gap-2 rounded-full bg-navy-900 px-3 py-1.5 text-sm text-white">
           <Users size={15} aria-hidden />
-          {t("roleOwner")}
+          {roleLabel}
         </span>
       </div>
+      {live && <p className="mt-4 rounded-xl bg-sun-200/50 px-4 py-3 text-sm text-sun-700">{t("liveNote")}</p>}
 
       <div role="tablist" aria-label={t("title")} className="no-scrollbar mt-8 -mx-4 flex gap-1 overflow-x-auto border-b border-navy-900/10 px-4 sm:mx-0 sm:px-0">
-        {TABS.map((id) => (
+        {tabs.map((id) => (
           <button
             key={id}
             role="tab"
@@ -59,11 +70,11 @@ export function DashboardView() {
       </div>
 
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="pt-8">
-        {tab === "overview" && <Overview onGo={setTab} />}
+        {tab === "overview" && <Overview onGo={tabs.includes("company") ? setTab : undefined} />}
         {tab === "learning" && <Learning />}
         {tab === "billing" && <Billing />}
-        {tab === "company" && <Company />}
-        {tab === "profile" && <Profile />}
+        {tab === "company" && (live ? <LiveCompany live={live} /> : <Company />)}
+        {tab === "profile" && (live ? <LiveProfile live={live} /> : <Profile />)}
       </div>
     </div>
   );
@@ -203,7 +214,7 @@ function VideoList({ ids }: { ids: string[] }) {
   );
 }
 
-function Overview({ onGo }: { onGo: (t: Tab) => void }) {
+function Overview({ onGo }: { onGo?: (t: Tab) => void }) {
   const t = useTranslations("dashboard");
   return (
     <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
