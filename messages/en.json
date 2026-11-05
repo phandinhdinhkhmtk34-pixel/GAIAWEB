@@ -201,7 +201,8 @@
     "roleEmployee": "Employee",
     "roleIndividual": "Individual member",
     "inviteSentLive": "Invitation sent to {email}.",
-    "profileSavedLive": "Saved."
+    "profileSavedLive": "Saved.",
+    "seatsHowTo": "To add employees, buy extra accounts (¥3,000 per person/month, tax incl.). Online payment is coming soon; for now, contact the administrator."
   },
   "admin": {
     "title": "Admin center",
@@ -278,7 +279,14 @@
     "errGeneric": "That didn't work. Try again in a few minutes.",
     "needsServiceRole": "Admin tools need SUPABASE_SERVICE_ROLE_KEY to be set.",
     "noAudit": "Nothing recorded yet.",
-    "pendingSignup": "Not signed up yet (applies on sign-up)"
+    "pendingSignup": "Not signed up yet (applies on sign-up)",
+    "seatsLabel": "Accounts",
+    "seatsUsedShort": "In use {used}",
+    "seatsSave": "Save",
+    "seatsSaved": "Saved.",
+    "seatsBelowUsed": "Can't go below the {used} people already using seats.",
+    "seatsInvalid": "Enter a number from 1 to 1000.",
+    "seatsHelp": "A company starts with 1 account for its manager (¥30,000/month). After payment for extra accounts (¥3,000 per person/month) is confirmed, raise the number here. From Phase 4 card payments add them automatically."
   },
   "auth": {
     "notConfigured": "Sign-in is not set up yet (showing the prototype).",

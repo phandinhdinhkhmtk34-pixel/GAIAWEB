@@ -201,7 +201,8 @@
     "roleEmployee": "社員",
     "roleIndividual": "個人会員",
     "inviteSentLive": "{email} に招待メールを送りました。",
-    "profileSavedLive": "保存しました。"
+    "profileSavedLive": "保存しました。",
+    "seatsHowTo": "社員を追加するには、アカウントの追加（1 名 3,000 円/月・税込）が必要です。オンライン決済は準備中のため、現在は管理者にご連絡ください。"
   },
   "admin": {
     "title": "管理センター",
@@ -278,7 +279,14 @@
     "errGeneric": "処理できませんでした。時間をおいてもう一度お試しください。",
     "needsServiceRole": "管理機能を使うには SUPABASE_SERVICE_ROLE_KEY の設定が必要です。",
     "noAudit": "まだ記録はありません。",
-    "pendingSignup": "未登録（登録すると有効）"
+    "pendingSignup": "未登録（登録すると有効）",
+    "seatsLabel": "アカウント数",
+    "seatsUsedShort": "利用 {used}",
+    "seatsSave": "保存",
+    "seatsSaved": "保存しました。",
+    "seatsBelowUsed": "利用中の {used} 名より少なくはできません。",
+    "seatsInvalid": "1〜1000 の数字を入力してください。",
+    "seatsHelp": "法人は管理者 1 名分（月額 30,000 円）から始まります。追加アカウント（1 名 3,000 円/月）の入金を確認したら、ここでアカウント数を増やしてください。Phase 4 からはカード払いで自動的に増えます。"
   },
   "auth": {
     "notConfigured": "ログイン機能はまだ設定されていません（プロトタイプ表示中）。",

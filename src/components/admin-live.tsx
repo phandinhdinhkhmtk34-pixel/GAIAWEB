@@ -4,19 +4,19 @@ import { useActionState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import clsx from "clsx";
 import { ShieldCheck, Clock } from "lucide-react";
-import { grantAdminAction, revokeAdminAction, type AdminActionState } from "@/lib/admin-actions";
+import { grantAdminAction, revokeAdminAction, setSeatsAction, type AdminActionState } from "@/lib/admin-actions";
 
 export interface LiveAdmin {
   role: "super" | "accounting" | "editor";
   meId: string;
   serviceRole: boolean;
   counts: { users: number; companies: number };
-  members: { name: string; type: "company" | "individual"; seats: number; status: "active" | "pending" | "cancelled" | "expired" | "none"; since: string }[];
+  members: { id: string; name: string; type: "company" | "individual"; seats: number; used: number; status: "active" | "pending" | "cancelled" | "expired" | "none"; since: string }[];
   admins: { userId: string | null; email: string; name: string; role: "super" | "accounting" | "editor"; pending: boolean }[];
   audit: { who: string; what: string; when: string }[];
 }
 
-const ERR: Record<string, string> = { forbidden: "errForbidden", self: "errSelf", emailFormat: "errEmail", generic: "errGeneric" };
+const ERR: Record<string, string> = { forbidden: "errForbidden", self: "errSelf", emailFormat: "errEmail", generic: "errGeneric", seatsInvalid: "seatsInvalid" };
 
 export function LiveAdmins({ live }: { live: LiveAdmin }) {
   const t = useTranslations("admin");
@@ -81,5 +81,39 @@ export function LiveAdmins({ live }: { live: LiveAdmin }) {
         </ul>
       </section>
     </div>
+  );
+}
+
+/** Seat editor for one company row (Super admin and Accounting). */
+export function SeatsEditor({ orgId, seats, used }: { orgId: string; seats: number; used: number }) {
+  const t = useTranslations("admin");
+  const locale = useLocale();
+  const [state, action, pending] = useActionState<AdminActionState, FormData>(setSeatsAction, undefined);
+  const id = `seats-${orgId}`;
+  return (
+    <form action={action} className="flex flex-wrap items-center justify-end gap-2">
+      <input type="hidden" name="locale" value={locale} />
+      <input type="hidden" name="orgId" value={orgId} />
+      <label htmlFor={id} className="sr-only">{t("seatsLabel")}</label>
+      <span className="text-xs text-navy-900/55 tabular-nums">{t("seatsUsedShort", { used })}</span>
+      <input
+        id={id}
+        name="seats"
+        type="number"
+        min={Math.max(1, used)}
+        max={1000}
+        defaultValue={seats}
+        inputMode="numeric"
+        className="h-10 w-20 rounded-lg border border-navy-900/20 px-2 text-right tabular-nums focus:border-navy-700 focus:outline-none"
+      />
+      <button type="submit" disabled={pending} className="min-h-10 rounded-lg bg-navy-900 px-3 text-xs font-semibold text-white hover:bg-navy-800 disabled:opacity-60">
+        {t("seatsSave")}
+      </button>
+      {state && (
+        <span role="status" className={clsx("basis-full text-right text-xs", state.ok ? "text-leaf" : "text-seal")}>
+          {state.ok ? t("seatsSaved") : state.error === "seatsBelowUsed" ? t("seatsBelowUsed", { used: state.email ?? "" }) : t(ERR[state.error ?? ""] ?? "errGeneric")}
+        </span>
+      )}
+    </form>
   );
 }

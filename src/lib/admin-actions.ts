@@ -58,3 +58,36 @@ export async function revokeAdminAction(fd: FormData) {
   await db.from("audit_log").insert({ actor_id: me.id, action: "revoke_admin", target: email || userId });
   revalidatePath(`/${localeOf(fd)}/admin`);
 }
+
+/**
+ * Super admins and accounting set how many seats a company has paid for.
+ * Never below the people already using seats (members + pending invitations).
+ */
+export async function setSeatsAction(_: AdminActionState, fd: FormData): Promise<AdminActionState> {
+  const me = await getViewer();
+  if (!me || !me.adminRole || me.adminRole === "editor" || me.aal !== "aal2" || !hasServiceRole) return { error: "forbidden" };
+  const orgId = String(fd.get("orgId") ?? "");
+  const seats = Number(fd.get("seats"));
+  if (!orgId || !Number.isInteger(seats) || seats < 1 || seats > 1000) return { error: "seatsInvalid" };
+
+  const db = createAdminClient();
+  const [{ count: members }, { count: pending }, { data: org }] = await Promise.all([
+    db.from("profiles").select("id", { count: "exact", head: true }).eq("org_id", orgId),
+    db.from("invitations").select("id", { count: "exact", head: true }).eq("org_id", orgId).is("accepted_at", null).gt("expires_at", new Date().toISOString()),
+    db.from("organizations").select("name, seat_limit").eq("id", orgId).maybeSingle(),
+  ]);
+  if (!org) return { error: "generic" };
+  const used = (members ?? 0) + (pending ?? 0);
+  if (seats < used) return { error: "seatsBelowUsed", email: String(used) };
+
+  const { error } = await db.from("organizations").update({ seat_limit: seats }).eq("id", orgId);
+  if (error) return { error: "generic" };
+  await db.from("audit_log").insert({
+    actor_id: me.id,
+    action: "set_seats",
+    target: org.name,
+    details: { org_id: orgId, from: org.seat_limit, to: seats },
+  });
+  revalidatePath(`/${localeOf(fd)}/admin`);
+  return { ok: "seatsSaved" };
+}

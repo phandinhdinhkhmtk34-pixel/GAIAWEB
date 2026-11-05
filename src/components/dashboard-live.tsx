@@ -35,6 +35,7 @@ export function LiveCompany({ live }: { live: LiveMember }) {
           <div className="mt-4 h-2 overflow-hidden rounded-full bg-sky-100" aria-hidden>
             <div className="h-full rounded-full bg-sun-500" style={{ width: `${Math.min(100, (used / live.org.seatLimit) * 100)}%` }} />
           </div>
+          {used >= live.org.seatLimit && <p className="mt-4 text-sm text-navy-900/70">{t("seatsHowTo")}</p>}
         </section>
         <form action={action} noValidate className="rounded-2xl border border-navy-900/10 bg-white p-6">
           <input type="hidden" name="locale" value={locale} />

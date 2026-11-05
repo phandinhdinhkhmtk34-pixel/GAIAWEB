@@ -201,7 +201,8 @@
     "roleEmployee": "Nhân viên",
     "roleIndividual": "Hội viên cá nhân",
     "inviteSentLive": "Đã gửi email mời đến {email}.",
-    "profileSavedLive": "Đã lưu."
+    "profileSavedLive": "Đã lưu.",
+    "seatsHowTo": "Để thêm nhân viên, cần mua thêm tài khoản (3.000 yên/người/tháng, đã gồm thuế). Thanh toán online đang được chuẩn bị, hiện tại hãy liên hệ quản trị viên."
   },
   "admin": {
     "title": "Trung tâm quản trị",
@@ -278,7 +279,14 @@
     "errGeneric": "Không xử lý được. Hãy thử lại sau ít phút.",
     "needsServiceRole": "Cần cài SUPABASE_SERVICE_ROLE_KEY để dùng chức năng quản trị.",
     "noAudit": "Chưa có thao tác nào.",
-    "pendingSignup": "Chưa đăng ký (có hiệu lực khi đăng ký)"
+    "pendingSignup": "Chưa đăng ký (có hiệu lực khi đăng ký)",
+    "seatsLabel": "Số tài khoản",
+    "seatsUsedShort": "Đang dùng {used}",
+    "seatsSave": "Lưu",
+    "seatsSaved": "Đã lưu.",
+    "seatsBelowUsed": "Không thể ít hơn {used} người đang dùng.",
+    "seatsInvalid": "Nhập số từ 1 đến 1000.",
+    "seatsHelp": "Doanh nghiệp bắt đầu với 1 tài khoản cho người quản lý (30.000 yên/tháng). Khi đã nhận tiền cho tài khoản thêm (3.000 yên/người/tháng), tăng số tài khoản tại đây. Từ Giai đoạn 4, thanh toán thẻ sẽ tự tăng."
   },
   "auth": {
     "notConfigured": "Chức năng đăng nhập chưa được cài đặt (đang hiển thị bản prototype).",

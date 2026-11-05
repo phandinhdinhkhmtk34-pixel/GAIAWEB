@@ -19,6 +19,7 @@ const ACTION_LABEL: Record<string, string> = {
   invite_employee: "社員を招待 / Invite employee",
   grant_admin: "管理者権限を付与 / Grant admin",
   revoke_admin: "管理者権限を削除 / Revoke admin",
+  set_seats: "アカウント数を変更 / Change seats",
 };
 
 async function loadLive(locale: string): Promise<LiveAdmin> {
@@ -43,7 +44,7 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
   // Service role is used only after the role + 2FA checks above.
   const db = createAdminClient();
   const isSuper = viewer.adminRole === "super";
-  const [users, companies, orgs, admins, pendingAdmins, audit] = await Promise.all([
+  const [users, companies, orgs, admins, pendingAdmins, audit, seatsUsed] = await Promise.all([
     db.from("profiles").select("id", { count: "exact", head: true }),
     db.from("organizations").select("id", { count: "exact", head: true }).eq("kind", "company"),
     db.from("organizations").select("id, name, kind, seat_limit, created_at").order("created_at", { ascending: false }).limit(200),
@@ -52,7 +53,10 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
     viewer.adminRole !== "editor"
       ? db.from("audit_log").select("actor_id, action, target, created_at").order("created_at", { ascending: false }).limit(50)
       : Promise.resolve({ data: [] }),
+    db.from("profiles").select("org_id"),
   ]);
+  const usedByOrg = new Map<string, number>();
+  for (const r of (seatsUsed.data ?? []) as { org_id: string }[]) usedByOrg.set(r.org_id, (usedByOrg.get(r.org_id) ?? 0) + 1);
 
   const adminRows = (admins.data ?? []) as { user_id: string; role: LiveAdmin["role"] }[];
   const auditRows = (audit.data ?? []) as { actor_id: string | null; action: string; target: string | null; created_at: string }[];
@@ -68,9 +72,11 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
     ...base,
     counts: { users: users.count ?? 0, companies: companies.count ?? 0 },
     members: (orgs.data ?? []).map((o) => ({
+      id: o.id,
       name: o.name,
       type: o.kind,
       seats: o.seat_limit,
+      used: usedByOrg.get(o.id) ?? 0,
       status: "none" as const, // subscriptions arrive in Phase 4
       since: o.created_at,
     })),

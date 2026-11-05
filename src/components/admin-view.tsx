@@ -13,7 +13,7 @@ import {
 import { DEFAULT_PRICES, quote } from "@/lib/pricing";
 import { formatDate, formatDateTime, formatNumber, formatYen } from "@/lib/format";
 import { DemoTag } from "./demo-banner";
-import { LiveAdmins, type LiveAdmin } from "./admin-live";
+import { LiveAdmins, SeatsEditor, type LiveAdmin } from "./admin-live";
 
 export type { LiveAdmin };
 
@@ -287,6 +287,7 @@ function Members({ live }: { live?: LiveAdmin }) {
         <h2 className="text-lg font-bold">{t("users")}</h2>
         {!live && <DemoTag />}
       </div>
+      {live && <p className="mb-4 max-w-3xl text-sm text-navy-900/65">{t("seatsHelp")}</p>}
       <div className="-mx-6 overflow-x-auto px-6">
         <table className="w-full min-w-[620px] text-left text-sm">
           <thead className="text-navy-900/55">
@@ -303,7 +304,9 @@ function Members({ live }: { live?: LiveAdmin }) {
               <tr key={`${m.name}-${i}`} className="border-b border-navy-900/6 last:border-0">
                 <td className="py-3.5 font-semibold">{m.name}</td>
                 <td className="py-3.5">{t(m.type === "company" ? "company" : "individual")}</td>
-                <td className="py-3.5 text-right tabular-nums">{m.seats}</td>
+                <td className="py-3.5 text-right tabular-nums">
+                  {live && live.role !== "editor" ? <SeatsEditor orgId={live.members[i].id} seats={m.seats} used={live.members[i].used} /> : m.seats}
+                </td>
                 <td className="py-3.5">
                   {m.status === "none" ? (
                     "—"
