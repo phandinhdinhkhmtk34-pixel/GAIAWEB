@@ -439,7 +439,17 @@
     "cmsLegal_terms": "Điều khoản sử dụng (利用規約)",
     "cmsLegalTemplate": "Chèn mẫu soạn sẵn",
     "cmsLegalOpen": "Mở trang công khai",
-    "cmsLegalTodo": "Còn mục 【要入力】. Hãy thay bằng thông tin chính thức."
+    "cmsLegalTodo": "Còn mục 【要入力】. Hãy thay bằng thông tin chính thức.",
+    "editChangeImage": "Đổi ảnh",
+    "editThisPage": "Sửa trang này",
+    "editMode": "Chế độ sửa trực tiếp",
+    "editingLanguage": "Ngôn ngữ đang sửa",
+    "editLogo": "Đổi logo",
+    "leaveUnsaved": "Có thay đổi chưa lưu. Bỏ thay đổi và thoát?",
+    "editExit": "Thoát chế độ sửa",
+    "editHint": "Bấm vào chữ có viền nét đứt để sửa ngay tại chỗ. Ảnh thì bấm “Đổi ảnh”. Cuối cùng bấm “Lưu nháp” hoặc “Xuất bản”.",
+    "openEditMode": "Mở chế độ sửa trực tiếp",
+    "legalPreview": "Xem trước (hiển thị trên trang)"
   },
   "auth": {
     "notConfigured": "Chức năng đăng nhập chưa được cài đặt (đang hiển thị bản prototype).",

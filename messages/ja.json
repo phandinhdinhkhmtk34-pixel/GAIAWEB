@@ -439,7 +439,17 @@
     "cmsLegal_terms": "利用規約",
     "cmsLegalTemplate": "ひな形を挿入",
     "cmsLegalOpen": "公開ページを開く",
-    "cmsLegalTodo": "【要入力】が残っています。正式な情報に差し替えてください。"
+    "cmsLegalTodo": "【要入力】が残っています。正式な情報に差し替えてください。",
+    "editChangeImage": "画像を変更",
+    "editThisPage": "このページを編集",
+    "editMode": "編集モード",
+    "editingLanguage": "編集する言語",
+    "editLogo": "ロゴを変更",
+    "leaveUnsaved": "保存していない変更があります。破棄して終了しますか？",
+    "editExit": "編集モードを終了",
+    "editHint": "点線で囲まれた文字をクリックすると、その場で書き換えられます。画像は「画像を変更」から差し替えます。最後に「下書きを保存」または「公開する」を押してください。",
+    "openEditMode": "編集モードで開く",
+    "legalPreview": "プレビュー（公開ページの表示）"
   },
   "auth": {
     "notConfigured": "ログイン機能はまだ設定されていません（プロトタイプ表示中）。",

@@ -1,3 +1,5 @@
+"use client";
+
 import { useLocale, useTranslations } from "next-intl";
 import { BookOpenCheck, Languages, LineChart, ShieldCheck, ArrowRight, Lock, Clock } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -11,6 +13,8 @@ import { VideoThumb } from "@/components/video-thumb";
 import { categories, videos, pick } from "@/lib/demo-data";
 import { Fragment } from "react";
 import { pickText, type HomeSectionId, type SiteContent } from "@/lib/site-content";
+import { Editable, EditableImage, useEdit } from "./edit-context";
+import { AdminEditButton } from "./admin-edit-button";
 
 const FEATURE_ICONS = [BookOpenCheck, Languages, LineChart, ShieldCheck];
 
@@ -23,13 +27,15 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
   const featured = videos.filter((v) => v.isNew || v.progress === undefined).slice(0, 4);
   const catMap = Object.fromEntries(categories.map((c) => [c.id, c]));
   const hasCharacters = content.characters.some((c) => c.imageUrl);
+  const editing = Boolean(useEdit());
+  const ta = useTranslations("admin");
 
   const introSection = (
         <section className="border-y border-navy-900/8 bg-white">
           <div className="mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
             <div>
-              <h2 className="font-serif text-3xl leading-snug font-bold sm:text-4xl">{pickText(content.introTitle, locale) ?? t("introTitle")}</h2>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-navy-900/75">{pickText(content.introBody, locale) ?? t("introBody")}</p>
+              <Editable as="h2" path="introTitle" label={ta("cmsIntroTitle")} value={pickText(content.introTitle, locale) ?? t("introTitle")} className="block font-serif text-3xl leading-snug font-bold sm:text-4xl" />
+              <Editable as="p" multiline path="introBody" label={ta("cmsIntroBody")} value={pickText(content.introBody, locale) ?? t("introBody")} className="mt-6 block max-w-xl text-lg leading-relaxed whitespace-pre-line text-navy-900/75" />
             </div>
             <dl className="grid grid-cols-3 gap-4 self-end">
               {[
@@ -82,6 +88,7 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
             <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {content.characters.map((c, i) => (
                 <li key={i} className="overflow-hidden rounded-2xl border border-navy-900/10 bg-sky-50">
+                  <EditableImage path={`characters.${i}.imageUrl`} label={ta("cmsCharacterN", { n: i + 1 })}>
                   <div className="relative aspect-[3/4] bg-gradient-to-b from-navy-700 via-dusk to-sun-300">
                     {c.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -93,9 +100,12 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
                       </svg>
                     )}
                   </div>
+                  </EditableImage>
                   <div className="p-4">
-                    <p className="font-semibold">{c.name}</p>
-                    {pickText(c.role, locale) && <p className="mt-1 text-sm text-navy-900/60">{pickText(c.role, locale)}</p>}
+                    <Editable as="p" path={`characters.${i}.name`} label={ta("cmsCharacterName")} value={c.name} className="block font-semibold" />
+                    {(editing || pickText(c.role, locale)) && (
+                      <Editable as="p" path={`characters.${i}.role`} label={ta("cmsCharacterRole")} value={pickText(c.role, locale) ?? ""} className="mt-1 block min-h-5 text-sm text-navy-900/60" />
+                    )}
                   </div>
                 </li>
               ))}
@@ -196,6 +206,7 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
   return (
     <>
       {!preview && <DemoBanner />}
+      {!preview && <AdminEditButton />}
       <SiteHeader />
       <main id="main">
                 <Hero content={content} />

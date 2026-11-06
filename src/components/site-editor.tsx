@@ -7,6 +7,8 @@ import { ImagePlus, Loader2, Trash2, ExternalLink, Save, Send, GripVertical, Arr
 import { createSiteImageUploadAction, publishSiteAction, saveSiteDraftAction } from "@/lib/admin-actions";
 import type { HeroLayout, HomeSection, L10nText, LegalSlug, SiteContent } from "@/lib/site-content";
 import { LEGAL_TEMPLATES } from "@/lib/legal-templates";
+import { renderLegal } from "./legal-render";
+import { Link } from "@/i18n/navigation";
 
 type Lang = "ja" | "vi" | "en";
 const LANGS: { id: Lang; label: string }[] = [
@@ -164,6 +166,9 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
         </div>
         <span className="text-xs text-navy-900/55">{t("textLanguageHint")}</span>
         <div className="ml-auto flex flex-wrap items-center gap-2">
+          <Link href="/admin/edit" className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-navy-900 px-4 text-sm font-semibold text-white hover:bg-navy-800">
+            ✏️ {t("openEditMode")}
+          </Link>
           {dirty && <span className="text-xs text-sun-700">{t("unsaved")}</span>}
           <button type="button" onClick={() => run("save")} disabled={busy !== null} className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-navy-900/20 px-4 text-sm font-semibold hover:bg-sky-100 disabled:opacity-60">
             {busy === "save" ? <Loader2 size={16} className="animate-spin" aria-hidden /> : <Save size={16} aria-hidden />}
@@ -323,15 +328,22 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
                   )}
                 </div>
               </div>
-              <textarea
-                id={`legal-${k}`}
-                rows={10}
-                lang="ja"
-                value={c.legal[k]}
-                placeholder={LEGAL_TEMPLATES[k].slice(0, 160) + "…"}
-                onChange={(e) => update({ legal: { ...c.legal, [k]: e.target.value } })}
-                className={clsx(field, "font-mono text-[13px] leading-relaxed")}
-              />
+              <div className="mt-1.5 grid gap-3 xl:grid-cols-2">
+                <textarea
+                  id={`legal-${k}`}
+                  rows={16}
+                  lang="ja"
+                  value={c.legal[k]}
+                  placeholder={LEGAL_TEMPLATES[k].slice(0, 160) + "…"}
+                  onChange={(e) => update({ legal: { ...c.legal, [k]: e.target.value } })}
+                  className={clsx(field, "mt-0 font-mono text-[13px] leading-relaxed")}
+                />
+                {/* Live preview: exactly how the page will render. */}
+                <div lang="ja" aria-label={t("legalPreview")} className="max-h-[26rem] overflow-y-auto rounded-lg border border-navy-900/10 bg-white p-5 text-sm">
+                  <p className="mb-3 text-xs font-semibold text-navy-900/45">{t("legalPreview")}</p>
+                  {renderLegal(c.legal[k].trim() ? c.legal[k] : LEGAL_TEMPLATES[k])}
+                </div>
+              </div>
               {c.legal[k].includes("【要入力】") && <p className="mt-1 text-xs text-sun-700">{t("cmsLegalTodo")}</p>}
             </div>
           ))}

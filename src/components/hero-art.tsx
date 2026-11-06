@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { ImageIcon } from "lucide-react";
 import { useSite } from "./site-context";
+import { EditableImage } from "./edit-context";
 
 /**
  * Golden-hour scene standing in for the GAIA V8 key visual.
@@ -20,6 +21,15 @@ const FIGURES = [
 ];
 
 export function HeroArt() {
+  const ta = useTranslations("admin");
+  return (
+    <EditableImage path="heroImageUrl" label={ta("cmsHeroImage")} className="rounded-[28px]">
+      <HeroImage />
+    </EditableImage>
+  );
+}
+
+function HeroImage() {
   const t = useTranslations("common");
   const { heroImageUrl, heroFit, heroFocus } = useSite();
   if (heroImageUrl) {

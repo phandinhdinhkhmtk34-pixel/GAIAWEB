@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { ArrowDownRight, PlayCircle } from "lucide-react";
 import clsx from "clsx";
 import { Link } from "@/i18n/navigation";
+import { Editable, useEdit } from "./edit-context";
 
 /** The page's single orchestrated entrance: headline, lead and actions rise in sequence. */
 export function HeroIntro({
@@ -19,6 +20,8 @@ export function HeroIntro({
   onDark?: boolean;
 }) {
   const center = align === "center";
+  const edit = useEdit();
+  const ta = useTranslations("admin");
   const t = useTranslations("home");
   const reduce = useReducedMotion();
   const item = (i: number) => ({
@@ -36,10 +39,10 @@ export function HeroIntro({
           onDark ? "text-white" : "text-navy-900",
         )}
       >
-        {title ?? t("heroTitle")}
+        {edit ? <Editable path="heroTitle" label={ta("fieldHeroTitle")} value={title ?? t("heroTitle")} /> : (title ?? t("heroTitle"))}
       </motion.h1>
       <motion.p {...item(1)} className={clsx("mt-6 max-w-[34rem] text-lg leading-relaxed", onDark ? "text-white/85" : "text-navy-900/75", center && "mx-auto")}>
-        {lead ?? t("heroLead")}
+        {edit ? <Editable path="heroLead" multiline label={ta("fieldHeroLead")} value={lead ?? t("heroLead")} /> : (lead ?? t("heroLead"))}
       </motion.p>
       <motion.div {...item(2)} className={clsx("mt-9 flex flex-wrap items-center gap-4", center && "justify-center")}>
         <Link href="/#pricing" className="btn-3d text-base">

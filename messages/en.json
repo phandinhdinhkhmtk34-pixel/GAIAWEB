@@ -439,7 +439,17 @@
     "cmsLegal_terms": "Terms of service",
     "cmsLegalTemplate": "Insert template",
     "cmsLegalOpen": "Open public page",
-    "cmsLegalTodo": "Some 【要入力】 placeholders remain. Replace them with the real details."
+    "cmsLegalTodo": "Some 【要入力】 placeholders remain. Replace them with the real details.",
+    "editChangeImage": "Change image",
+    "editThisPage": "Edit this page",
+    "editMode": "Edit mode",
+    "editingLanguage": "Editing language",
+    "editLogo": "Change logo",
+    "leaveUnsaved": "You have unsaved changes. Discard them and exit?",
+    "editExit": "Exit edit mode",
+    "editHint": "Click any text with a dashed outline to edit it in place. Use “Change image” for images. Then press Save draft or Publish.",
+    "openEditMode": "Open edit mode",
+    "legalPreview": "Preview (as shown on the page)"
   },
   "auth": {
     "notConfigured": "Sign-in is not set up yet (showing the prototype).",
