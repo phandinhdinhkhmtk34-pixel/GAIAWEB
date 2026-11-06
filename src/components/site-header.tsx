@@ -32,6 +32,8 @@ function useSession() {
 const NAV = [
   { href: "/", key: "home" },
   { href: "/library", key: "library" },
+  { href: "/#pricing", key: "pricing" },
+  { href: "/faq", key: "faq" },
   { href: "/dashboard", key: "dashboard" },
   { href: "/admin", key: "admin" },
 ] as const;
@@ -43,7 +45,15 @@ export function SiteHeader({ tone = "light" }: { tone?: "light" | "dark" }) {
   const dark = tone === "dark";
   const session = useSession();
   const router = useRouter();
-  const nav = NAV.filter((item) => item.key !== "admin" || session.isAdmin);
+  // Signed out: public pages only. Signed in: My page (and Admin for admins) instead of pricing/FAQ.
+  const live = isSupabaseConfigured;
+  const nav = NAV.filter((item) => {
+    if (item.key === "admin") return session.isAdmin;
+    if (item.key === "dashboard") return !live || session.signedIn;
+    if (item.key === "pricing" || item.key === "faq") return !live || !session.signedIn;
+    return true;
+  });
+  const cta = live && session.signedIn ? { href: "/dashboard", label: t("nav.dashboard") } : { href: "/#pricing", label: t("common.register") };
   const signOut = async () => {
     await createClient().auth.signOut();
     router.replace("/");
@@ -66,7 +76,7 @@ export function SiteHeader({ tone = "light" }: { tone?: "light" | "dark" }) {
 
         <nav aria-label={t("nav.menu")} className="hidden flex-1 items-center gap-1 md:flex">
           {nav.map((item) => {
-            const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            const active = item.href === "/" ? pathname === "/" : !item.href.includes("#") && pathname.startsWith(item.href);
             return (
               <Link
                 key={item.href}
@@ -117,13 +127,13 @@ export function SiteHeader({ tone = "light" }: { tone?: "light" | "dark" }) {
               </Link>
             ))}
           <Link
-            href="/#pricing"
+            href={cta.href}
             className={clsx(
               "hidden rounded-lg px-4 py-2 text-sm font-semibold sm:inline-flex",
               dark ? "bg-sun-400 text-navy-950 hover:bg-sun-300" : "bg-navy-900 text-white hover:bg-navy-800",
             )}
           >
-            {t("common.register")}
+            {cta.label}
           </Link>
           <button
             type="button"
@@ -155,8 +165,8 @@ export function SiteHeader({ tone = "light" }: { tone?: "light" | "dark" }) {
                 {t("common.signIn")}
               </Link>
             ))}
-          <Link href="/#pricing" className="btn-3d mt-3 w-full">
-            {t("common.register")}
+          <Link href={cta.href} className="btn-3d mt-3 w-full">
+            {cta.label}
           </Link>
         </nav>
       )}

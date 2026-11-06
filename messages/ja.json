@@ -27,12 +27,14 @@
     "library": "動画ライブラリ",
     "dashboard": "マイページ",
     "admin": "管理センター",
-    "menu": "メニュー"
+    "menu": "メニュー",
+    "pricing": "料金",
+    "faq": "よくある質問"
   },
   "home": {
     "heroTitle": "仕事の「できる」を、物語で身につける。",
     "heroLead": "GAIA の 8 人のキャラクターと一緒に、ビジネスマナー、安全衛生、日本語、IT を短い動画で学ぶ企業研修プラットフォーム。外国籍スタッフにも 7 言語で届きます。",
-    "heroPrimary": "法人で申し込む",
+    "heroPrimary": "料金を見て申し込む",
     "heroSecondary": "動画を見てみる",
     "heroNote": "1 アカウント 月額 30,000 円（税込）から",
     "introTitle": "現場で働く人のための研修を、もっと身近に。",
@@ -72,7 +74,7 @@
     "planEnterprise": "大企業向け",
     "planEnterpriseDesc": "50 名以上、請求書払い、専用カテゴリの制作などはご相談ください。",
     "planEnterprisePrice": "お見積り",
-    "planContact": "相談する",
+    "planContact": "お見積りを相談する",
     "planIncludes": "1 アカウント込み",
     "planSeat": "追加アカウント {price}",
     "planFeatures": [
@@ -102,7 +104,10 @@
     "footerCopy": "© 2026 GAIA. All rights reserved.",
     "charactersTitle": "8 人のキャラクター",
     "videoCount": "{count} 本の動画",
-    "footerFaq": "よくある質問"
+    "footerFaq": "よくある質問",
+    "ctaMonthly": "月額プランで申し込む",
+    "ctaAnnual": "年額プランで申し込む",
+    "ctaCalc": "この内容で申し込む"
   },
   "library": {
     "title": "動画ライブラリ",
@@ -613,7 +618,11 @@
       "notPending": "この注文はすでに処理されています。"
     },
     "bankCancel": "解約する（期間の終わりまで利用可）",
-    "bankResume": "解約を取り消す"
+    "bankResume": "解約を取り消す",
+    "step1": "プランを選ぶ",
+    "step2": "お支払い",
+    "step3": "利用開始",
+    "stepsLabel": "お申し込みの流れ"
   },
   "faq": {
     "title": "よくある質問",

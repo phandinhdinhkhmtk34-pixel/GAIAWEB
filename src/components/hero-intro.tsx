@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { ArrowDownRight, PlayCircle } from "lucide-react";
 import clsx from "clsx";
@@ -23,28 +22,25 @@ export function HeroIntro({
   const edit = useEdit();
   const ta = useTranslations("admin");
   const t = useTranslations("home");
-  const reduce = useReducedMotion();
-  const item = (i: number) => ({
-    initial: reduce ? false : { opacity: 0, y: 18 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.7, delay: 0.1 + i * 0.12, ease: [0.22, 1, 0.36, 1] as const },
-  });
+  // One staggered entrance (CSS, disabled for reduced motion in globals.css).
+  const item = (i: number) => ({ style: { animationDelay: `${0.1 + i * 0.12}s` } as React.CSSProperties });
 
   return (
     <div className={clsx(center && "text-center")}>
-      <motion.h1
+      <h1
         {...item(0)}
         className={clsx(
+          "rise",
           "font-serif text-[2.35rem] leading-[1.25] font-bold sm:text-5xl lg:text-[3.6rem] lg:leading-[1.18]",
           onDark ? "text-white" : "text-navy-900",
         )}
       >
         {edit ? <Editable path="heroTitle" label={ta("fieldHeroTitle")} value={title ?? t("heroTitle")} /> : (title ?? t("heroTitle"))}
-      </motion.h1>
-      <motion.p {...item(1)} className={clsx("mt-6 max-w-[34rem] text-lg leading-relaxed", onDark ? "text-white/85" : "text-navy-900/75", center && "mx-auto")}>
+      </h1>
+      <p {...item(1)} className={clsx("rise mt-6 max-w-[34rem] text-lg leading-relaxed", onDark ? "text-white/85" : "text-navy-900/75", center && "mx-auto")}>
         {edit ? <Editable path="heroLead" multiline label={ta("fieldHeroLead")} value={lead ?? t("heroLead")} /> : (lead ?? t("heroLead"))}
-      </motion.p>
-      <motion.div {...item(2)} className={clsx("mt-9 flex flex-wrap items-center gap-4", center && "justify-center")}>
+      </p>
+      <div {...item(2)} className={clsx("rise mt-9 flex flex-wrap items-center gap-4", center && "justify-center")}>
         <Link href="/#pricing" className="btn-3d text-base">
           {t("heroPrimary")}
           <ArrowDownRight size={18} aria-hidden />
@@ -53,10 +49,10 @@ export function HeroIntro({
           <PlayCircle size={19} aria-hidden />
           {t("heroSecondary")}
         </Link>
-      </motion.div>
-      <motion.p {...item(3)} className={clsx("mt-5 text-sm", onDark ? "text-white/70" : "text-navy-900/70")}>
+      </div>
+      <p {...item(3)} className={clsx("rise mt-5 text-sm", onDark ? "text-white/70" : "text-navy-900/70")}>
         {t("heroNote")}
-      </motion.p>
+      </p>
     </div>
   );
 }

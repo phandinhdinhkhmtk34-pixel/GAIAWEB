@@ -144,6 +144,17 @@ p {
   }
 }
 
+/* Page-load entrance for the hero, the page's one orchestrated motion. */
+.rise {
+  animation: rise 0.7s var(--ease-out-soft) both;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
 .btn-ghost {
   display: inline-flex;
   align-items: center;

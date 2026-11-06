@@ -27,12 +27,14 @@
     "library": "Thư viện video",
     "dashboard": "Trang cá nhân",
     "admin": "Quản trị",
-    "menu": "Menu"
+    "menu": "Menu",
+    "pricing": "Bảng giá",
+    "faq": "Câu hỏi thường gặp"
   },
   "home": {
     "heroTitle": "Học việc qua câu chuyện, không phải qua sổ tay.",
     "heroLead": "Video đào tạo ngắn về tác phong công sở, an toàn lao động, tiếng Nhật và IT, do 8 nhân vật của GAIA thể hiện. Nhân viên nước ngoài xem được bằng 7 ngôn ngữ.",
-    "heroPrimary": "Đăng ký cho doanh nghiệp",
+    "heroPrimary": "Xem giá và đăng ký",
     "heroSecondary": "Xem thử video",
     "heroNote": "Từ 30.000 yên/tháng (đã gồm thuế) cho 1 tài khoản",
     "introTitle": "Đào tạo đến tận tay người làm việc.",
@@ -72,7 +74,7 @@
     "planEnterprise": "Doanh nghiệp lớn",
     "planEnterpriseDesc": "Từ 50 tài khoản, thanh toán theo hoá đơn hoặc làm chủ đề đào tạo riêng, hãy liên hệ.",
     "planEnterprisePrice": "Báo giá riêng",
-    "planContact": "Liên hệ",
+    "planContact": "Liên hệ báo giá",
     "planIncludes": "Gồm 1 tài khoản",
     "planSeat": "Thêm tài khoản {price}",
     "planFeatures": [
@@ -102,7 +104,10 @@
     "footerCopy": "© 2026 GAIA. All rights reserved.",
     "charactersTitle": "8 nhân vật",
     "videoCount": "{count} video",
-    "footerFaq": "Câu hỏi thường gặp"
+    "footerFaq": "Câu hỏi thường gặp",
+    "ctaMonthly": "Đăng ký gói tháng",
+    "ctaAnnual": "Đăng ký gói năm",
+    "ctaCalc": "Đăng ký theo lựa chọn này"
   },
   "library": {
     "title": "Thư viện video",
@@ -613,7 +618,11 @@
       "notPending": "Đơn này đã được xử lý."
     },
     "bankCancel": "Huỷ gói (dùng đến hết kỳ)",
-    "bankResume": "Huỷ yêu cầu huỷ gói"
+    "bankResume": "Huỷ yêu cầu huỷ gói",
+    "step1": "Chọn gói",
+    "step2": "Thanh toán",
+    "step3": "Bắt đầu học",
+    "stepsLabel": "Các bước đăng ký"
   },
   "faq": {
     "title": "Câu hỏi thường gặp",

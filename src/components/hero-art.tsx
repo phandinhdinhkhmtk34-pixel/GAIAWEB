@@ -40,6 +40,8 @@ function HeroImage() {
         <img
           src={heroImageUrl}
           alt="GAIA"
+          fetchPriority="high"
+          decoding="async"
           className={heroFit === "crop" ? `block aspect-[840/520] w-full object-cover ${focus}` : "block h-auto w-full"}
         />
       </figure>

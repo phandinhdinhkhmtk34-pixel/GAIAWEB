@@ -27,12 +27,14 @@
     "library": "Video library",
     "dashboard": "My page",
     "admin": "Admin center",
-    "menu": "Menu"
+    "menu": "Menu",
+    "pricing": "Pricing",
+    "faq": "FAQ"
   },
   "home": {
     "heroTitle": "Learn the job through stories, not manuals.",
     "heroLead": "Short training videos on business manners, workplace safety, Japanese and IT, told by GAIA's eight characters. Available to international staff in seven languages.",
-    "heroPrimary": "Subscribe for your company",
+    "heroPrimary": "See pricing and subscribe",
     "heroSecondary": "Browse the videos",
     "heroNote": "From ¥30,000 a month (tax incl.) for one account",
     "introTitle": "Training that reaches the people doing the work.",
@@ -72,7 +74,7 @@
     "planEnterprise": "Enterprise",
     "planEnterpriseDesc": "For 50+ accounts, invoice billing or custom training categories, let's talk.",
     "planEnterprisePrice": "Custom quote",
-    "planContact": "Contact us",
+    "planContact": "Ask for a quote",
     "planIncludes": "Includes 1 account",
     "planSeat": "Extra account {price}",
     "planFeatures": [
@@ -102,7 +104,10 @@
     "footerCopy": "© 2026 GAIA. All rights reserved.",
     "charactersTitle": "Meet the eight characters",
     "videoCount": "{count, plural, one {# video} other {# videos}}",
-    "footerFaq": "FAQ"
+    "footerFaq": "FAQ",
+    "ctaMonthly": "Subscribe monthly",
+    "ctaAnnual": "Subscribe annually",
+    "ctaCalc": "Subscribe with this"
   },
   "library": {
     "title": "Video library",
@@ -613,7 +618,11 @@
       "notPending": "This order was already handled."
     },
     "bankCancel": "Cancel (keep access until the period ends)",
-    "bankResume": "Undo cancellation"
+    "bankResume": "Undo cancellation",
+    "step1": "Choose a plan",
+    "step2": "Pay",
+    "step3": "Start learning",
+    "stepsLabel": "Sign-up steps"
   },
   "faq": {
     "title": "Frequently asked questions",

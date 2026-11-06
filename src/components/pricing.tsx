@@ -28,7 +28,7 @@ export function Pricing({ prices = DEFAULT_PRICES }: { prices?: PriceConfig }) {
           unit={tc("perMonth")}
           seat={t("planSeat", { price: `${yen(monthly.seat)}${tc("perMonth")}` })}
           features={features}
-          cta={tc("register")}
+          cta={t("ctaMonthly")}
           includes={t("planIncludes")}
           tax={tc("taxIncluded")}
         />
@@ -42,7 +42,7 @@ export function Pricing({ prices = DEFAULT_PRICES }: { prices?: PriceConfig }) {
           unit={tc("perYear")}
           seat={t("planSeat", { price: `${yen(annual.seat)}${tc("perYear")}` })}
           features={features}
-          cta={tc("register")}
+          cta={t("ctaAnnual")}
           includes={t("planIncludes")}
           tax={tc("taxIncluded")}
         />
@@ -51,9 +51,9 @@ export function Pricing({ prices = DEFAULT_PRICES }: { prices?: PriceConfig }) {
           <h3 className="mt-5 font-serif text-2xl font-bold">{t("planEnterprise")}</h3>
           <p className="mt-3 text-navy-900/70">{t("planEnterpriseDesc")}</p>
           <p className="mt-8 font-serif text-3xl font-bold text-navy-900">{t("planEnterprisePrice")}</p>
-          <a href="mailto:info@example.com" className="btn-ghost mt-auto translate-y-0 text-navy-900 hover:bg-navy-900 hover:text-white lg:mt-auto">
+          <Link href="/contact" className="btn-ghost mt-auto text-navy-900 hover:bg-navy-900 hover:text-white">
             {t("planContact")}
-          </a>
+          </Link>
         </div>
       </div>
       <Calculator prices={prices} />
@@ -179,7 +179,7 @@ function Calculator({ prices }: { prices: PriceConfig }) {
           {t("calcBreakdown", { base: yen(q.base), extra: q.extra, seat: yen(q.seat) })}
         </p>
         <Link href={{ pathname: "/signup", query: { plan: billing, seats: users } }} className="btn-3d mt-7 w-full">
-          {tc("register")}
+          {t("ctaCalc")}
         </Link>
       </div>
     </div>

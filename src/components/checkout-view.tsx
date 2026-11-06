@@ -49,9 +49,54 @@ function ErrorText({ state }: { state: BillingState }) {
 }
 
 export function CheckoutView({ data }: { data: CheckoutData }) {
-  if (data.order) return <OrderDetails data={data} />;
-  if (!data.sub || data.sub.status === "pending_payment") return <NewPlan data={data} />;
+  if (data.order) {
+    const done = data.order.status === "verified";
+    return (
+      <>
+        <Steps current={done ? 3 : 2} />
+        <OrderDetails data={data} />
+      </>
+    );
+  }
+  if (!data.sub || data.sub.status === "pending_payment") {
+    return (
+      <>
+        <Steps current={1} />
+        <NewPlan data={data} />
+      </>
+    );
+  }
   return <ManagePlan data={data} />;
+}
+
+/** Where the customer is: choose plan → pay → start learning. */
+function Steps({ current }: { current: 1 | 2 | 3 }) {
+  const t = useTranslations("billing");
+  const steps = [t("step1"), t("step2"), t("step3")];
+  return (
+    <ol className="mb-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm" aria-label={t("stepsLabel")}>
+      {steps.map((label, i) => {
+        const n = i + 1;
+        const state = n < current ? "done" : n === current ? "now" : "next";
+        return (
+          <li key={label} className="flex items-center gap-3" aria-current={state === "now" ? "step" : undefined}>
+            <span
+              className={clsx(
+                "flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold tabular-nums",
+                state === "done" && "bg-leaf text-white",
+                state === "now" && "bg-navy-900 text-sun-300",
+                state === "next" && "border border-navy-900/20 text-navy-900/70",
+              )}
+            >
+              {state === "done" ? <Check size={16} aria-hidden /> : n}
+            </span>
+            <span className={clsx("font-semibold", state === "next" && "text-navy-900/70")}>{label}</span>
+            {n < steps.length && <span aria-hidden className="hidden h-px w-10 bg-navy-900/20 sm:block" />}
+          </li>
+        );
+      })}
+    </ol>
+  );
 }
 
 /* ---------------------------------------------------------------- new plan */
