@@ -92,9 +92,9 @@ function PlanCard(props: {
       <p className={clsx("mt-3", featured ? "text-white/70" : "text-navy-900/70")}>{props.desc}</p>
       <p className="mt-8 flex items-baseline gap-1.5">
         <span className={clsx("font-serif text-[2.6rem] leading-none font-bold tabular-nums", featured && "text-sun-300")}>{props.price}</span>
-        <span className={featured ? "text-white/70" : "text-navy-900/60"}>{props.unit}</span>
+        <span className={featured ? "text-white/70" : "text-navy-900/70"}>{props.unit}</span>
       </p>
-      <p className={clsx("mt-2 text-sm", featured ? "text-white/60" : "text-navy-900/55")}>
+      <p className={clsx("mt-2 text-sm", featured ? "text-white/60" : "text-navy-900/70")}>
         {props.tax} · {props.includes}
       </p>
       <p className={clsx("mt-1 text-sm font-medium", featured ? "text-sun-200" : "text-sun-700")}>{props.seat}</p>
@@ -145,7 +145,7 @@ function Calculator({ prices }: { prices: PriceConfig }) {
             onChange={(e) => setUsers(Number(e.target.value))}
             className="mt-4 h-11 w-full cursor-pointer accent-[#E2A030]"
           />
-          <div className="flex justify-between text-xs text-navy-900/50">
+          <div className="flex justify-between text-xs text-navy-900/70">
             <span>1</span>
             <span>50</span>
           </div>
@@ -158,7 +158,7 @@ function Calculator({ prices }: { prices: PriceConfig }) {
                 key={b}
                 className={clsx(
                   "cursor-pointer rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-sun-400",
-                  billing === b ? "bg-white text-navy-900 shadow-sm" : "text-navy-900/60",
+                  billing === b ? "bg-white text-navy-900 shadow-sm" : "text-navy-900/70",
                 )}
               >
                 <input type="radio" name="billing" value={b} checked={billing === b} onChange={() => setBilling(b)} className="sr-only" />
@@ -174,7 +174,7 @@ function Calculator({ prices }: { prices: PriceConfig }) {
           <span className="font-serif text-5xl font-bold text-sun-300 tabular-nums">{yen(q.total)}</span>
           <span className="text-white/65">{billing === "monthly" ? tc("perMonth") : tc("perYear")}</span>
         </p>
-        <p className="mt-1 text-sm text-white/55">{tc("taxIncluded")}</p>
+        <p className="mt-1 text-sm text-white/65">{tc("taxIncluded")}</p>
         <p className="mt-6 border-t border-white/10 pt-5 text-sm text-white/75">
           {t("calcBreakdown", { base: yen(q.base), extra: q.extra, seat: yen(q.seat) })}
         </p>

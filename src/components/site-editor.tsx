@@ -4,7 +4,9 @@ import { useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import clsx from "clsx";
 import { ImagePlus, Loader2, Trash2, ExternalLink, Save, Send, GripVertical, ArrowUp, ArrowDown, Eye, EyeOff } from "lucide-react";
-import { createSiteImageUploadAction, publishSiteAction, saveSiteDraftAction } from "@/lib/admin-actions";
+import { publishSiteAction, saveSiteDraftAction } from "@/lib/admin-actions";
+import { uploadSiteImage } from "./edit-context";
+import type { ImageKind } from "@/lib/image-optimize";
 import type { HeroLayout, HomeSection, L10nText, LegalSlug, SiteContent } from "@/lib/site-content";
 import { LEGAL_TEMPLATES } from "@/lib/legal-templates";
 import { renderLegal } from "./legal-render";
@@ -19,27 +21,20 @@ const LANGS: { id: Lang; label: string }[] = [
 
 const field = "mt-1.5 w-full rounded-lg border border-navy-900/20 bg-white px-3 py-2.5 text-sm focus:border-navy-700 focus:outline-none";
 
-/** Upload one image to the public site bucket and return its URL. */
-async function uploadSiteImage(file: File): Promise<{ url: string } | { error: string }> {
-  const ticket = await createSiteImageUploadAction({ type: file.type, size: file.size });
-  if ("error" in ticket) return { error: ticket.error ?? "generic" };
-  const { createClient } = await import("@/lib/supabase/browser");
-  const { error } = await createClient().storage.from("site").uploadToSignedUrl(ticket.path, ticket.token, file, { contentType: file.type });
-  return error ? { error: "upload" } : { url: ticket.publicUrl };
-}
-
 function ImageField({
   label,
   hint,
   url,
   onChange,
   aspect = "aspect-video",
+  kind = "hero",
 }: {
   label: string;
   hint?: string;
   url: string | null;
   onChange: (url: string | null) => void;
   aspect?: string;
+  kind?: ImageKind;
 }) {
   const t = useTranslations("admin");
   const input = useRef<HTMLInputElement>(null);
@@ -48,7 +43,7 @@ function ImageField({
   return (
     <div>
       <p className="text-sm font-medium">{label}</p>
-      {hint && <p className="mt-0.5 text-xs text-navy-900/55">{hint}</p>}
+      {hint && <p className="mt-0.5 text-xs text-navy-900/70">{hint}</p>}
       <div className="mt-2 flex items-end gap-3">
         <button
           type="button"
@@ -56,7 +51,7 @@ function ImageField({
           disabled={busy}
           aria-label={`${t("imageChoose")}: ${label}`}
           className={clsx(
-            "relative flex w-40 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-dashed border-navy-900/25 bg-sky-50 text-navy-900/50 hover:border-navy-900/50",
+            "relative flex w-40 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-dashed border-navy-900/25 bg-sky-50 text-navy-900/70 hover:border-navy-900/50",
             aspect,
           )}
         >
@@ -85,7 +80,7 @@ function ImageField({
           if (!f) return;
           setBusy(true);
           setErr(null);
-          const res = await uploadSiteImage(f);
+          const res = await uploadSiteImage(f, kind);
           setBusy(false);
           if ("error" in res) return setErr(res.error === "imageSize" ? t("imageSize") : res.error === "imageType" ? t("imageType") : t("videoUploadFailed"));
           onChange(res.url);
@@ -164,7 +159,7 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
             </button>
           ))}
         </div>
-        <span className="text-xs text-navy-900/55">{t("textLanguageHint")}</span>
+        <span className="text-xs text-navy-900/70">{t("textLanguageHint")}</span>
         <div className="ml-auto flex flex-wrap items-center gap-2">
           <Link href="/admin/edit" className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-navy-900 px-4 text-sm font-semibold text-white hover:bg-navy-800">
             ✏️ {t("openEditMode")}
@@ -184,14 +179,14 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
           </button>
         </div>
         {msg && <p role="status" className={clsx("basis-full text-sm", msg.ok ? "text-leaf" : "text-seal")}>{msg.text}</p>}
-        <p className="basis-full text-xs text-navy-900/50">{t("previewHint")}</p>
+        <p className="basis-full text-xs text-navy-900/70">{t("previewHint")}</p>
       </div>
 
       <section className={section}>
         <h2 className="text-lg font-bold">{t("cmsBrand")}</h2>
         <div className="mt-4 grid gap-6 md:grid-cols-2">
           <div className="space-y-4">
-            <ImageField label={t("cmsLogo")} hint={t("cmsLogoHint")} url={c.logoUrl} onChange={(logoUrl) => update({ logoUrl })} aspect="aspect-[3/1]" />
+            <ImageField label={t("cmsLogo")} hint={t("cmsLogoHint")} url={c.logoUrl} onChange={(logoUrl) => update({ logoUrl })} aspect="aspect-[3/1]" kind="logo" />
             <div>
               <label htmlFor="logo-size" className="text-sm font-medium">
                 {t("cmsLogoSize")}: <span className="tabular-nums">{c.logoHeight}px</span>
@@ -269,7 +264,7 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
           {textArea("introTitle", 2, t("cmsIntroTitle"))}
           {textArea("introBody", 4, t("cmsIntroBody"))}
         </div>
-        <p className="mt-3 text-xs text-navy-900/50">{t("cmsEmptyHint")}</p>
+        <p className="mt-3 text-xs text-navy-900/70">{t("cmsEmptyHint")}</p>
       </section>
 
       <section className={section}>
@@ -281,6 +276,7 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
                 label={t("cmsCharacterN", { n: i + 1 })}
                 url={ch.imageUrl}
                 aspect="aspect-[3/4]"
+                kind="character"
                 onChange={(imageUrl) => update({ characters: c.characters.map((x, j) => (j === i ? { ...x, imageUrl } : x)) })}
               />
               <div>
@@ -313,7 +309,7 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
 
       <section className={section}>
         <h2 className="text-lg font-bold">{t("cmsLegal")}</h2>
-        <p className="mt-1 text-sm text-navy-900/60">{t("cmsLegalHint")}</p>
+        <p className="mt-1 text-sm text-navy-900/70">{t("cmsLegalHint")}</p>
         <div className="mt-4 space-y-6">
           {(["tokushoho", "privacy", "terms"] as const satisfies readonly LegalSlug[]).map((k) => (
             <div key={k}>
@@ -340,7 +336,7 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
                 />
                 {/* Live preview: exactly how the page will render. */}
                 <div lang="ja" aria-label={t("legalPreview")} className="max-h-[26rem] overflow-y-auto rounded-lg border border-navy-900/10 bg-white p-5 text-sm">
-                  <p className="mb-3 text-xs font-semibold text-navy-900/45">{t("legalPreview")}</p>
+                  <p className="mb-3 text-xs font-semibold text-navy-900/70">{t("legalPreview")}</p>
                   {renderLegal(c.legal[k].trim() ? c.legal[k] : LEGAL_TEMPLATES[k])}
                 </div>
               </div>
@@ -352,7 +348,7 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
 
       <section className={section}>
         <h2 className="text-lg font-bold">{t("cmsPrices")}</h2>
-        <p className="mt-1 text-sm text-navy-900/60">{canEditPrices ? t("cmsPricesHint") : t("pricesSuperOnly")}</p>
+        <p className="mt-1 text-sm text-navy-900/70">{canEditPrices ? t("cmsPricesHint") : t("pricesSuperOnly")}</p>
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {(
             [
@@ -373,7 +369,7 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
                 disabled={!canEditPrices}
                 value={c.prices[k]}
                 onChange={(e) => update({ prices: { ...c.prices, [k]: Math.max(0, Math.round(Number(e.target.value) || 0)) } })}
-                className={clsx(field, "tabular-nums disabled:bg-sky-50 disabled:text-navy-900/50")}
+                className={clsx(field, "tabular-nums disabled:bg-sky-50 disabled:text-navy-900/70")}
               />
             </div>
           ))}
@@ -444,9 +440,9 @@ export function LayoutEditor({ c, update }: { c: SiteContent; update: (patch: Pa
 
       <div>
         <p className="text-sm font-medium">{t("cmsSections")}</p>
-        <p className="mt-0.5 text-xs text-navy-900/55">{t("cmsSectionsHint")}</p>
+        <p className="mt-0.5 text-xs text-navy-900/70">{t("cmsSectionsHint")}</p>
         <ol className="mt-3 space-y-2">
-          <li className="flex items-center gap-3 rounded-xl border border-dashed border-navy-900/20 px-3 py-2.5 text-sm text-navy-900/55">
+          <li className="flex items-center gap-3 rounded-xl border border-dashed border-navy-900/20 px-3 py-2.5 text-sm text-navy-900/70">
             <span className="w-5" />
             {t("cmsSection_hero")} · {t("cmsAlwaysFirst")}
           </li>
@@ -464,7 +460,7 @@ export function LayoutEditor({ c, update }: { c: SiteContent; update: (patch: Pa
               className={clsx(
                 "flex items-center gap-3 rounded-xl border bg-white px-3 py-2 text-sm",
                 dragIndex === i ? "border-sun-500 opacity-60" : "border-navy-900/15",
-                !sec.visible && "bg-sky-50 text-navy-900/45",
+                !sec.visible && "bg-sky-50 text-navy-900/70",
               )}
             >
               <GripVertical size={18} className="shrink-0 cursor-grab text-navy-900/40" aria-hidden />
@@ -480,7 +476,7 @@ export function LayoutEditor({ c, update }: { c: SiteContent; update: (patch: Pa
                 onClick={() => toggle(i)}
                 aria-pressed={sec.visible}
                 aria-label={`${sec.visible ? t("hideSection") : t("showSection")}: ${t(`cmsSection_${sec.id}`)}`}
-                className={clsx("inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs font-semibold", sec.visible ? "text-leaf hover:bg-leaf/10" : "text-navy-900/50 hover:bg-sky-100")}
+                className={clsx("inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs font-semibold", sec.visible ? "text-leaf hover:bg-leaf/10" : "text-navy-900/70 hover:bg-sky-100")}
               >
                 {sec.visible ? <Eye size={15} aria-hidden /> : <EyeOff size={15} aria-hidden />}
                 {sec.visible ? t("shown") : t("hidden")}

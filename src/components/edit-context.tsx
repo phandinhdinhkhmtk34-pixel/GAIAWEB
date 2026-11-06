@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import clsx from "clsx";
 import { ImagePlus, Loader2 } from "lucide-react";
 import { createSiteImageUploadAction } from "@/lib/admin-actions";
+import { IMAGE_LIMITS, optimizeImage, type ImageKind } from "@/lib/image-optimize";
 
 /**
  * Inline editing ("編集モード"). Outside the editor there is no provider, so every Editable renders
@@ -20,7 +21,8 @@ export const EditProvider = EditContext.Provider;
 export const useEdit = () => useContext(EditContext);
 
 /** Upload one image to the public site bucket and return its URL. */
-export async function uploadSiteImage(file: File): Promise<{ url: string } | { error: string }> {
+export async function uploadSiteImage(original: File, kind: ImageKind = "hero"): Promise<{ url: string } | { error: string }> {
+  const file = await optimizeImage(original, IMAGE_LIMITS[kind]);
   const ticket = await createSiteImageUploadAction({ type: file.type, size: file.size });
   if ("error" in ticket) return { error: ticket.error ?? "generic" };
   const { createClient } = await import("@/lib/supabase/browser");
@@ -77,7 +79,19 @@ export function Editable({
 }
 
 /** Wraps an image area; in edit mode adds a "change image" button on top. */
-export function EditableImage({ path, label, children, className }: { path: string; label: string; children: React.ReactNode; className?: string }) {
+export function EditableImage({
+  path,
+  label,
+  children,
+  className,
+  kind = "hero",
+}: {
+  path: string;
+  label: string;
+  children: React.ReactNode;
+  className?: string;
+  kind?: ImageKind;
+}) {
   const edit = useEdit();
   const t = useTranslations("admin");
   const input = useRef<HTMLInputElement>(null);
@@ -110,7 +124,7 @@ export function EditableImage({ path, label, children, className }: { path: stri
           if (!f) return;
           setBusy(true);
           setErr(null);
-          const res = await uploadSiteImage(f);
+          const res = await uploadSiteImage(f, kind);
           setBusy(false);
           if ("error" in res) return setErr(res.error === "imageSize" ? t("imageSize") : res.error === "imageType" ? t("imageType") : t("videoUploadFailed"));
           edit.set(path, res.url);

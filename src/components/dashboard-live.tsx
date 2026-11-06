@@ -91,11 +91,11 @@ export function LiveCompany({ live }: { live: LiveMember }) {
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-semibold">
-                  {p.name} {p.id === live.id && <span className="text-sm font-normal text-navy-900/50">（{t("you")}）</span>}
+                  {p.name} {p.id === live.id && <span className="text-sm font-normal text-navy-900/70">（{t("you")}）</span>}
                 </p>
-                <p className="truncate text-sm text-navy-900/55">{p.email}</p>
+                <p className="truncate text-sm text-navy-900/70">{p.email}</p>
               </div>
-              <span className="shrink-0 text-xs text-navy-900/55">{p.role === "owner" ? t("roleOwner") : t("roleEmployee")}</span>
+              <span className="shrink-0 text-xs text-navy-900/70">{p.role === "owner" ? t("roleOwner") : t("roleEmployee")}</span>
             </li>
           ))}
           {live.invitations.map((i) => (
@@ -105,14 +105,14 @@ export function LiveCompany({ live }: { live: LiveMember }) {
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-semibold">{i.email}</p>
-                <p className="text-sm text-navy-900/55">
+                <p className="text-sm text-navy-900/70">
                   {t("pendingInvites")} · {formatDate(i.expires, locale)}
                 </p>
               </div>
             </li>
           ))}
         </ul>
-        {live.people.length <= 1 && live.invitations.length === 0 && <p className="mt-4 text-sm text-navy-900/60">{t("noEmployees")}</p>}
+        {live.people.length <= 1 && live.invitations.length === 0 && <p className="mt-4 text-sm text-navy-900/70">{t("noEmployees")}</p>}
       </section>
     </div>
   );
@@ -174,15 +174,15 @@ function LivePlanCard({ live }: { live: LiveMember }) {
           </p>
           <dl className="relative mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3">
             <div>
-              <dt className="text-sm text-white/55">{t("plan")}</dt>
+              <dt className="text-sm text-white/65">{t("plan")}</dt>
               <dd className="mt-1 font-semibold">{p.period === "annual" ? th("planAnnual") : th("planMonthly")}</dd>
             </div>
             <div>
-              <dt className="text-sm text-white/55">{t("validUntil")}</dt>
+              <dt className="text-sm text-white/65">{t("validUntil")}</dt>
               <dd className="mt-1 font-semibold">{formatDate(p.end, locale)}</dd>
             </div>
             <div>
-              <dt className="text-sm text-white/55">{t("seats")}</dt>
+              <dt className="text-sm text-white/65">{t("seats")}</dt>
               <dd className="mt-1 font-semibold">{t("seatsUsed", { used: live.people.length, total: live.org.seatLimit })}</dd>
             </div>
           </dl>
@@ -205,7 +205,7 @@ function LivePlanCard({ live }: { live: LiveMember }) {
 
 function LiveList({ items, empty, icon }: { items: { id: string; title: string; minutes: number; progress?: number }[]; empty: string; icon: "history" | "fav" }) {
   const tc = useTranslations("common");
-  if (!items.length) return <p className="text-sm text-navy-900/60">{empty}</p>;
+  if (!items.length) return <p className="text-sm text-navy-900/70">{empty}</p>;
   return (
     <ul className="space-y-3">
       {items.map((v) => (
@@ -216,7 +216,7 @@ function LiveList({ items, empty, icon }: { items: { id: string; title: string; 
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate font-semibold">{v.title}</span>
-              <span className="text-sm text-navy-900/55">{tc("minutes", { count: v.minutes })}</span>
+              <span className="text-sm text-navy-900/70">{tc("minutes", { count: v.minutes })}</span>
               {v.progress !== undefined && (
                 <span className="mt-1.5 block h-1.5 overflow-hidden rounded-full bg-sky-100" aria-hidden>
                   <span className="block h-full bg-sun-500" style={{ width: `${v.progress}%` }} />
@@ -240,11 +240,11 @@ export function LiveOverview({ live }: { live: LiveMember }) {
         <LivePlanCard live={live} />
         <dl className="grid gap-4 sm:grid-cols-2">
           <div className="rounded-2xl border border-navy-900/10 bg-white p-5">
-            <dt className="flex items-center gap-2 text-sm text-navy-900/60"><Clock size={16} className="text-sun-700" aria-hidden />{t("watchTime")}</dt>
+            <dt className="flex items-center gap-2 text-sm text-navy-900/70"><Clock size={16} className="text-sun-700" aria-hidden />{t("watchTime")}</dt>
             <dd className="mt-2 font-serif text-3xl font-bold tabular-nums">{tc("minutes", { count: live.learning.minutesThisMonth })}</dd>
           </div>
           <div className="rounded-2xl border border-navy-900/10 bg-white p-5">
-            <dt className="flex items-center gap-2 text-sm text-navy-900/60"><CheckCircle2 size={16} className="text-sun-700" aria-hidden />{t("completed")}</dt>
+            <dt className="flex items-center gap-2 text-sm text-navy-900/70"><CheckCircle2 size={16} className="text-sun-700" aria-hidden />{t("completed")}</dt>
             <dd className="mt-2 font-serif text-3xl font-bold tabular-nums">{live.learning.completed}</dd>
           </div>
         </dl>
@@ -283,11 +283,11 @@ export function LiveBilling({ live }: { live: LiveMember }) {
       <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
         <h2 className="mb-5 text-lg font-bold">{t("paymentHistory")}</h2>
         {live.payments.length === 0 ? (
-          <p className="text-sm text-navy-900/60">{t("noPayments")}</p>
+          <p className="text-sm text-navy-900/70">{t("noPayments")}</p>
         ) : (
           <div className="-mx-6 overflow-x-auto px-6">
             <table className="w-full min-w-[560px] text-left text-sm">
-              <thead className="text-navy-900/55">
+              <thead className="text-navy-900/70">
                 <tr className="border-b border-navy-900/10">
                   <th className="py-3 font-medium">{t("date")}</th>
                   <th className="py-3 font-medium">{t("orderCode")}</th>
@@ -329,7 +329,7 @@ export function LiveBilling({ live }: { live: LiveMember }) {
             </table>
           </div>
         )}
-        <p className="mt-4 text-xs text-navy-900/50">{t("receiptHow")}</p>
+        <p className="mt-4 text-xs text-navy-900/70">{t("receiptHow")}</p>
       </section>
     </div>
   );

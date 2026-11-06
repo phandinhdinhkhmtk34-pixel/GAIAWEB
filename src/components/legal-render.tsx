@@ -34,7 +34,13 @@ export function renderLegal(text: string) {
     } else if (l.startsWith("## ")) {
       flushRows();
       flushPara();
-      out.push(<h2 key={`h${out.length}`} className="mt-10 mb-3 font-serif text-xl font-bold first:mt-0">{l.slice(3)}</h2>);
+      out.push(
+        out.some((n) => (n as { type?: unknown })?.type === "h1") ? (
+          <h2 key={`h${out.length}`} className="mt-10 mb-3 font-serif text-xl font-bold">{l.slice(3)}</h2>
+        ) : (
+          <h1 key={`h${out.length}`} className="mb-6 font-serif text-2xl font-bold sm:text-3xl">{l.slice(3)}</h1>
+        ),
+      );
     } else if (!l.trim()) {
       flushRows();
       flushPara();

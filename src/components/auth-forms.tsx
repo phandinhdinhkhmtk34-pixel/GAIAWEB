@@ -51,7 +51,7 @@ function Field(props: {
         className={input}
       />
       {props.hint && (
-        <p id={`${props.id}-hint`} className="mt-1.5 text-xs text-navy-900/55">
+        <p id={`${props.id}-hint`} className="mt-1.5 text-xs text-navy-900/70">
           {props.hint}
         </p>
       )}
@@ -118,7 +118,7 @@ export function SignupForm() {
               <input type="radio" name="kind" value={v} checked={kind === v} onChange={() => setKind(v)} className="sr-only" />
               <Icon size={20} aria-hidden className={kind === v ? "text-sun-300" : "text-navy-700"} />
               <span className="font-semibold">{title}</span>
-              <span className={clsx("text-xs", kind === v ? "text-white/70" : "text-navy-900/55")}>{desc}</span>
+              <span className={clsx("text-xs", kind === v ? "text-white/70" : "text-navy-900/70")}>{desc}</span>
             </label>
           ))}
         </div>

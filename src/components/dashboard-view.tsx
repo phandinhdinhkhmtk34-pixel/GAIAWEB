@@ -40,7 +40,7 @@ export function DashboardView({ live, notice }: { live?: LiveMember; notice?: "c
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-navy-900/60">{live ? live.org.name : demoMember.company}</p>
+          <p className="text-sm text-navy-900/70">{live ? live.org.name : demoMember.company}</p>
           <h1 className="mt-1 font-serif text-3xl font-bold sm:text-4xl">{t("greeting", { name: live ? live.name : demoMember.name })}</h1>
         </div>
         <span className="inline-flex items-center gap-2 rounded-full bg-navy-900 px-3 py-1.5 text-sm text-white">
@@ -62,7 +62,7 @@ export function DashboardView({ live, notice }: { live?: LiveMember; notice?: "c
             onClick={() => setTab(id)}
             className={clsx(
               "-mb-px min-h-12 shrink-0 border-b-2 px-4 text-sm font-semibold whitespace-nowrap transition-colors",
-              tab === id ? "border-sun-500 text-navy-900" : "border-transparent text-navy-900/55 hover:text-navy-900",
+              tab === id ? "border-sun-500 text-navy-900" : "border-transparent text-navy-900/70 hover:text-navy-900",
             )}
           >
             {t(TAB_KEY[id])}
@@ -113,15 +113,15 @@ function SubscriptionCard({ onGo }: { onGo?: (t: Tab) => void }) {
       </div>
       <dl className="relative mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3">
         <div>
-          <dt className="text-sm text-white/55">{t("plan")}</dt>
+          <dt className="text-sm text-white/65">{t("plan")}</dt>
           <dd className="mt-1 font-semibold">{th("planMonthly")}</dd>
         </div>
         <div>
-          <dt className="text-sm text-white/55">{t("nextRenewal")}</dt>
+          <dt className="text-sm text-white/65">{t("nextRenewal")}</dt>
           <dd className="mt-1 font-semibold">{formatDate(demoMember.renewsAt, locale)}</dd>
         </div>
         <div>
-          <dt className="text-sm text-white/55">{t("seats")}</dt>
+          <dt className="text-sm text-white/65">{t("seats")}</dt>
           <dd className="mt-1 font-semibold">{t("seatsUsed", { used, total: demoMember.seatsTotal })}</dd>
         </div>
       </dl>
@@ -150,7 +150,7 @@ function Stats() {
     <dl className="grid gap-4 sm:grid-cols-3">
       {items.map(({ icon: Icon, label, value }) => (
         <div key={label} className="rounded-2xl border border-navy-900/10 bg-white p-5">
-          <dt className="flex items-center gap-2 text-sm text-navy-900/60">
+          <dt className="flex items-center gap-2 text-sm text-navy-900/70">
             <Icon size={16} className="text-sun-700" aria-hidden />
             {label}
           </dt>
@@ -201,7 +201,7 @@ function VideoList({ ids }: { ids: string[] }) {
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate font-semibold">{pick(v.title, locale)}</p>
-              <p className="text-sm text-navy-900/55">{tc("minutes", { count: v.minutes })}</p>
+              <p className="text-sm text-navy-900/70">{tc("minutes", { count: v.minutes })}</p>
               {v.progress !== undefined && (
                 <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-sky-100" aria-hidden>
                   <div className="h-full bg-sun-500" style={{ width: `${v.progress}%` }} />
@@ -254,7 +254,7 @@ function Learning() {
               <li key={c.id}>
                 <div className="flex justify-between text-sm">
                   <span className="font-semibold">{pick(cat.name, locale)}</span>
-                  <span className="tabular-nums text-navy-900/60">
+                  <span className="tabular-nums text-navy-900/70">
                     {c.done}/{c.total}
                   </span>
                 </div>
@@ -297,7 +297,7 @@ function Billing() {
       <Panel title={t("paymentHistory")}>
         <div className="-mx-6 overflow-x-auto px-6">
           <table className="w-full min-w-[640px] text-left text-sm">
-            <thead className="text-navy-900/55">
+            <thead className="text-navy-900/70">
               <tr className="border-b border-navy-900/10">
                 <th className="py-3 font-medium">{t("date")}</th>
                 <th className="py-3 font-medium">{t("description")}</th>
@@ -372,7 +372,7 @@ function Company() {
         <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
           <h2 className="text-lg font-bold">{t("seats")}</h2>
           <p className="mt-2 font-serif text-3xl font-bold tabular-nums">{t("seatsUsed", { used, total: seats })}</p>
-          <p className="mt-1 text-sm text-navy-900/60">
+          <p className="mt-1 text-sm text-navy-900/70">
             {formatYen(monthly.total, locale)}
             {tc("perMonth")} · {tc("taxIncluded")}
           </p>
@@ -380,7 +380,7 @@ function Company() {
             {t("addSeats")} (+{formatYen(3000, locale)}
             {tc("perMonth")})
           </button>
-          <p className="mt-2 text-xs text-navy-900/50">{th("planSeat", { price: formatYen(3000, locale) })}</p>
+          <p className="mt-2 text-xs text-navy-900/70">{th("planSeat", { price: formatYen(3000, locale) })}</p>
         </section>
         <form onSubmit={invite} noValidate className="rounded-2xl border border-navy-900/10 bg-white p-6">
           <h2 className="text-lg font-bold">{t("inviteTitle")}</h2>
@@ -417,18 +417,18 @@ function Company() {
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-semibold">{e.invited ? e.email : e.name}</p>
-                <p className="truncate text-sm text-navy-900/55">{e.invited ? t("invited") : e.email}</p>
+                <p className="truncate text-sm text-navy-900/70">{e.invited ? t("invited") : e.email}</p>
               </div>
               {!e.invited && (
                 <div className="w-full sm:w-44">
-                  <div className="flex justify-between text-xs text-navy-900/55">
+                  <div className="flex justify-between text-xs text-navy-900/70">
                     <span>{t("progress")}</span>
                     <span className="tabular-nums">{e.progress}%</span>
                   </div>
                   <div className="mt-1 h-2 overflow-hidden rounded-full bg-sky-100" aria-hidden>
                     <div className="h-full rounded-full bg-sun-500" style={{ width: `${e.progress}%` }} />
                   </div>
-                  <p className="mt-1 text-xs text-navy-900/45">
+                  <p className="mt-1 text-xs text-navy-900/70">
                     {t("lastActive")}: {formatDate(e.last, locale)}
                   </p>
                 </div>

@@ -108,7 +108,7 @@ function NewPlan({ data }: { data: CheckoutData }) {
         {data.orgKind === "company" ? (
           <div>
             <label htmlFor="seats" className="text-lg font-bold">{t("chooseSeats")}</label>
-            <p className="mt-1 text-sm text-navy-900/60">{t("seatsHint", { price: formatYen(p.seat, locale) })}</p>
+            <p className="mt-1 text-sm text-navy-900/70">{t("seatsHint", { price: formatYen(p.seat, locale) })}</p>
             <input
               id="seats"
               name="seats"
@@ -163,13 +163,13 @@ function NewPlan({ data }: { data: CheckoutData }) {
         </dl>
         <p className="mt-6 border-t border-white/10 pt-5 text-sm text-white/65">{t("totalPer", { per: period === "annual" ? tc("perYear") : tc("perMonth") })}</p>
         <p className="font-serif text-4xl font-bold text-sun-300 tabular-nums">{formatYen(amount, locale)}</p>
-        <p className="mt-1 text-xs text-white/55">{tc("taxIncluded")} · {t("taxNote", { tax: formatYen(Math.floor((amount * 10) / 110), locale) })}</p>
+        <p className="mt-1 text-xs text-white/65">{tc("taxIncluded")} · {t("taxNote", { tax: formatYen(Math.floor((amount * 10) / 110), locale) })}</p>
         <div className="mt-7 space-y-3">
           <ErrorText state={method === "card" ? cardState : bankState} />
           <button type="submit" disabled={cardPending || bankPending} className="btn-3d w-full disabled:opacity-60">
             {method === "card" ? t("payByCard") : t("orderByBank")}
           </button>
-          <p className="flex items-start gap-2 text-xs text-white/55">
+          <p className="flex items-start gap-2 text-xs text-white/65">
             <ShieldCheck size={14} className="mt-0.5 shrink-0" aria-hidden />
             {method === "card" ? t("cardSafe") : t("bankAfter")}
           </p>
@@ -187,7 +187,7 @@ function CopyField({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-3 border-b border-navy-900/8 py-3 last:border-0">
       <div className="min-w-0">
-        <dt className="text-xs text-navy-900/55">{label}</dt>
+        <dt className="text-xs text-navy-900/70">{label}</dt>
         <dd className="font-semibold break-all select-all">{value || "—"}</dd>
       </div>
       {value && (
@@ -229,7 +229,7 @@ function OrderDetails({ data }: { data: CheckoutData }) {
         <p className="font-mono text-3xl font-bold tracking-wider text-sun-300 select-all">{o.code}</p>
         <p className="mt-6 text-sm text-white/65">{t("amountToPay")}</p>
         <p className="font-serif text-4xl font-bold tabular-nums">{formatYen(o.amount, locale)}</p>
-        <p className="mt-1 text-xs text-white/55">{t(`kind.${o.kind}`)}{o.seats ? ` · ${t("seatsCount", { count: o.seats })}` : ""}</p>
+        <p className="mt-1 text-xs text-white/65">{t(`kind.${o.kind}`)}{o.seats ? ` · ${t("seatsCount", { count: o.seats })}` : ""}</p>
         {!paid && o.status === "awaiting" && <p className="mt-6 text-sm leading-relaxed text-white/80">{t("bankSteps")}</p>}
       </section>
       <section className="rounded-3xl border border-navy-900/10 bg-white p-8">
@@ -253,7 +253,7 @@ function OrderDetails({ data }: { data: CheckoutData }) {
             </form>
           )}
         </div>
-        <p className="mt-4 text-xs text-navy-900/50">{formatDate(o.created, locale)}</p>
+        <p className="mt-4 text-xs text-navy-900/70">{formatDate(o.created, locale)}</p>
       </section>
     </div>
   );
@@ -329,7 +329,7 @@ function ManagePlan({ data }: { data: CheckoutData }) {
             </button>
           </form>
         </div>
-        {!s.cancelAtPeriodEnd && s.end && <p className="mt-3 text-xs text-navy-900/55">{t("cancelNote", { date: formatDate(s.end, locale) })}</p>}
+        {!s.cancelAtPeriodEnd && s.end && <p className="mt-3 text-xs text-navy-900/70">{t("cancelNote", { date: formatDate(s.end, locale) })}</p>}
       </section>
     </div>
   );

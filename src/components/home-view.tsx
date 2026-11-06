@@ -37,21 +37,21 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
               <Editable as="h2" path="introTitle" label={ta("cmsIntroTitle")} value={pickText(content.introTitle, locale) ?? t("introTitle")} className="block font-serif text-3xl leading-snug font-bold sm:text-4xl" />
               <Editable as="p" multiline path="introBody" label={ta("cmsIntroBody")} value={pickText(content.introBody, locale) ?? t("introBody")} className="mt-6 block max-w-xl text-lg leading-relaxed whitespace-pre-line text-navy-900/75" />
             </div>
-            <dl className="grid grid-cols-3 gap-4 self-end">
+            <div className="space-y-4 self-end">
+            <dl className="grid grid-cols-3 gap-4">
               {[
                 { v: String(categories.length), l: t("introStat1") },
                 { v: "7", l: t("introStat2") },
                 { v: tc("minutes", { count: 10 }), l: t("introStat3") },
               ].map((s) => (
                 <div key={s.l} className="border-l-2 border-sun-400 pl-4">
-                  <dt className="text-sm text-navy-900/60">{s.l}</dt>
+                  <dt className="text-sm text-navy-900/70">{s.l}</dt>
                   <dd className="mt-1 font-serif text-2xl font-bold tabular-nums sm:text-4xl">{s.v}</dd>
                 </div>
               ))}
-              <div className="col-span-3">
-                <DemoTag />
-              </div>
             </dl>
+            <DemoTag />
+            </div>
           </div>
         </section>
   );
@@ -83,12 +83,12 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
           <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <h2 className="font-serif text-3xl font-bold sm:text-4xl">{t("charactersTitle")}</h2>
-              {!hasCharacters && <p className="text-sm text-navy-900/55">{tc("placeholderArt")}</p>}
+              {!hasCharacters && <p className="text-sm text-navy-900/70">{tc("placeholderArt")}</p>}
             </div>
             <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {content.characters.map((c, i) => (
                 <li key={i} className="overflow-hidden rounded-2xl border border-navy-900/10 bg-sky-50">
-                  <EditableImage path={`characters.${i}.imageUrl`} label={ta("cmsCharacterN", { n: i + 1 })}>
+                  <EditableImage path={`characters.${i}.imageUrl`} label={ta("cmsCharacterN", { n: i + 1 })} kind="character">
                   <div className="relative aspect-[3/4] bg-gradient-to-b from-navy-700 via-dusk to-sun-300">
                     {c.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -104,7 +104,7 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
                   <div className="p-4">
                     <Editable as="p" path={`characters.${i}.name`} label={ta("cmsCharacterName")} value={c.name} className="block font-semibold" />
                     {(editing || pickText(c.role, locale)) && (
-                      <Editable as="p" path={`characters.${i}.role`} label={ta("cmsCharacterRole")} value={pickText(c.role, locale) ?? ""} className="mt-1 block min-h-5 text-sm text-navy-900/60" />
+                      <Editable as="p" path={`characters.${i}.role`} label={ta("cmsCharacterRole")} value={pickText(c.role, locale) ?? ""} className="mt-1 block min-h-5 text-sm text-navy-900/70" />
                     )}
                   </div>
                 </li>
@@ -142,7 +142,7 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
                     </div>
                     <p className="mt-4 text-sm text-sun-300">{pick(catMap[v.category]!.name, locale)}</p>
                     <h3 className="mt-1 text-lg font-semibold group-hover:underline">{pick(v.title, locale)}</h3>
-                    <p className="mt-1 flex items-center gap-1.5 text-sm text-white/55">
+                    <p className="mt-1 flex items-center gap-1.5 text-sm text-white/65">
                       <Clock size={14} aria-hidden />
                       {tc("minutes", { count: v.minutes })}
                     </p>
@@ -167,7 +167,7 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
                   >
                     <span>
                       <span className="block text-lg font-bold">{pick(c.name, locale)}</span>
-                      <span className="text-sm text-navy-900/55">{count}</span>
+                      <span className="text-sm text-navy-900/70">{count}</span>
                     </span>
                     <span
                       aria-hidden

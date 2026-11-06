@@ -54,7 +54,7 @@ export function HeroIntro({
           {t("heroSecondary")}
         </Link>
       </motion.div>
-      <motion.p {...item(3)} className={clsx("mt-5 text-sm", onDark ? "text-white/70" : "text-navy-900/60")}>
+      <motion.p {...item(3)} className={clsx("mt-5 text-sm", onDark ? "text-white/70" : "text-navy-900/70")}>
         {t("heroNote")}
       </motion.p>
     </div>

@@ -19,7 +19,7 @@ export function AuthShell({ title, lead, children }: { title: string; lead?: str
           <div className="mx-auto w-full max-w-xl">
             <HeroArt />
           </div>
-          <p className="text-sm text-white/50">© 2026 GAIA</p>
+          <p className="text-sm text-white/65">© 2026 GAIA</p>
         </div>
       </aside>
       <main id="main" className="flex flex-col justify-center px-4 py-12 sm:px-10">

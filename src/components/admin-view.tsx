@@ -95,7 +95,7 @@ export function AdminView({ live }: { live?: LiveAdmin }) {
             onClick={() => setTab(id)}
             className={clsx(
               "-mb-px min-h-12 shrink-0 border-b-2 px-4 text-sm font-semibold whitespace-nowrap",
-              current === id ? "border-sun-500 text-navy-900" : "border-transparent text-navy-900/55 hover:text-navy-900",
+              current === id ? "border-sun-500 text-navy-900" : "border-transparent text-navy-900/70 hover:text-navy-900",
             )}
           >
             {t(TAB_KEY[id])}
@@ -158,7 +158,7 @@ function Overview({ role, live }: { role: Role; live?: LiveAdmin }) {
               lead ? "col-span-2 bg-navy-900 text-white md:col-span-1 xl:col-span-2" : "border border-navy-900/10 bg-white",
             )}
           >
-            <dt className={clsx("flex items-center gap-2 text-sm", lead ? "text-white/65" : "text-navy-900/60")}>
+            <dt className={clsx("flex items-center gap-2 text-sm", lead ? "text-white/65" : "text-navy-900/70")}>
               <Icon size={16} className={lead ? "text-sun-300" : "text-sun-700"} aria-hidden />
               {label}
             </dt>
@@ -167,7 +167,7 @@ function Overview({ role, live }: { role: Role; live?: LiveAdmin }) {
         ))}
       </dl>
       {!money && (
-        <p className="flex items-center gap-2 text-sm text-navy-900/55">
+        <p className="flex items-center gap-2 text-sm text-navy-900/70">
           <EyeOff size={15} aria-hidden />
           {t("kpiMrr")}, {t("kpiTotal")}: {t("roleHidden")}
         </p>
@@ -231,12 +231,12 @@ function Payments() {
           {list.map((p) => (
             <li key={p.code} className="flex flex-wrap items-center gap-x-6 gap-y-3 py-4">
               <div className="min-w-40">
-                <p className="text-xs text-navy-900/50">{t("orderCode")}</p>
+                <p className="text-xs text-navy-900/70">{t("orderCode")}</p>
                 <p className="font-mono font-semibold">{p.code}</p>
               </div>
               <div className="min-w-0 flex-1">
                 <p className="font-semibold">{p.customer}</p>
-                <p className="text-sm text-navy-900/55">
+                <p className="text-sm text-navy-900/70">
                   {t("requested")}: {formatDate(p.date, locale)} · {p.seats}
                 </p>
               </div>
@@ -295,7 +295,7 @@ function Members({ live }: { live?: LiveAdmin }) {
       {live && <p className="mb-4 max-w-3xl text-sm text-navy-900/65">{t("seatsHelp")}</p>}
       <div className="-mx-6 overflow-x-auto px-6">
         <table className="w-full min-w-[620px] text-left text-sm">
-          <thead className="text-navy-900/55">
+          <thead className="text-navy-900/70">
             <tr className="border-b border-navy-900/10">
               <th className="py-3 font-medium">{t("customer")}</th>
               <th className="py-3 font-medium">{t("type")}</th>
@@ -347,7 +347,7 @@ function Videos() {
       </div>
       <div className="-mx-6 overflow-x-auto px-6">
         <table className="w-full min-w-[620px] text-left text-sm">
-          <thead className="text-navy-900/55">
+          <thead className="text-navy-900/70">
             <tr className="border-b border-navy-900/10">
               <th className="py-3 font-medium">{t("videosTitle")}</th>
               <th className="py-3 font-medium">{tc("locked")}</th>
@@ -360,7 +360,7 @@ function Videos() {
               <tr key={v.id} className="border-b border-navy-900/6 last:border-0">
                 <td className="py-3.5">
                   <p className="font-semibold">{pick(v.title, locale)}</p>
-                  <p className="text-xs text-navy-900/50">{pick(categories.find((c) => c.id === v.category)!.name, locale)}</p>
+                  <p className="text-xs text-navy-900/70">{pick(categories.find((c) => c.id === v.category)!.name, locale)}</p>
                 </td>
                 <td className="py-3.5">{v.premium ? <ShieldCheck size={17} className="text-navy-700" aria-label={tc("locked")} /> : "—"}</td>
                 <td className="py-3.5">
@@ -403,7 +403,7 @@ function Content() {
       >
         <div>
           <h2 className="text-lg font-bold">{t("contentTitle")}</h2>
-          <p className="mt-1 text-sm text-navy-900/60">{t("contentBody")}</p>
+          <p className="mt-1 text-sm text-navy-900/70">{t("contentBody")}</p>
         </div>
         <div>
           <label htmlFor="c-title" className="text-sm font-medium">{t("fieldHeroTitle")}</label>
@@ -471,15 +471,15 @@ function Audit({ live }: { live?: LiveAdmin }) {
         <h2 className="text-lg font-bold">{t("auditTitle")}</h2>
         {!live && <DemoTag />}
       </div>
-      {live && live.audit.length === 0 && <p className="text-navy-900/60">{t("noAudit")}</p>}
+      {live && live.audit.length === 0 && <p className="text-navy-900/70">{t("noAudit")}</p>}
       <ol className="space-y-4">
         {(live ? live.audit : auditLog).map((a, i) => (
           <li key={`${a.when}-${i}`} className="grid gap-1 border-l-2 border-navy-900/15 pl-4 sm:grid-cols-[180px_1fr_200px] sm:gap-4">
-            <time dateTime={a.when} className="text-sm text-navy-900/55">
+            <time dateTime={a.when} className="text-sm text-navy-900/70">
               {formatDateTime(a.when, locale)}
             </time>
             <span className="font-medium">{a.what}</span>
-            <span className="text-sm text-navy-900/55">{a.who}</span>
+            <span className="text-sm text-navy-900/70">{a.who}</span>
           </li>
         ))}
       </ol>

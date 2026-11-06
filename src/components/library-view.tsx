@@ -143,7 +143,7 @@ export function LibraryView({ live, initialCategory, initialOpen }: { live?: Lib
                 </button>
               ))}
             </div>
-            <span className="text-xs text-white/45">{t("stateNote")}</span>
+            <span className="text-xs text-white/65">{t("stateNote")}</span>
           </div>
         </div>
       )}
@@ -203,7 +203,7 @@ export function LibraryView({ live, initialCategory, initialOpen }: { live?: Lib
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:px-8">
           <label className="relative flex-1 lg:max-w-sm">
             <span className="sr-only">{t("search")}</span>
-            <Search size={18} className="absolute top-1/2 left-3.5 -translate-y-1/2 text-white/50" aria-hidden />
+            <Search size={18} className="absolute top-1/2 left-3.5 -translate-y-1/2 text-white/65" aria-hidden />
             <input
               type="search"
               value={query}
@@ -313,14 +313,14 @@ function Card({ v, canWatch, onOpen }: { v: LibItem; canWatch: boolean; onOpen: 
           </span>
         )}
         {v.progress !== undefined && v.progress > 0 && v.progress < 100 && (
-          <div className="absolute inset-x-0 bottom-0 h-1 bg-white/20" role="progressbar" aria-valuenow={v.progress} aria-valuemin={0} aria-valuemax={100}>
+          <div className="absolute inset-x-0 bottom-0 h-1 bg-white/20" role="progressbar" aria-label={v.title} aria-valuenow={v.progress} aria-valuemin={0} aria-valuemax={100}>
             <div className="h-full bg-sun-400" style={{ width: `${v.progress}%` }} />
           </div>
         )}
       </div>
       <p className="mt-3 text-xs text-sun-300">{v.categoryName}</p>
       <h3 className="mt-0.5 font-semibold group-hover:underline">{v.title}</h3>
-      <p className="mt-1 text-sm text-white/55">{tc("minutes", { count: v.minutes })}</p>
+      <p className="mt-1 text-sm text-white/65">{tc("minutes", { count: v.minutes })}</p>
     </button>
   );
 }
@@ -397,12 +397,12 @@ function PlayerDialog(props: {
         </div>
         <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-1">
           <div>
-            <dt className="text-white/50">{t("duration")}</dt>
+            <dt className="text-white/65">{t("duration")}</dt>
             <dd>{tc("minutes", { count: v.minutes })}</dd>
           </div>
           {v.subtitles.length > 0 && (
             <div>
-              <dt className="text-white/50">{t("subtitles")}</dt>
+              <dt className="text-white/65">{t("subtitles")}</dt>
               <dd>{v.subtitles.map((s) => localeNames[s as Locale]).join(", ")}</dd>
             </div>
           )}

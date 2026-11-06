@@ -115,7 +115,9 @@ async function captureFrame(file: File): Promise<Blob | null> {
 }
 
 /** Upload an image (File or captured Blob) to the thumbnails bucket; returns its path. */
-async function uploadThumbnail(img: Blob): Promise<{ path: string } | { error: string }> {
+async function uploadThumbnail(original: Blob): Promise<{ path: string } | { error: string }> {
+  const { optimizeImage, IMAGE_LIMITS } = await import("@/lib/image-optimize");
+  const img = original instanceof File ? await optimizeImage(original, IMAGE_LIMITS.thumbnail) : original;
   const type = img.type || "image/jpeg";
   const ticket = await createThumbnailUploadAction({ type, size: img.size });
   if ("error" in ticket) return { error: ticket.error ?? "generic" };
@@ -165,9 +167,9 @@ export function LiveAdmins({ live }: { live: LiveAdmin }) {
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-semibold">
-                  {a.name || a.email} {a.userId === live.meId && <span className="text-sm font-normal text-navy-900/50">（{t("you")}）</span>}
+                  {a.name || a.email} {a.userId === live.meId && <span className="text-sm font-normal text-navy-900/70">（{t("you")}）</span>}
                 </p>
-                <p className="truncate text-sm text-navy-900/55">
+                <p className="truncate text-sm text-navy-900/70">
                   {a.email} · {roleName(a.role)}
                   {a.pending ? ` · ${t("pendingSignup")}` : ""}
                 </p>
@@ -201,7 +203,7 @@ export function SeatsEditor({ orgId, seats, used }: { orgId: string; seats: numb
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="orgId" value={orgId} />
       <label htmlFor={id} className="sr-only">{t("seatsLabel")}</label>
-      <span className="text-xs text-navy-900/55 tabular-nums">{t("seatsUsedShort", { used })}</span>
+      <span className="text-xs text-navy-900/70 tabular-nums">{t("seatsUsedShort", { used })}</span>
       <input
         id={id}
         name="seats"
@@ -235,7 +237,7 @@ export function PlanControls({ orgId, status, planEnd }: { orgId: string; status
       <form action={endPlanAction} className="flex flex-wrap items-center justify-end gap-2">
         <input type="hidden" name="locale" value={locale} />
         <input type="hidden" name="orgId" value={orgId} />
-        <span className="text-xs text-navy-900/60">{planEnd ? t("planUntil", { date: formatDate(planEnd, locale) }) : ""}</span>
+        <span className="text-xs text-navy-900/70">{planEnd ? t("planUntil", { date: formatDate(planEnd, locale) }) : ""}</span>
         <button type="submit" className="min-h-10 rounded-lg border border-navy-900/20 px-3 text-xs font-semibold hover:bg-sky-100">{t("planEnd")}</button>
       </form>
     );
@@ -320,17 +322,17 @@ export function VideoManager({ live }: { live: LiveAdmin }) {
         <form ref={formRef} onSubmit={(e) => submit(e, true)} className="grid gap-5 rounded-2xl border border-navy-900/10 bg-white p-6 lg:grid-cols-2">
           <div className="lg:col-span-2">
             <h2 className="text-lg font-bold">{t("videoAddTitle")}</h2>
-            <p className="mt-1 text-sm text-navy-900/60">{t("videoAddBody")}</p>
+            <p className="mt-1 text-sm text-navy-900/70">{t("videoAddBody")}</p>
           </div>
           <div className="lg:col-span-2">
             <label htmlFor="v-file" className="text-sm font-medium">{t("videoFile")}</label>
             <input id="v-file" name="file" type="file" accept="video/mp4,video/webm,video/quicktime" className="mt-2 block w-full text-sm file:mr-4 file:min-h-11 file:rounded-lg file:border-0 file:bg-navy-900 file:px-4 file:font-semibold file:text-white" />
-            <p className="mt-1.5 text-xs text-navy-900/55">{t("videoFileHint")}</p>
+            <p className="mt-1.5 text-xs text-navy-900/70">{t("videoFileHint")}</p>
           </div>
           <div className="lg:col-span-2">
             <label htmlFor="v-thumb" className="text-sm font-medium">{t("thumbField")}</label>
             <input id="v-thumb" name="thumb" type="file" accept="image/jpeg,image/png,image/webp" className="mt-2 block w-full text-sm file:mr-4 file:min-h-11 file:rounded-lg file:border-0 file:bg-sky-100 file:px-4 file:font-semibold file:text-navy-900" />
-            <p className="mt-1.5 text-xs text-navy-900/55">{t("thumbHint")}</p>
+            <p className="mt-1.5 text-xs text-navy-900/70">{t("thumbHint")}</p>
           </div>
           <div>
             <label htmlFor="v-cat" className="text-sm font-medium">{t("videoCategory")}</label>
@@ -376,11 +378,11 @@ export function VideoManager({ live }: { live: LiveAdmin }) {
       <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
         <h2 className="mb-4 text-lg font-bold">{t("videosTitle")}</h2>
         {live.videos.length === 0 ? (
-          <p className="text-navy-900/60">{t("noVideos")}</p>
+          <p className="text-navy-900/70">{t("noVideos")}</p>
         ) : (
           <div className="-mx-6 overflow-x-auto px-6">
             <table className="w-full min-w-[720px] text-left text-sm">
-              <thead className="text-navy-900/55">
+              <thead className="text-navy-900/70">
                 <tr className="border-b border-navy-900/10">
                   <th className="py-3 font-medium">{t("videosTitle")}</th>
                   <th className="py-3 font-medium">{t("videoCategory")}</th>
@@ -397,7 +399,7 @@ export function VideoManager({ live }: { live: LiveAdmin }) {
                         <ThumbCell videoId={v.id} url={v.thumbnailUrl} title={v.title} canEdit={canEdit} />
                         <div className="min-w-0">
                       <p className="font-semibold">{v.title}</p>
-                      <p className="text-xs text-navy-900/50">
+                      <p className="text-xs text-navy-900/70">
                         {formatDate(v.created, locale)} · {v.minutes ? tc("minutes", { count: v.minutes }) : "—"}
                       </p>
                         </div>
@@ -562,12 +564,12 @@ export function LivePayments({ live }: { live: LiveAdmin }) {
             {b.pending.map((p) => (
               <li key={p.id} className="flex flex-wrap items-center gap-x-6 gap-y-3 py-4">
                 <div className="min-w-32">
-                  <p className="text-xs text-navy-900/50">{t("orderCode")}</p>
+                  <p className="text-xs text-navy-900/70">{t("orderCode")}</p>
                   <p className="font-mono font-semibold">{p.code}</p>
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold">{p.org}</p>
-                  <p className="text-sm text-navy-900/55">
+                  <p className="text-sm text-navy-900/70">
                     {tb(`kind.${p.kind}`)}{p.seats ? ` · ${tb("seatsCount", { count: p.seats })}` : ""} · {formatDate(p.created, locale)}
                   </p>
                 </div>
@@ -589,11 +591,11 @@ export function LivePayments({ live }: { live: LiveAdmin }) {
       <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
         <h2 className="mb-4 text-lg font-bold">{t("recentPayments")}</h2>
         {b.recent.length === 0 ? (
-          <p className="text-sm text-navy-900/60">{t("noRecent")}</p>
+          <p className="text-sm text-navy-900/70">{t("noRecent")}</p>
         ) : (
           <div className="-mx-6 overflow-x-auto px-6">
             <table className="w-full min-w-[640px] text-left text-sm">
-              <thead className="text-navy-900/55">
+              <thead className="text-navy-900/70">
                 <tr className="border-b border-navy-900/10">
                   <th className="py-3 font-medium">{t("requested")}</th>
                   <th className="py-3 font-medium">{t("customer")}</th>
@@ -624,7 +626,7 @@ export function LivePayments({ live }: { live: LiveAdmin }) {
         <input type="hidden" name="locale" value={locale} />
         <div className="sm:col-span-2">
           <h2 className="text-lg font-bold">{t("billingSettings")}</h2>
-          <p className="mt-1 text-sm text-navy-900/60">{t("billingSettingsBody")}</p>
+          <p className="mt-1 text-sm text-navy-900/70">{t("billingSettingsBody")}</p>
         </div>
         <F name="bank_name" label={tb("bankName")} />
         <F name="branch_name" label={tb("branchName")} />

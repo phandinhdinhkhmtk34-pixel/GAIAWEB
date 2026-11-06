@@ -97,7 +97,7 @@ export function HomeEditor({ initial }: { initial: SiteContent }) {
             {t("editMode")}
           </p>
           <label className="flex items-center gap-2 text-sm">
-            <span className="text-navy-900/60">{t("editingLanguage")}</span>
+            <span className="text-navy-900/70">{t("editingLanguage")}</span>
             <select
               value={locale}
               onChange={(e) => switchLanguage(e.target.value as Locale)}
@@ -118,7 +118,7 @@ export function HomeEditor({ initial }: { initial: SiteContent }) {
             {t("editLogo")}
           </button>
           <label className="flex items-center gap-2 text-sm">
-            <span className="text-navy-900/60">{t("cmsLogoSize")}</span>
+            <span className="text-navy-900/70">{t("cmsLogoSize")}</span>
             <input
               type="range"
               min={28}
@@ -143,7 +143,7 @@ export function HomeEditor({ initial }: { initial: SiteContent }) {
               e.target.value = "";
               if (!f) return;
               setBusy("logo");
-              const res = await uploadSiteImage(f);
+              const res = await uploadSiteImage(f, "logo");
               setBusy(null);
               if ("error" in res) return setMsg({ ok: false, text: t("videoUploadFailed") });
               set("logoUrl", res.url);
@@ -177,7 +177,7 @@ export function HomeEditor({ initial }: { initial: SiteContent }) {
               <X size={18} aria-hidden />
             </button>
           </div>
-          <p className="basis-full text-xs text-navy-900/55">{t("editHint")}</p>
+          <p className="basis-full text-xs text-navy-900/70">{t("editHint")}</p>
         </div>
       </div>
     </SiteProvider>

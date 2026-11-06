@@ -48,7 +48,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <p className="mx-auto max-w-7xl px-4 py-5 text-xs text-white/45 sm:px-6 lg:px-8">{t("home.footerCopy")}</p>
+        <p className="mx-auto max-w-7xl px-4 py-5 text-xs text-white/65 sm:px-6 lg:px-8">{t("home.footerCopy")}</p>
       </div>
     </footer>
   );

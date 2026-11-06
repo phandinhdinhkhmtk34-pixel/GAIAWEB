@@ -75,9 +75,9 @@ export default async function ReceiptPage({ params }: { params: Promise<{ locale
         </div>
 
         <dl className="mt-6 space-y-2 text-sm">
-          <div className="flex gap-4"><dt className="w-24 shrink-0 text-navy-900/60">但し</dt><dd>{what}</dd></div>
-          <div className="flex gap-4"><dt className="w-24 shrink-0 text-navy-900/60">内訳</dt><dd>10%対象 {yen(pay.amount_jpy)}（内消費税 {yen(tax)}）</dd></div>
-          <div className="flex gap-4"><dt className="w-24 shrink-0 text-navy-900/60">お支払方法</dt><dd>{pay.method === "card" ? "クレジットカード" : "銀行振込"}</dd></div>
+          <div className="flex gap-4"><dt className="w-24 shrink-0 text-navy-900/70">但し</dt><dd>{what}</dd></div>
+          <div className="flex gap-4"><dt className="w-24 shrink-0 text-navy-900/70">内訳</dt><dd>10%対象 {yen(pay.amount_jpy)}（内消費税 {yen(tax)}）</dd></div>
+          <div className="flex gap-4"><dt className="w-24 shrink-0 text-navy-900/70">お支払方法</dt><dd>{pay.method === "card" ? "クレジットカード" : "銀行振込"}</dd></div>
         </dl>
         <p className="mt-6 text-sm">上記正に領収いたしました。</p>
 
@@ -89,7 +89,7 @@ export default async function ReceiptPage({ params }: { params: Promise<{ locale
             {s?.invoice_reg_no && <p>登録番号 {s.invoice_reg_no}</p>}
           </div>
         </footer>
-        <p className="mt-10 text-xs text-navy-900/50">※ 本領収書は電子的に発行しているため、収入印紙の貼付はありません。</p>
+        <p className="mt-10 text-xs text-navy-900/70">※ 本領収書は電子的に発行しているため、収入印紙の貼付はありません。</p>
       </article>
     </main>
   );
