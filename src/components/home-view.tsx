@@ -9,7 +9,8 @@ import { HeroIntro } from "@/components/hero-intro";
 import { Pricing } from "@/components/pricing";
 import { VideoThumb } from "@/components/video-thumb";
 import { categories, videos, pick } from "@/lib/demo-data";
-import { pickText, type SiteContent } from "@/lib/site-content";
+import { Fragment } from "react";
+import { pickText, type HomeSectionId, type SiteContent } from "@/lib/site-content";
 
 const FEATURE_ICONS = [BookOpenCheck, Languages, LineChart, ShieldCheck];
 
@@ -23,24 +24,7 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
   const catMap = Object.fromEntries(categories.map((c) => [c.id, c]));
   const hasCharacters = content.characters.some((c) => c.imageUrl);
 
-  return (
-    <>
-      {!preview && <DemoBanner />}
-      <SiteHeader />
-      <main id="main">
-        {/* HERO */}
-        <section className="relative overflow-hidden">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-40 right-[-10%] h-[620px] w-[620px] rounded-full bg-[radial-gradient(circle,rgb(247_213_138/0.55),transparent_65%)]"
-          />
-          <div className="relative mx-auto grid max-w-7xl gap-12 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-[1fr_1.08fr] lg:items-center lg:gap-14 lg:px-8 lg:pt-20 lg:pb-28">
-            <HeroIntro title={pickText(content.heroTitle, locale) ?? undefined} lead={pickText(content.heroLead, locale) ?? undefined} />
-            <HeroArt />
-          </div>
-        </section>
-
-        {/* INTRO */}
+  const introSection = (
         <section className="border-y border-navy-900/8 bg-white">
           <div className="mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
             <div>
@@ -64,8 +48,8 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
             </dl>
           </div>
         </section>
-
-        {/* FEATURES */}
+  );
+  const featuresSection = (
         <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
           <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
             <h2 className="font-serif text-3xl leading-snug font-bold sm:text-4xl lg:sticky lg:top-28 lg:self-start">{t("featuresTitle")}</h2>
@@ -87,8 +71,8 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
             </ul>
           </div>
         </section>
-
-        {/* CHARACTERS — the cast learners meet in every video */}
+  );
+  const charactersSection = (
         <section className="border-t border-navy-900/8 bg-white">
           <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
             <div className="flex flex-wrap items-end justify-between gap-4">
@@ -118,8 +102,8 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
             </ul>
           </div>
         </section>
-
-        {/* FEATURED VIDEOS — a slice of the dark library, previewing where members go next */}
+  );
+  const featuredSection = (
         <section className="bg-navy-950 py-20 text-white lg:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-wrap items-end justify-between gap-4">
@@ -158,8 +142,8 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
             </ul>
           </div>
         </section>
-
-        {/* CATEGORIES */}
+  );
+  const categoriesSection = (
         <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
           <h2 className="font-serif text-3xl font-bold sm:text-4xl">{t("categoriesTitle")}</h2>
           <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -186,8 +170,8 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
             })}
           </ul>
         </section>
-
-        {/* PRICING */}
+  );
+  const pricingSection = (
         <section id="pricing" className="scroll-mt-20 border-t border-navy-900/8 bg-gradient-to-b from-white to-sky-50">
           <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
             <div className="max-w-2xl">
@@ -199,8 +183,67 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
             </div>
           </div>
         </section>
+  );
+  const byId: Record<HomeSectionId, React.ReactNode> = {
+    intro: introSection,
+    features: featuresSection,
+    characters: charactersSection,
+    featured: featuredSection,
+    categories: categoriesSection,
+    pricing: pricingSection,
+  };
+
+  return (
+    <>
+      {!preview && <DemoBanner />}
+      <SiteHeader />
+      <main id="main">
+                <Hero content={content} />
+        {content.sections
+          .filter((sec) => sec.visible)
+          .map((sec) => (
+            <Fragment key={sec.id}>{byId[sec.id]}</Fragment>
+          ))}
       </main>
       <SiteFooter />
     </>
+  );
+}
+
+/** Banner in one of three layouts chosen in Admin. "overlay" needs an uploaded image; without one it shows text-left. */
+function Hero({ content }: { content: SiteContent }) {
+  const locale = useLocale();
+  const title = pickText(content.heroTitle, locale) ?? undefined;
+  const lead = pickText(content.heroLead, locale) ?? undefined;
+  const layout = content.heroLayout === "overlay" && !content.heroImageUrl ? "textLeft" : content.heroLayout;
+  const align = content.heroAlign;
+
+  if (layout === "overlay") {
+    return (
+      <section className="relative isolate overflow-hidden bg-navy-950">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={content.heroImageUrl!} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover" />
+        <div aria-hidden className={align === "center" ? "absolute inset-0 -z-10 bg-navy-950/60" : "absolute inset-0 -z-10 bg-gradient-to-r from-navy-950/90 via-navy-950/60 to-navy-950/10"} />
+        <div className={`mx-auto flex min-h-[560px] max-w-7xl items-center px-4 py-20 sm:px-6 lg:min-h-[640px] lg:px-8 ${align === "center" ? "justify-center" : ""}`}>
+          <div className={align === "center" ? "max-w-3xl" : "max-w-2xl"}>
+            <HeroIntro title={title} lead={lead} align={align} onDark />
+          </div>
+        </div>
+      </section>
+    );
+  }
+  return (
+    <section className="relative overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-40 right-[-10%] h-[620px] w-[620px] rounded-full bg-[radial-gradient(circle,rgb(247_213_138/0.55),transparent_65%)]"
+      />
+      <div className={`relative mx-auto grid max-w-7xl gap-12 px-4 pt-14 pb-20 sm:px-6 lg:items-center lg:gap-14 lg:px-8 lg:pt-20 lg:pb-28 ${layout === "imageLeft" ? "lg:grid-cols-[1.08fr_1fr]" : "lg:grid-cols-[1fr_1.08fr]"}`}>
+        <div className={layout === "imageLeft" ? "lg:order-2" : ""}>
+          <HeroIntro title={title} lead={lead} align={align} />
+        </div>
+        <HeroArt />
+      </div>
+    </section>
   );
 }

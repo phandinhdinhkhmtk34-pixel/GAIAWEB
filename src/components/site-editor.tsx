@@ -3,9 +3,9 @@
 import { useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import clsx from "clsx";
-import { ImagePlus, Loader2, Trash2, ExternalLink, Save, Send } from "lucide-react";
+import { ImagePlus, Loader2, Trash2, ExternalLink, Save, Send, GripVertical, ArrowUp, ArrowDown, Eye, EyeOff } from "lucide-react";
 import { createSiteImageUploadAction, publishSiteAction, saveSiteDraftAction } from "@/lib/admin-actions";
-import type { L10nText, SiteContent } from "@/lib/site-content";
+import type { HeroLayout, HomeSection, L10nText, SiteContent } from "@/lib/site-content";
 
 type Lang = "ja" | "vi" | "en";
 const LANGS: { id: Lang; label: string }[] = [
@@ -249,6 +249,13 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
       </section>
 
       <section className={section}>
+        <h2 className="text-lg font-bold">{t("cmsLayout")}</h2>
+        <div className="mt-4">
+          <LayoutEditor c={c} update={update} />
+        </div>
+      </section>
+
+      <section className={section}>
         <h2 className="text-lg font-bold">{t("cmsHomeTexts")}</h2>
         <div className="mt-4 grid gap-4">
           {textArea("heroTitle", 2, t("fieldHeroTitle"))}
@@ -327,6 +334,116 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
           ))}
         </div>
       </section>
+    </div>
+  );
+}
+
+/** Small diagrams of the three banner layouts. */
+function LayoutIcon({ kind }: { kind: HeroLayout }) {
+  const text = <><rect x="6" y="12" width="26" height="4" rx="1" fill="currentColor" /><rect x="6" y="20" width="20" height="3" rx="1" fill="currentColor" opacity=".5" /><rect x="6" y="27" width="12" height="5" rx="1.5" fill="currentColor" opacity=".8" /></>;
+  return (
+    <svg viewBox="0 0 72 44" className="h-11 w-18" aria-hidden>
+      <rect x=".5" y=".5" width="71" height="43" rx="5" fill="none" stroke="currentColor" opacity=".3" />
+      {kind === "textLeft" && (<>{text}<rect x="40" y="8" width="26" height="28" rx="3" fill="currentColor" opacity=".35" /></>)}
+      {kind === "imageLeft" && (<><rect x="6" y="8" width="26" height="28" rx="3" fill="currentColor" opacity=".35" /><g transform="translate(34 0)">{text}</g></>)}
+      {kind === "overlay" && (<><rect x="2" y="2" width="68" height="40" rx="4" fill="currentColor" opacity=".25" />{text}</>)}
+    </svg>
+  );
+}
+
+export function LayoutEditor({ c, update }: { c: SiteContent; update: (patch: Partial<SiteContent>) => void }) {
+  const t = useTranslations("admin");
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const move = (from: number, to: number) => {
+    if (to < 0 || to >= c.sections.length || from === to) return;
+    const next = [...c.sections];
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item);
+    update({ sections: next });
+  };
+  const toggle = (i: number) => update({ sections: c.sections.map((x, j): HomeSection => (j === i ? { ...x, visible: !x.visible } : x)) });
+  const choice = (on: boolean) =>
+    clsx(
+      "flex cursor-pointer flex-col items-center gap-2 rounded-xl border p-3 text-xs font-semibold has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-sun-400",
+      on ? "border-navy-900 bg-navy-900 text-white" : "border-navy-900/15 text-navy-900/70 hover:border-navy-900/40",
+    );
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-2">
+      <div className="space-y-6">
+        <fieldset>
+          <legend className="text-sm font-medium">{t("cmsHeroLayout")}</legend>
+          <div className="mt-2 grid grid-cols-3 gap-2">
+            {(["textLeft", "imageLeft", "overlay"] as const).map((v) => (
+              <label key={v} className={choice(c.heroLayout === v)}>
+                <input type="radio" name="heroLayout" value={v} checked={c.heroLayout === v} onChange={() => update({ heroLayout: v })} className="sr-only" />
+                <LayoutIcon kind={v} />
+                {t(`cmsHeroLayout_${v}`)}
+              </label>
+            ))}
+          </div>
+          {c.heroLayout === "overlay" && !c.heroImageUrl && <p className="mt-2 text-xs text-sun-700">{t("cmsOverlayNeedsImage")}</p>}
+        </fieldset>
+        <fieldset>
+          <legend className="text-sm font-medium">{t("cmsHeroAlign")}</legend>
+          <div className="mt-2 flex gap-2">
+            {(["left", "center"] as const).map((v) => (
+              <label key={v} className={clsx("cursor-pointer rounded-lg border px-4 py-2 text-sm has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-sun-400", c.heroAlign === v ? "border-navy-900 bg-navy-900 text-white" : "border-navy-900/15")}>
+                <input type="radio" name="heroAlign" value={v} checked={c.heroAlign === v} onChange={() => update({ heroAlign: v })} className="sr-only" />
+                {t(`cmsHeroAlign_${v}`)}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      </div>
+
+      <div>
+        <p className="text-sm font-medium">{t("cmsSections")}</p>
+        <p className="mt-0.5 text-xs text-navy-900/55">{t("cmsSectionsHint")}</p>
+        <ol className="mt-3 space-y-2">
+          <li className="flex items-center gap-3 rounded-xl border border-dashed border-navy-900/20 px-3 py-2.5 text-sm text-navy-900/55">
+            <span className="w-5" />
+            {t("cmsSection_hero")} · {t("cmsAlwaysFirst")}
+          </li>
+          {c.sections.map((sec, i) => (
+            <li
+              key={sec.id}
+              draggable
+              onDragStart={() => setDragIndex(i)}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => {
+                if (dragIndex !== null) move(dragIndex, i);
+                setDragIndex(null);
+              }}
+              onDragEnd={() => setDragIndex(null)}
+              className={clsx(
+                "flex items-center gap-3 rounded-xl border bg-white px-3 py-2 text-sm",
+                dragIndex === i ? "border-sun-500 opacity-60" : "border-navy-900/15",
+                !sec.visible && "bg-sky-50 text-navy-900/45",
+              )}
+            >
+              <GripVertical size={18} className="shrink-0 cursor-grab text-navy-900/40" aria-hidden />
+              <span className="min-w-0 flex-1 font-medium">{t(`cmsSection_${sec.id}`)}</span>
+              <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={`${t("moveUp")}: ${t(`cmsSection_${sec.id}`)}`} className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-sky-100 disabled:opacity-30">
+                <ArrowUp size={16} aria-hidden />
+              </button>
+              <button type="button" onClick={() => move(i, i + 1)} disabled={i === c.sections.length - 1} aria-label={`${t("moveDown")}: ${t(`cmsSection_${sec.id}`)}`} className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-sky-100 disabled:opacity-30">
+                <ArrowDown size={16} aria-hidden />
+              </button>
+              <button
+                type="button"
+                onClick={() => toggle(i)}
+                aria-pressed={sec.visible}
+                aria-label={`${sec.visible ? t("hideSection") : t("showSection")}: ${t(`cmsSection_${sec.id}`)}`}
+                className={clsx("inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs font-semibold", sec.visible ? "text-leaf hover:bg-leaf/10" : "text-navy-900/50 hover:bg-sky-100")}
+              >
+                {sec.visible ? <Eye size={15} aria-hidden /> : <EyeOff size={15} aria-hidden />}
+                {sec.visible ? t("shown") : t("hidden")}
+              </button>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 }

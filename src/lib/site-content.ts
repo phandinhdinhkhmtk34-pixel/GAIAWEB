@@ -11,6 +11,16 @@ export interface SiteCharacter {
 }
 
 export type HeroFit = "full" | "crop";
+export type HeroLayout = "textLeft" | "imageLeft" | "overlay";
+export type TextAlign = "left" | "center";
+
+/** Homepage sections below the banner, in display order. The banner always comes first. */
+export const HOME_SECTIONS = ["intro", "features", "characters", "featured", "categories", "pricing"] as const;
+export type HomeSectionId = (typeof HOME_SECTIONS)[number];
+export interface HomeSection {
+  id: HomeSectionId;
+  visible: boolean;
+}
 export type HeroFocus = "left" | "center" | "right";
 
 export interface SiteContent {
@@ -21,6 +31,9 @@ export interface SiteContent {
   /** "full" shows the whole image at its own proportions; "crop" fills the frame and trims the edges. */
   heroFit: HeroFit;
   heroFocus: HeroFocus;
+  heroLayout: HeroLayout;
+  heroAlign: TextAlign;
+  sections: HomeSection[];
   heroTitle: L10nText;
   heroLead: L10nText;
   introTitle: L10nText;
@@ -39,6 +52,9 @@ export const emptySiteContent = (): SiteContent => ({
   heroImageUrl: null,
   heroFit: "full",
   heroFocus: "center",
+  heroLayout: "textLeft",
+  heroAlign: "left",
+  sections: HOME_SECTIONS.map((id) => ({ id, visible: true })),
   heroTitle: {},
   heroLead: {},
   introTitle: {},
@@ -68,6 +84,9 @@ export function normalizeSiteContent(raw: unknown): SiteContent {
     heroImageUrl: url(r.heroImageUrl),
     heroFit: r.heroFit === "crop" ? "crop" : "full",
     heroFocus: r.heroFocus === "left" || r.heroFocus === "right" ? r.heroFocus : "center",
+    heroLayout: r.heroLayout === "imageLeft" || r.heroLayout === "overlay" ? r.heroLayout : "textLeft",
+    heroAlign: r.heroAlign === "center" ? "center" : "left",
+    sections: normalizeSections(r.sections),
     heroTitle: text(r.heroTitle),
     heroLead: text(r.heroLead),
     introTitle: text(r.introTitle),
@@ -96,4 +115,19 @@ export function normalizeSiteContent(raw: unknown): SiteContent {
 export function pickText(t: L10nText, locale: string): string | null {
   const v = (t as Record<string, string | undefined>)[locale];
   return v && v.trim() ? v : null;
+}
+
+/** Keep every known section exactly once, in the saved order, adding any new ones at the end. */
+function normalizeSections(raw: unknown): HomeSection[] {
+  const seen = new Set<string>();
+  const out: HomeSection[] = [];
+  for (const item of Array.isArray(raw) ? raw : []) {
+    const id = (item as { id?: unknown })?.id;
+    if (typeof id === "string" && (HOME_SECTIONS as readonly string[]).includes(id) && !seen.has(id)) {
+      seen.add(id);
+      out.push({ id: id as HomeSectionId, visible: (item as { visible?: unknown }).visible !== false });
+    }
+  }
+  for (const id of HOME_SECTIONS) if (!seen.has(id)) out.push({ id, visible: true });
+  return out;
 }

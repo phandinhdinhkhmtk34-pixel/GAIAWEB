@@ -3,10 +3,22 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { ArrowDownRight, PlayCircle } from "lucide-react";
+import clsx from "clsx";
 import { Link } from "@/i18n/navigation";
 
 /** The page's single orchestrated entrance: headline, lead and actions rise in sequence. */
-export function HeroIntro({ title, lead }: { title?: string; lead?: string }) {
+export function HeroIntro({
+  title,
+  lead,
+  align = "left",
+  onDark = false,
+}: {
+  title?: string;
+  lead?: string;
+  align?: "left" | "center";
+  onDark?: boolean;
+}) {
+  const center = align === "center";
   const t = useTranslations("home");
   const reduce = useReducedMotion();
   const item = (i: number) => ({
@@ -16,27 +28,30 @@ export function HeroIntro({ title, lead }: { title?: string; lead?: string }) {
   });
 
   return (
-    <div>
+    <div className={clsx(center && "text-center")}>
       <motion.h1
         {...item(0)}
-        className="font-serif text-[2.35rem] leading-[1.25] font-bold text-navy-900 sm:text-5xl lg:text-[3.6rem] lg:leading-[1.18]"
+        className={clsx(
+          "font-serif text-[2.35rem] leading-[1.25] font-bold sm:text-5xl lg:text-[3.6rem] lg:leading-[1.18]",
+          onDark ? "text-white" : "text-navy-900",
+        )}
       >
         {title ?? t("heroTitle")}
       </motion.h1>
-      <motion.p {...item(1)} className="mt-6 max-w-[34rem] text-lg leading-relaxed text-navy-900/75">
+      <motion.p {...item(1)} className={clsx("mt-6 max-w-[34rem] text-lg leading-relaxed", onDark ? "text-white/85" : "text-navy-900/75", center && "mx-auto")}>
         {lead ?? t("heroLead")}
       </motion.p>
-      <motion.div {...item(2)} className="mt-9 flex flex-wrap items-center gap-4">
+      <motion.div {...item(2)} className={clsx("mt-9 flex flex-wrap items-center gap-4", center && "justify-center")}>
         <Link href="/#pricing" className="btn-3d text-base">
           {t("heroPrimary")}
           <ArrowDownRight size={18} aria-hidden />
         </Link>
-        <Link href="/library" className="btn-ghost text-navy-900 hover:bg-navy-900 hover:text-white">
+        <Link href="/library" className={clsx("btn-ghost", onDark ? "text-white hover:bg-white hover:text-navy-900" : "text-navy-900 hover:bg-navy-900 hover:text-white")}>
           <PlayCircle size={19} aria-hidden />
           {t("heroSecondary")}
         </Link>
       </motion.div>
-      <motion.p {...item(3)} className="mt-5 text-sm text-navy-900/60">
+      <motion.p {...item(3)} className={clsx("mt-5 text-sm", onDark ? "text-white/70" : "text-navy-900/60")}>
         {t("heroNote")}
       </motion.p>
     </div>
