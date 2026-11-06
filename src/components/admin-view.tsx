@@ -14,7 +14,7 @@ import { DEFAULT_PRICES, quote } from "@/lib/pricing";
 import { formatDate, formatDateTime, formatNumber, formatYen } from "@/lib/format";
 import { DemoTag } from "./demo-banner";
 import { SiteEditor } from "./site-editor";
-import { LiveAdmins, LivePayments, PlanControls, SeatsEditor, VideoManager, type LiveAdmin } from "./admin-live";
+import { LiveAdmins, LivePayments, OrgControls, PlanControls, SeatsEditor, VideoManager, type LiveAdmin } from "./admin-live";
 
 export type { LiveAdmin };
 
@@ -302,13 +302,17 @@ function Members({ live }: { live?: LiveAdmin }) {
               <th className="py-3 text-right font-medium">{td("seats")}</th>
               <th className="py-3 font-medium">{td("status")}</th>
               {live && live.role !== "editor" && <th className="py-3 text-right font-medium">{t("planColumn")}</th>}
+              {live && live.role === "super" && <th className="py-3 text-right font-medium">{t("accountColumn")}</th>}
               <th className="py-3 font-medium">{td("date")}</th>
             </tr>
           </thead>
           <tbody>
             {(live ? live.members : adminMembers).map((m, i) => (
               <tr key={`${m.name}-${i}`} className="border-b border-navy-900/6 last:border-0">
-                <td className="py-3.5 font-semibold">{m.name}</td>
+                <td className="py-3.5 font-semibold">
+                  {m.name}
+                  {live?.members[i]?.suspended && <span className="ml-2 rounded-full bg-seal/10 px-2 py-0.5 text-xs font-semibold text-seal">{t("suspended")}</span>}
+                </td>
                 <td className="py-3.5">{t(m.type === "company" ? "company" : "individual")}</td>
                 <td className="py-3.5 text-right tabular-nums">
                   {live && live.role !== "editor" ? <SeatsEditor orgId={live.members[i].id} seats={m.seats} used={live.members[i].used} /> : m.seats}
@@ -324,6 +328,11 @@ function Members({ live }: { live?: LiveAdmin }) {
                 {live && live.role !== "editor" && (
                   <td className="py-3.5">
                     <PlanControls orgId={live.members[i].id} status={live.members[i].status} planEnd={live.members[i].planEnd} />
+                  </td>
+                )}
+                {live && live.role === "super" && (
+                  <td className="py-3.5">
+                    <OrgControls orgId={live.members[i].id} suspended={live.members[i].suspended} />
                   </td>
                 )}
               </tr>

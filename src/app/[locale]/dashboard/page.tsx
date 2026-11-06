@@ -10,6 +10,7 @@ import { getViewer } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { loadCatalog, loadMemberLearning } from "@/lib/videos";
+import { createAdminClient, hasServiceRole } from "@/lib/supabase/admin";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -52,6 +53,16 @@ async function loadLive(locale: string): Promise<LiveMember> {
     supabase.from("payments").select("order_code, method, amount_jpy, status, created_at, receipt_number").order("created_at", { ascending: false }).limit(24),
   ]);
   const byId = new Map(catalog.videos.map((v) => [v.id, v]));
+  // Invited people who haven't set a password yet (owners only; read with the service role).
+  const pendingIds = new Set<string>();
+  if (isOwner && hasServiceRole) {
+    const admin = createAdminClient();
+    const employees = (people ?? []).filter((p) => p.member_role === "employee");
+    const users = await Promise.all(employees.map((p) => admin.auth.admin.getUserById(p.id)));
+    users.forEach((u, i) => {
+      if (!u.data.user?.email_confirmed_at) pendingIds.add(employees[i].id);
+    });
+  }
   const recent = [...learning.progress].sort((a, b) => b.updated_at.localeCompare(a.updated_at));
   const pct = (videoId: string, seconds: number, done: boolean) => {
     const d = byId.get(videoId)?.durationSeconds ?? 0;
@@ -71,6 +82,7 @@ async function loadLive(locale: string): Promise<LiveMember> {
       email: p.email ?? "",
       role: p.member_role,
       joined: p.created_at,
+      pending: pendingIds.has(p.id),
     })),
     invitations: (invitations ?? []).map((i) => ({ email: i.email, expires: i.expires_at })),
     plan: sub ? { status: sub.status as "active" | "cancelled", period: sub.period as "monthly" | "annual", end: sub.current_period_end as string, seats: sub.seats } : null,

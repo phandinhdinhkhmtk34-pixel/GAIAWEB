@@ -5,7 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import clsx from "clsx";
 import { Mail, CheckCircle2, Lock, Clock, PlayCircle, Heart, Landmark, CreditCard } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { inviteEmployeeAction, updateProfileAction, type ActionState } from "@/lib/member-actions";
+import { inviteEmployeeAction, removeEmployeeAction, updateProfileAction, type ActionState } from "@/lib/member-actions";
+import { useState } from "react";
 import { localeNames, locales } from "@/i18n/routing";
 import { formatDate, formatYen } from "@/lib/format";
 
@@ -17,7 +18,7 @@ export interface LiveMember {
   locale: string;
   memberRole: "owner" | "employee";
   org: { name: string; kind: "individual" | "company"; seatLimit: number };
-  people: { id: string; name: string; email: string; role: "owner" | "employee"; joined: string }[];
+  people: { id: string; name: string; email: string; role: "owner" | "employee"; joined: string; pending: boolean }[];
   invitations: { email: string; expires: string }[];
   plan: { status: "active" | "cancelled"; period: "monthly" | "annual"; end: string; seats: number } | null;
   learning: {
@@ -95,7 +96,10 @@ export function LiveCompany({ live }: { live: LiveMember }) {
                 </p>
                 <p className="truncate text-sm text-navy-900/70">{p.email}</p>
               </div>
-              <span className="shrink-0 text-xs text-navy-900/70">{p.role === "owner" ? t("roleOwner") : t("roleEmployee")}</span>
+              <span className={clsx("shrink-0 rounded-full px-2 py-0.5 text-xs", p.pending ? "bg-sun-200/70 text-sun-700" : "text-navy-900/70")}>
+                {p.pending ? t("invited") : p.role === "owner" ? t("roleOwner") : t("roleEmployee")}
+              </span>
+              {p.role === "employee" && <RemoveEmployee userId={p.id} name={p.name} pending={p.pending} />}
             </li>
           ))}
           {live.invitations.map((i) => (
@@ -332,5 +336,28 @@ export function LiveBilling({ live }: { live: LiveMember }) {
         <p className="mt-4 text-xs text-navy-900/70">{t("receiptHow")}</p>
       </section>
     </div>
+  );
+}
+
+/** Two-step remove: first press asks, second press removes (no browser confirm dialog). */
+function RemoveEmployee({ userId, name, pending }: { userId: string; name: string; pending: boolean }) {
+  const t = useTranslations("dashboard");
+  const locale = useLocale();
+  const [armed, setArmed] = useState(false);
+  if (!armed) {
+    return (
+      <button type="button" onClick={() => setArmed(true)} className="min-h-10 shrink-0 rounded-lg px-3 text-xs font-semibold text-seal hover:bg-seal/5">
+        {pending ? t("cancelInvite") : t("removeEmployee")}
+        <span className="sr-only">: {name}</span>
+      </button>
+    );
+  }
+  return (
+    <form action={removeEmployeeAction} className="flex shrink-0 items-center gap-1">
+      <input type="hidden" name="locale" value={locale} />
+      <input type="hidden" name="userId" value={userId} />
+      <button type="submit" className="min-h-10 rounded-lg bg-seal px-3 text-xs font-semibold text-white">{t("removeConfirm")}</button>
+      <button type="button" onClick={() => setArmed(false)} className="min-h-10 rounded-lg px-2 text-xs">{t("keep")}</button>
+    </form>
   );
 }

@@ -16,6 +16,8 @@ import {
   saveVideoAction,
   setSeatsAction,
   setThumbnailAction,
+  setOrgSuspendedAction,
+  deleteOrgAction,
   setVideoStateAction,
   type AdminActionState,
 } from "@/lib/admin-actions";
@@ -38,6 +40,7 @@ export interface LiveAdmin {
     since: string;
     planEnd: string | null;
     planPeriod: "monthly" | "annual" | null;
+    suspended: boolean;
   }[];
   videos: { id: string; title: string; category: string; state: "draft" | "published"; minutes: number; created: string; viewers: number; thumbnailUrl: string | null }[];
   categories: { id: string; name: string }[];
@@ -645,6 +648,43 @@ export function LivePayments({ live }: { live: LiveAdmin }) {
           </p>
         </div>
       </form>
+    </div>
+  );
+}
+
+/** Suspend / resume and delete controls for one organization (Super admin). */
+export function OrgControls({ orgId, suspended }: { orgId: string; suspended: boolean }) {
+  const t = useTranslations("admin");
+  const locale = useLocale();
+  const [armed, setArmed] = useState(false);
+  const [state, del, pending] = useActionState<AdminActionState, FormData>(deleteOrgAction, undefined);
+  return (
+    <div className="flex flex-wrap items-center justify-end gap-1.5">
+      <form action={setOrgSuspendedAction}>
+        <input type="hidden" name="locale" value={locale} />
+        <input type="hidden" name="orgId" value={orgId} />
+        <input type="hidden" name="on" value={suspended ? "0" : "1"} />
+        <button type="submit" className={clsx("min-h-9 rounded-lg border px-2.5 text-xs font-semibold", suspended ? "border-leaf/40 text-leaf hover:bg-leaf/5" : "border-navy-900/15 hover:bg-sky-100")}>
+          {suspended ? t("resumeOrg") : t("suspendOrg")}
+        </button>
+      </form>
+      {!armed ? (
+        <button type="button" onClick={() => setArmed(true)} className="min-h-9 rounded-lg px-2.5 text-xs font-semibold text-seal hover:bg-seal/5">
+          {t("delete")}
+        </button>
+      ) : (
+        <form action={del} className="flex items-center gap-1">
+          <input type="hidden" name="locale" value={locale} />
+          <input type="hidden" name="orgId" value={orgId} />
+          <button type="submit" disabled={pending} className="min-h-9 rounded-lg bg-seal px-2.5 text-xs font-semibold text-white">{t("deleteConfirm")}</button>
+          <button type="button" onClick={() => setArmed(false)} className="min-h-9 rounded-lg px-2 text-xs">{t("cancel")}</button>
+        </form>
+      )}
+      {state?.error && (
+        <span role="alert" className="basis-full text-right text-xs text-seal">
+          {state.error === "hasPayments" ? t("deleteHasPayments") : t(ERR[state.error] ?? "errGeneric")}
+        </span>
+      )}
     </div>
   );
 }

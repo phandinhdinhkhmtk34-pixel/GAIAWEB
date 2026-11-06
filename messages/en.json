@@ -230,7 +230,11 @@
     "receiptHow": "Open a receipt with “View”, then print it or save it as PDF.",
     "seatsHowToLive": "To add employees, buy extra accounts (¥3,000 per person/month, tax incl.).",
     "addSeatsLink": "Add accounts",
-    "checkoutSuccess": "Payment received. Your plan can take a few seconds to update; reload the page if it hasn't changed."
+    "checkoutSuccess": "Payment received. Your plan can take a few seconds to update; reload the page if it hasn't changed.",
+    "removeEmployee": "Remove",
+    "cancelInvite": "Cancel invitation",
+    "removeConfirm": "Remove",
+    "keep": "Keep"
   },
   "admin": {
     "title": "Admin center",
@@ -450,7 +454,12 @@
     "editExit": "Exit edit mode",
     "editHint": "Click any text with a dashed outline to edit it in place. Use “Change image” for images. Then press Save draft or Publish.",
     "openEditMode": "Open edit mode",
-    "legalPreview": "Preview (as shown on the page)"
+    "legalPreview": "Preview (as shown on the page)",
+    "accountColumn": "Account",
+    "suspendOrg": "Suspend",
+    "resumeOrg": "Resume",
+    "suspended": "Suspended",
+    "deleteHasPayments": "Can't delete: it has payment records, which must be kept. Use Suspend instead."
   },
   "auth": {
     "notConfigured": "Sign-in is not set up yet (showing the prototype).",

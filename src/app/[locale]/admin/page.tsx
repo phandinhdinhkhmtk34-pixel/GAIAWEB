@@ -31,6 +31,10 @@ const ACTION_LABEL: Record<string, string> = {
   delete_video: "動画を削除 / Delete video",
   bank_order: "振込注文を作成 / Bank transfer order",
   publish_site: "サイトを公開 / Publish site content",
+  remove_employee: "社員を削除 / Remove employee",
+  suspend_org: "利用停止 / Suspend",
+  resume_org: "利用再開 / Resume",
+  delete_org: "アカウント削除 / Delete account",
   confirm_transfer: "入金を確認 / Confirm transfer",
   reject_transfer: "振込を差し戻し / Reject transfer",
   billing_settings: "振込先・領収書設定を変更 / Billing settings",
@@ -71,7 +75,7 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
   const [users, companies, orgs, admins, pendingAdmins, audit, seatsUsed] = await Promise.all([
     db.from("profiles").select("id", { count: "exact", head: true }),
     db.from("organizations").select("id", { count: "exact", head: true }).eq("kind", "company"),
-    db.from("organizations").select("id, name, kind, seat_limit, created_at").order("created_at", { ascending: false }).limit(200),
+    db.from("organizations").select("id, name, kind, seat_limit, created_at, suspended_at").order("created_at", { ascending: false }).limit(200),
     isSuper ? db.from("admins").select("user_id, role") : Promise.resolve({ data: [] }),
     isSuper ? db.from("admin_bootstrap").select("email, role") : Promise.resolve({ data: [] }),
     viewer.adminRole !== "editor"
@@ -153,6 +157,7 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
       status: planByOrg.get(o.id)?.status ?? ("none" as const),
       planEnd: planByOrg.get(o.id)?.current_period_end ?? null,
       planPeriod: planByOrg.get(o.id)?.period ?? null,
+      suspended: Boolean(o.suspended_at),
       since: o.created_at,
     })),
     admins: [

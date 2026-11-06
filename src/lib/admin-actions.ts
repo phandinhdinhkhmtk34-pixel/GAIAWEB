@@ -364,3 +364,48 @@ export async function publishSiteAction(input: { content: unknown; locale: strin
   revalidatePath("/", "layout");
   return { ok: true as const };
 }
+
+/* --------------------------------------------------------- account controls */
+
+/** Suspend (or resume) every account in an organization: sign-in and playback stop at once. */
+export async function setOrgSuspendedAction(fd: FormData) {
+  const me = await requireSuper();
+  if (!me) return;
+  const orgId = String(fd.get("orgId") ?? "");
+  const on = fd.get("on") === "1";
+  const db = createAdminClient();
+  const { data: people } = await db.from("profiles").select("id").eq("org_id", orgId);
+  if ((people ?? []).some((p) => p.id === me.id)) return; // never suspend yourself
+  await db.from("organizations").update({ suspended_at: on ? new Date().toISOString() : null }).eq("id", orgId);
+  for (const p of people ?? []) await db.auth.admin.updateUserById(p.id, { ban_duration: on ? "876000h" : "none" });
+  const { data: org } = await db.from("organizations").select("name").eq("id", orgId).maybeSingle();
+  await db.from("audit_log").insert({ actor_id: me.id, action: on ? "suspend_org" : "resume_org", target: org?.name ?? orgId });
+  revalidatePath(`/${localeOf(fd)}/admin`);
+}
+
+/** Delete an organization and its accounts — only if it never paid (payment records must be kept). */
+export async function deleteOrgAction(_: AdminActionState, fd: FormData): Promise<AdminActionState> {
+  const me = await requireSuper();
+  if (!me) return { error: "forbidden" };
+  const orgId = String(fd.get("orgId") ?? "");
+  const db = createAdminClient();
+  const { data: subs } = await db.from("subscriptions").select("id").eq("org_id", orgId);
+  const subIds = (subs ?? []).map((s) => s.id);
+  if (subIds.length) {
+    const { count } = await db.from("payments").select("id", { count: "exact", head: true }).in("subscription_id", subIds).eq("status", "verified");
+    if ((count ?? 0) > 0) return { error: "hasPayments" };
+  }
+  const { data: people } = await db.from("profiles").select("id").eq("org_id", orgId);
+  if ((people ?? []).some((p) => p.id === me.id)) return { error: "self" };
+  const { data: org } = await db.from("organizations").select("name").eq("id", orgId).maybeSingle();
+  for (const p of people ?? []) await db.auth.admin.deleteUser(p.id);
+  if (subIds.length) {
+    await db.from("payments").delete().in("subscription_id", subIds);
+    await db.from("subscriptions").delete().in("id", subIds);
+  }
+  await db.from("invitations").delete().eq("org_id", orgId);
+  await db.from("organizations").delete().eq("id", orgId);
+  await db.from("audit_log").insert({ actor_id: me.id, action: "delete_org", target: org?.name ?? orgId });
+  revalidatePath(`/${localeOf(fd)}/admin`);
+  return { ok: "deleted" };
+}

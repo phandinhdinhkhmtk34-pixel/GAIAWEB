@@ -74,3 +74,19 @@ export async function updateProfileAction(_: ActionState, fd: FormData): Promise
   revalidatePath(`/${localeOf(fd)}/dashboard`);
   return { ok: "profileSaved" };
 }
+
+/** Company manager removes an employee (or cancels an invitation). The seat becomes free at once. */
+export async function removeEmployeeAction(fd: FormData) {
+  const viewer = await getViewer();
+  if (!viewer || viewer.memberRole !== "owner" || !hasServiceRole) return;
+  const userId = String(fd.get("userId") ?? "");
+  if (!userId || userId === viewer.id) return;
+  const admin = createAdminClient();
+  const { data: target } = await admin.from("profiles").select("id, org_id, member_role, email").eq("id", userId).maybeSingle();
+  if (!target || target.org_id !== viewer.org.id || target.member_role !== "employee") return;
+  await admin.from("invitations").delete().eq("org_id", viewer.org.id).eq("email", target.email);
+  // Deleting the sign-in also removes the profile, progress and favorites (foreign keys cascade).
+  await admin.auth.admin.deleteUser(userId);
+  await admin.from("audit_log").insert({ actor_id: viewer.id, action: "remove_employee", target: target.email, details: { org_id: viewer.org.id } });
+  revalidatePath(`/${localeOf(fd)}/dashboard`);
+}
