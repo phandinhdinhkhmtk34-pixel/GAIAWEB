@@ -50,6 +50,8 @@ export const LEGAL_SLUGS = ["tokushoho", "privacy", "terms"] as const;
 export type LegalSlug = (typeof LEGAL_SLUGS)[number];
 
 export const DEFAULT_CHARACTER_NAMES = ["Hikari", "Sora", "Ren", "Aoi", "Kaito", "Mei", "Daichi", "Yui"];
+/** Portraits cut from the GAIA key visual (public/characters), used until Admin uploads its own. */
+export const DEFAULT_CHARACTER_IMAGES = DEFAULT_CHARACTER_NAMES.map((_, i) => `/characters/c${i + 1}.webp`);
 
 export const emptySiteContent = (): SiteContent => ({
   logoUrl: null,
@@ -65,7 +67,7 @@ export const emptySiteContent = (): SiteContent => ({
   introTitle: {},
   introBody: {},
   footerAbout: {},
-  characters: DEFAULT_CHARACTER_NAMES.map((name) => ({ name, imageUrl: null, role: {} })),
+  characters: DEFAULT_CHARACTER_NAMES.map((name, i) => ({ name, imageUrl: DEFAULT_CHARACTER_IMAGES[i], role: {} })),
   company: { name: "", address: "", email: "", phone: "" },
   prices: { baseMonthly: 30000, seatMonthly: 3000, baseAnnual: 300000, seatAnnual: 30000 },
   legal: { tokushoho: "", privacy: "", terms: "" },
@@ -100,7 +102,7 @@ export function normalizeSiteContent(raw: unknown): SiteContent {
     footerAbout: text(r.footerAbout),
     characters: d.characters.map((def, i) => {
       const c = (chars[i] ?? {}) as Partial<SiteCharacter>;
-      return { name: str(c.name) || def.name, imageUrl: url(c.imageUrl), role: text(c.role) };
+      return { name: str(c.name) || def.name, imageUrl: url(c.imageUrl) ?? def.imageUrl, role: text(c.role) };
     }),
     company: {
       name: str(r.company?.name),

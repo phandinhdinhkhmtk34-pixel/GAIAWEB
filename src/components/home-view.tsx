@@ -13,20 +13,39 @@ import { VideoThumb } from "@/components/video-thumb";
 import { categories, videos, pick } from "@/lib/demo-data";
 import { Fragment } from "react";
 import { pickText, type HomeSectionId, type SiteContent } from "@/lib/site-content";
+import type { HomeCatalog } from "@/lib/site-content-server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { Editable, EditableImage, useEdit } from "./edit-context";
 import { AdminEditButton } from "./admin-edit-button";
 
 const FEATURE_ICONS = [BookOpenCheck, Languages, LineChart, ShieldCheck];
 
 /** The homepage, rendered from site content (published for visitors, draft in the admin preview). */
-export function HomeView({ content, preview = false }: { content: SiteContent; preview?: boolean }) {
+export function HomeView({ content, catalog, preview = false }: { content: SiteContent; catalog?: HomeCatalog | null; preview?: boolean }) {
   const t = useTranslations("home");
   const tc = useTranslations("common");
   const locale = useLocale();
   const features = t.raw("features") as { title: string; body: string }[];
-  const featured = videos.filter((v) => v.isNew || v.progress === undefined).slice(0, 4);
   const catMap = Object.fromEntries(categories.map((c) => [c.id, c]));
-  const hasCharacters = content.characters.some((c) => c.imageUrl);
+  // Real catalogue when the site is connected; the demo set only in prototype mode.
+  const live = isSupabaseConfigured;
+  const featured = catalog
+    ? catalog.videos.slice(0, 4)
+    : live
+      ? []
+      : videos.filter((v) => v.isNew || v.progress === undefined).slice(0, 4).map((v) => ({
+          id: v.id,
+          title: pick(v.title, locale),
+          categorySlug: v.category,
+          categoryName: pick(catMap[v.category]!.name, locale),
+          minutes: v.minutes,
+          character: v.character,
+          thumbnailUrl: null as string | null,
+        }));
+  const categoryList = catalog
+    ? catalog.categories
+    : categories.map((c) => ({ slug: c.id, name: pick(c.name, locale), count: videos.filter((v) => v.category === c.id).length }));
+  const avgMinutes = catalog ? catalog.avgMinutes : 10;
   const editing = Boolean(useEdit());
   const ta = useTranslations("admin");
 
@@ -40,9 +59,9 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
             <div className="space-y-4 self-end">
             <dl className="grid grid-cols-3 gap-4">
               {[
-                { v: String(categories.length), l: t("introStat1") },
+                { v: String(categoryList.length), l: t("introStat1") },
                 { v: "7", l: t("introStat2") },
-                { v: tc("minutes", { count: 10 }), l: t("introStat3") },
+                ...(avgMinutes ? [{ v: tc("minutes", { count: avgMinutes }), l: t("introStat3") }] : []),
               ].map((s) => (
                 <div key={s.l} className="border-l-2 border-sun-400 pl-4">
                   <dt className="text-sm text-navy-900/70">{s.l}</dt>
@@ -50,7 +69,7 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
                 </div>
               ))}
             </dl>
-            <DemoTag />
+            {!live && <DemoTag />}
             </div>
           </div>
         </section>
@@ -83,7 +102,6 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
           <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <h2 className="font-serif text-3xl font-bold sm:text-4xl">{t("charactersTitle")}</h2>
-              {!hasCharacters && <p className="text-sm text-navy-900/70">{tc("placeholderArt")}</p>}
             </div>
             <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {content.characters.map((c, i) => (
@@ -128,11 +146,12 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
                 <li key={v.id}>
                   <Link href={`/library?v=${v.id}`} className="group block">
                     <div className="relative aspect-video overflow-hidden rounded-2xl ring-1 ring-white/10">
-                      <VideoThumb
-                        hue={catMap[v.category]?.hue ?? 220}
-                        character={v.character}
-                        className="transition-transform duration-500 group-hover:scale-[1.04]"
-                      />
+                      {v.thumbnailUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={v.thumbnailUrl} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+                      ) : (
+                        <VideoThumb hue={catMap[v.categorySlug]?.hue ?? 220} character={v.character} className="transition-transform duration-500 group-hover:scale-[1.04]" />
+                      )}
                       {(
                         <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-navy-950/75 px-2.5 py-1 text-xs backdrop-blur">
                           <Lock size={12} aria-hidden />
@@ -140,8 +159,8 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
                         </span>
                       )}
                     </div>
-                    <p className="mt-4 text-sm text-sun-300">{pick(catMap[v.category]!.name, locale)}</p>
-                    <h3 className="mt-1 text-lg font-semibold group-hover:underline">{pick(v.title, locale)}</h3>
+                    <p className="mt-4 text-sm text-sun-300">{v.categoryName}</p>
+                    <h3 className="mt-1 text-lg font-semibold group-hover:underline">{v.title}</h3>
                     <p className="mt-1 flex items-center gap-1.5 text-sm text-white/65">
                       <Clock size={14} aria-hidden />
                       {tc("minutes", { count: v.minutes })}
@@ -157,22 +176,21 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
         <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
           <h2 className="font-serif text-3xl font-bold sm:text-4xl">{t("categoriesTitle")}</h2>
           <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {categories.map((c) => {
-              const count = videos.filter((v) => v.category === c.id).length;
+            {categoryList.map((c) => {
               return (
-                <li key={c.id}>
+                <li key={c.slug}>
                   <Link
-                    href={`/library?c=${c.id}`}
+                    href={`/library?c=${c.slug}`}
                     className="group flex min-h-24 items-center justify-between gap-3 rounded-2xl border border-navy-900/10 bg-white px-5 py-5 transition-colors hover:border-navy-900/30"
                   >
                     <span>
-                      <span className="block text-lg font-bold">{pick(c.name, locale)}</span>
-                      <span className="text-sm text-navy-900/70">{count}</span>
+                      <span className="block text-lg font-bold">{c.name}</span>
+                      <span className="text-sm text-navy-900/70">{t("videoCount", { count: c.count })}</span>
                     </span>
                     <span
                       aria-hidden
                       className="h-10 w-10 shrink-0 rounded-full"
-                      style={{ background: `linear-gradient(135deg, hsl(${c.hue} 55% 30%), #F0BC55)` }}
+                      style={{ background: `linear-gradient(135deg, hsl(${catMap[c.slug]?.hue ?? 220} 55% 30%), #F0BC55)` }}
                     />
                   </Link>
                 </li>
@@ -198,14 +216,14 @@ export function HomeView({ content, preview = false }: { content: SiteContent; p
     intro: introSection,
     features: featuresSection,
     characters: charactersSection,
-    featured: featuredSection,
+    featured: featured.length ? featuredSection : null,
     categories: categoriesSection,
     pricing: pricingSection,
   };
 
   return (
     <>
-      {!preview && <DemoBanner />}
+      {!preview && !live && <DemoBanner />}
       {!preview && <AdminEditButton />}
       <SiteHeader />
       <main id="main">

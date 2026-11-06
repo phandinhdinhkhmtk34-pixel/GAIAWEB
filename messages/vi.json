@@ -100,7 +100,8 @@
     "footerCompanyName": "Công ty GAIA (demo)",
     "footerAddress": "Tokyo, Nhật Bản (địa chỉ cài trong Admin)",
     "footerCopy": "© 2026 GAIA. All rights reserved.",
-    "charactersTitle": "8 nhân vật"
+    "charactersTitle": "8 nhân vật",
+    "videoCount": "{count} video"
   },
   "library": {
     "title": "Thư viện video",

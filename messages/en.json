@@ -100,7 +100,8 @@
     "footerCompanyName": "GAIA Co., Ltd. (demo)",
     "footerAddress": "Tokyo, Japan (set address in Admin)",
     "footerCopy": "© 2026 GAIA. All rights reserved.",
-    "charactersTitle": "Meet the eight characters"
+    "charactersTitle": "Meet the eight characters",
+    "videoCount": "{count, plural, one {# video} other {# videos}}"
   },
   "library": {
     "title": "Video library",

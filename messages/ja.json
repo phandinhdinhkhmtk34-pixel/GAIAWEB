@@ -100,7 +100,8 @@
     "footerCompanyName": "株式会社 GAIA（デモ表記）",
     "footerAddress": "東京都（住所は管理画面で設定）",
     "footerCopy": "© 2026 GAIA. All rights reserved.",
-    "charactersTitle": "8 人のキャラクター"
+    "charactersTitle": "8 人のキャラクター",
+    "videoCount": "{count} 本の動画"
   },
   "library": {
     "title": "動画ライブラリ",
