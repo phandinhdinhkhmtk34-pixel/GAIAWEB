@@ -1,4 +1,5 @@
--- Security fixes found in the pre-launch review. Run once in Supabase SQL Editor after 0007.
+-- Security fixes found in the pre-launch review. Run in Supabase SQL Editor after 0007.
+-- Safe to run again: every statement replaces what it creates.
 
 -- 1) Joining a company now requires a real, unexpired invitation for that exact email.
 --    (Previously the sign-up metadata alone was trusted, so anyone could name a company id.)
@@ -83,6 +84,7 @@ create trigger on_auth_user_confirmed
 
 -- 3) Learning progress is written only through record_progress(), which checks access.
 drop policy if exists "own progress" on watch_progress;
+drop policy if exists "own progress read" on watch_progress;
 create policy "own progress read" on watch_progress for select using (user_id = auth.uid());
 
 -- 4) Video titles of drafts are no longer readable by the public.
