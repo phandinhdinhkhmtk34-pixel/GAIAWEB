@@ -11,7 +11,7 @@ import { formatDate, formatYen } from "@/lib/format";
 import { localeNames, locales, type Locale } from "@/i18n/routing";
 import { DemoTag } from "./demo-banner";
 import { VideoThumb } from "./video-thumb";
-import { LiveCompany, LiveProfile, type LiveMember } from "./dashboard-live";
+import { LiveBilling, LiveCompany, LiveOverview, LiveProfile, type LiveMember } from "./dashboard-live";
 
 const TABS = ["overview", "learning", "billing", "company", "profile"] as const;
 type Tab = (typeof TABS)[number];
@@ -48,7 +48,6 @@ export function DashboardView({ live }: { live?: LiveMember }) {
           {roleLabel}
         </span>
       </div>
-      {live && <p className="mt-4 rounded-xl bg-sun-200/50 px-4 py-3 text-sm text-sun-700">{t("liveNote")}</p>}
 
       <div role="tablist" aria-label={t("title")} className="no-scrollbar mt-8 -mx-4 flex gap-1 overflow-x-auto border-b border-navy-900/10 px-4 sm:mx-0 sm:px-0">
         {tabs.map((id) => (
@@ -70,9 +69,9 @@ export function DashboardView({ live }: { live?: LiveMember }) {
       </div>
 
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="pt-8">
-        {tab === "overview" && <Overview onGo={tabs.includes("company") ? setTab : undefined} />}
-        {tab === "learning" && <Learning />}
-        {tab === "billing" && <Billing />}
+        {tab === "overview" && (live ? <LiveOverview live={live} /> : <Overview onGo={tabs.includes("company") ? setTab : undefined} />)}
+        {tab === "learning" && (live ? <LiveOverview live={live} /> : <Learning />)}
+        {tab === "billing" && (live ? <LiveBilling live={live} /> : <Billing />)}
         {tab === "company" && (live ? <LiveCompany live={live} /> : <Company />)}
         {tab === "profile" && (live ? <LiveProfile live={live} /> : <Profile />)}
       </div>

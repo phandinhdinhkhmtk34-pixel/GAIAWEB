@@ -8,6 +8,7 @@ import { AdminView, type LiveAdmin } from "@/components/admin-view";
 import { getViewer } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createAdminClient, hasServiceRole } from "@/lib/supabase/admin";
+import { loadCatalog } from "@/lib/videos";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -20,6 +21,12 @@ const ACTION_LABEL: Record<string, string> = {
   grant_admin: "管理者権限を付与 / Grant admin",
   revoke_admin: "管理者権限を削除 / Revoke admin",
   set_seats: "アカウント数を変更 / Change seats",
+  activate_plan: "プランを有効化 / Activate plan",
+  end_plan: "プランを終了 / End plan",
+  add_video: "動画を追加（下書き） / Add video (draft)",
+  publish_video: "動画を公開 / Publish video",
+  unpublish_video: "動画を非公開 / Unpublish video",
+  delete_video: "動画を削除 / Delete video",
 };
 
 async function loadLive(locale: string): Promise<LiveAdmin> {
@@ -38,6 +45,8 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
     members: [],
     admins: [],
     audit: [],
+    videos: [],
+    categories: [],
   };
   if (!hasServiceRole) return base;
 
@@ -55,6 +64,15 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
       : Promise.resolve({ data: [] }),
     db.from("profiles").select("org_id"),
   ]);
+  const [subs, catalog, progress] = await Promise.all([
+    db.from("subscriptions").select("org_id, status, period, current_period_end").in("status", ["active", "cancelled"]).gt("current_period_end", new Date().toISOString()),
+    loadCatalog(locale, { includeDrafts: true }),
+    db.from("watch_progress").select("video_id"),
+  ]);
+  const planByOrg = new Map(((subs.data ?? []) as { org_id: string; status: "active" | "cancelled"; period: "monthly" | "annual"; current_period_end: string }[]).map((x) => [x.org_id, x]));
+  const viewersByVideo = new Map<string, number>();
+  for (const r of (progress.data ?? []) as { video_id: string }[]) viewersByVideo.set(r.video_id, (viewersByVideo.get(r.video_id) ?? 0) + 1);
+  const catName = new Map(catalog.categories.map((c) => [c.id, c.name]));
   const usedByOrg = new Map<string, number>();
   for (const r of (seatsUsed.data ?? []) as { org_id: string }[]) usedByOrg.set(r.org_id, (usedByOrg.get(r.org_id) ?? 0) + 1);
 
@@ -77,7 +95,9 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
       type: o.kind,
       seats: o.seat_limit,
       used: usedByOrg.get(o.id) ?? 0,
-      status: "none" as const, // subscriptions arrive in Phase 4
+      status: planByOrg.get(o.id)?.status ?? ("none" as const),
+      planEnd: planByOrg.get(o.id)?.current_period_end ?? null,
+      planPeriod: planByOrg.get(o.id)?.period ?? null,
       since: o.created_at,
     })),
     admins: [
@@ -92,6 +112,16 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
         .filter((p) => !activeEmails.has(p.email.toLowerCase()))
         .map((p) => ({ userId: null, email: p.email, name: "", role: p.role, pending: true })),
     ],
+    categories: catalog.categories.map((c) => ({ id: c.id, name: c.name })),
+    videos: catalog.videos.map((v) => ({
+      id: v.id,
+      title: v.title,
+      category: catName.get(v.categoryId) ?? "",
+      state: v.state,
+      minutes: v.durationSeconds ? Math.max(1, Math.round(v.durationSeconds / 60)) : 0,
+      created: v.createdAt,
+      viewers: viewersByVideo.get(v.id) ?? 0,
+    })),
     audit: auditRows.map((a) => ({
       who: (a.actor_id && byId.get(a.actor_id)?.email) || "—",
       what: `${ACTION_LABEL[a.action] ?? a.action}${a.target ? `: ${a.target}` : ""}`,

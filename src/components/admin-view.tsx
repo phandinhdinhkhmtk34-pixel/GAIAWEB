@@ -13,7 +13,7 @@ import {
 import { DEFAULT_PRICES, quote } from "@/lib/pricing";
 import { formatDate, formatDateTime, formatNumber, formatYen } from "@/lib/format";
 import { DemoTag } from "./demo-banner";
-import { LiveAdmins, SeatsEditor, type LiveAdmin } from "./admin-live";
+import { LiveAdmins, PlanControls, SeatsEditor, VideoManager, type LiveAdmin } from "./admin-live";
 
 export type { LiveAdmin };
 
@@ -109,7 +109,7 @@ export function AdminView({ live }: { live?: LiveAdmin }) {
         {current === "overview" && <Overview role={role} live={live} />}
         {current === "payments" && <Payments />}
         {current === "users" && <Members live={live} />}
-        {current === "videos" && <Videos />}
+        {current === "videos" && (live ? <VideoManager live={live} /> : <Videos />)}
         {current === "content" && <Content />}
         {current === "audit" && <Audit live={live} />}
         {current === "admins" && live && <LiveAdmins live={live} />}
@@ -296,6 +296,7 @@ function Members({ live }: { live?: LiveAdmin }) {
               <th className="py-3 font-medium">{t("type")}</th>
               <th className="py-3 text-right font-medium">{td("seats")}</th>
               <th className="py-3 font-medium">{td("status")}</th>
+              {live && live.role !== "editor" && <th className="py-3 text-right font-medium">{t("planColumn")}</th>}
               <th className="py-3 font-medium">{td("date")}</th>
             </tr>
           </thead>
@@ -315,6 +316,11 @@ function Members({ live }: { live?: LiveAdmin }) {
                   )}
                 </td>
                 <td className="py-3.5 whitespace-nowrap">{formatDate(m.since, locale)}</td>
+                {live && live.role !== "editor" && (
+                  <td className="py-3.5">
+                    <PlanControls orgId={live.members[i].id} status={live.members[i].status} planEnd={live.members[i].planEnd} />
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

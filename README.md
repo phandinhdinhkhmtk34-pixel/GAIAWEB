@@ -2,7 +2,12 @@
 
 Corporate e-learning platform: anime-led training videos for companies in Japan, in seven languages.
 
-> **Status: Phase 2 — accounts.** Sign-up (individual / company), sign-in, email confirmation, password reset,
+> **Status: Phase 3 — videos.** Admins upload videos to private Supabase Storage, publish/unpublish and delete
+> them; every video is paid and plays only through a short-lived link issued after a server-side access check.
+> Watch progress, completion, history and favorites are stored per member. Until Phase 4 checkout, an admin
+> activates a plan (recorded as a verified payment).
+>
+> Phase 2 — accounts: Sign-up (individual / company), sign-in, email confirmation, password reset,
 > company invitations with seat limits, and an admin center guarded by role + 2-step verification (TOTP) are built
 > on Supabase. Subscriptions, learning records, payments and videos still show **demo data** (labelled デモ / Demo)
 > until Phases 3–4. Without Supabase environment variables the site runs as the Phase 1 prototype.

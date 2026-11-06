@@ -113,7 +113,7 @@ function Home() {
                         character={v.character}
                         className="transition-transform duration-500 group-hover:scale-[1.04]"
                       />
-                      {v.premium && (
+                      {(
                         <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-navy-950/75 px-2.5 py-1 text-xs backdrop-blur">
                           <Lock size={12} aria-hidden />
                           {tc("locked")}
