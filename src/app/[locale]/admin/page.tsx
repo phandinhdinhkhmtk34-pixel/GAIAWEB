@@ -64,6 +64,7 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
     categories: [],
     billing: { pending: [], recent: [], settings: {} },
     site: null,
+    inquiries: [],
     kpis: null,
     charts: null,
   };
@@ -174,6 +175,11 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
     ],
     categories: catalog.categories.map((c) => ({ id: c.id, name: c.name })),
     site: viewer.adminRole === "accounting" ? null : await loadDraftSiteContent(),
+    inquiries: money
+      ? (((await db.from("inquiries").select("id, name, email, company, topic, message, status, created_at").order("created_at", { ascending: false }).limit(100)).data ?? []) as {
+          id: string; name: string; email: string; company: string; topic: string; message: string; status: "new" | "done"; created_at: string;
+        }[]).map((q) => ({ id: q.id, name: q.name, email: q.email, company: q.company, topic: q.topic, message: q.message, status: q.status, created: q.created_at }))
+      : [],
     billing: {
       pending: payRows
         .filter((p) => p.status === "awaiting" && p.method === "bank_transfer")

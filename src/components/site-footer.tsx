@@ -27,6 +27,7 @@ export function SiteFooter() {
             <li><Link className="hover:text-white" href="/library">{t("nav.library")}</Link></li>
             <li><Link className="hover:text-white" href="/#pricing">{t("home.pricingTitle")}</Link></li>
             <li><Link className="hover:text-white" href="/dashboard">{t("nav.dashboard")}</Link></li>
+            <li><Link className="hover:text-white" href="/faq">{t("home.footerFaq")}</Link></li>
           </ul>
         </div>
         <div>
@@ -35,7 +36,8 @@ export function SiteFooter() {
             <li><Editable path="company.name" label={t("admin.cmsCompany_name")} value={site.company.name || (editing ? "" : t("home.footerCompanyName"))} className="inline-block min-w-24" /></li>
             <li><Editable path="company.address" label={t("admin.cmsCompany_address")} value={site.company.address || (editing ? "" : t("home.footerAddress"))} className="inline-block min-w-24" /></li>
             {(editing || site.company.phone) && <li>TEL <Editable path="company.phone" label={t("admin.cmsCompany_phone")} value={site.company.phone} className="inline-block min-w-24" /></li>}
-            <li className="select-all">{site.company.email ? `${t("home.footerContact")}: ${site.company.email}` : t("home.footerContact")}</li>
+            <li><Link className="hover:text-white" href="/contact">{t("home.footerContact")}</Link></li>
+            {site.company.email && <li className="select-all">{site.company.email}</li>}
           </ul>
         </div>
         <div>

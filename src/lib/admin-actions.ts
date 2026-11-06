@@ -409,3 +409,12 @@ export async function deleteOrgAction(_: AdminActionState, fd: FormData): Promis
   revalidatePath(`/${localeOf(fd)}/admin`);
   return { ok: "deleted" };
 }
+
+export async function setInquiryStatusAction(fd: FormData) {
+  const me = await requireRole(["super", "accounting"]);
+  if (!me) return;
+  const id = String(fd.get("id") ?? "");
+  const status = fd.get("status") === "done" ? "done" : "new";
+  await createAdminClient().from("inquiries").update({ status }).eq("id", id);
+  revalidatePath(`/${localeOf(fd)}/admin`);
+}

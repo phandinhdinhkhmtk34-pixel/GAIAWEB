@@ -16,6 +16,7 @@ import {
   saveVideoAction,
   setSeatsAction,
   setThumbnailAction,
+  setInquiryStatusAction,
   setOrgSuspendedAction,
   deleteOrgAction,
   setVideoStateAction,
@@ -50,6 +51,7 @@ export interface LiveAdmin {
     settings: Record<string, string>;
   };
   site: import("@/lib/site-content").SiteContent | null;
+  inquiries: { id: string; name: string; email: string; company: string; topic: string; message: string; status: "new" | "done"; created: string }[];
   kpis: { paid: number; activeSubs: number; mrr: number; total: number; pending: number; videos: number; views: number } | null;
   charts: { revenue: { label: string; revenue: number }[]; views: { name: string; views: number }[] } | null;
   admins: { userId: string | null; email: string; name: string; role: "super" | "accounting" | "editor"; pending: boolean }[];
@@ -686,5 +688,49 @@ export function OrgControls({ orgId, suspended }: { orgId: string; suspended: bo
         </span>
       )}
     </div>
+  );
+}
+
+export function LiveInquiries({ live }: { live: LiveAdmin }) {
+  const t = useTranslations("admin");
+  const tc = useTranslations("contact");
+  const locale = useLocale();
+  if (!live.inquiries.length) return <p className="rounded-2xl border border-navy-900/10 bg-white p-6 text-navy-900/70">{t("inquiriesEmpty")}</p>;
+  return (
+    <ul className="space-y-4">
+      {live.inquiries.map((q) => (
+        <li key={q.id} className={clsx("rounded-2xl border bg-white p-6", q.status === "new" ? "border-sun-500/50" : "border-navy-900/10 opacity-80")}>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="font-semibold">
+                {q.name} {q.company && <span className="font-normal text-navy-900/70">· {q.company}</span>}
+              </p>
+              <p className="text-sm break-all text-navy-900/70 select-all">{q.email}</p>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="rounded-full bg-sky-100 px-2 py-1">{tc(`topics.${q.topic}`)}</span>
+              <span className={clsx("rounded-full px-2 py-1 font-semibold", q.status === "new" ? "bg-sun-200 text-sun-700" : "bg-leaf/10 text-leaf")}>
+                {q.status === "new" ? t("statusNew") : t("statusDone")}
+              </span>
+              <span className="text-navy-900/70">{formatDate(q.created, locale)}</span>
+            </div>
+          </div>
+          <p className="mt-4 text-sm leading-relaxed whitespace-pre-line">{q.message}</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <a href={`mailto:${q.email}?subject=${encodeURIComponent("Re: GAIA LEARNING")}`} className="inline-flex min-h-10 items-center rounded-lg bg-navy-900 px-3 text-sm font-semibold text-white hover:bg-navy-800">
+              {t("replyByEmail")}
+            </a>
+            <form action={setInquiryStatusAction}>
+              <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="id" value={q.id} />
+              <input type="hidden" name="status" value={q.status === "new" ? "done" : "new"} />
+              <button type="submit" className="min-h-10 rounded-lg border border-navy-900/15 px-3 text-sm font-semibold hover:bg-sky-100">
+                {q.status === "new" ? t("markDone") : t("markNew")}
+              </button>
+            </form>
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }

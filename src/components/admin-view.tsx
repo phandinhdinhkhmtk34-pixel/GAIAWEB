@@ -14,17 +14,17 @@ import { DEFAULT_PRICES, quote } from "@/lib/pricing";
 import { formatDate, formatDateTime, formatNumber, formatYen } from "@/lib/format";
 import { DemoTag } from "./demo-banner";
 import { SiteEditor } from "./site-editor";
-import { LiveAdmins, LivePayments, OrgControls, PlanControls, SeatsEditor, VideoManager, type LiveAdmin } from "./admin-live";
+import { LiveAdmins, LiveInquiries, LivePayments, OrgControls, PlanControls, SeatsEditor, VideoManager, type LiveAdmin } from "./admin-live";
 
 export type { LiveAdmin };
 
 type Role = "super" | "accounting" | "editor";
-type Tab = "overview" | "payments" | "users" | "videos" | "content" | "audit" | "admins";
+type Tab = "overview" | "payments" | "users" | "videos" | "content" | "audit" | "admins" | "inquiries";
 
 /** Same role → permission map the server will enforce in Phase 2 (RLS + route guards). */
 const ACCESS: Record<Role, Tab[]> = {
-  super: ["overview", "payments", "users", "videos", "content", "audit", "admins"],
-  accounting: ["overview", "payments", "users", "audit"],
+  super: ["overview", "payments", "inquiries", "users", "videos", "content", "audit", "admins"],
+  accounting: ["overview", "payments", "inquiries", "users", "audit"],
   editor: ["overview", "videos", "content"],
 };
 const TAB_KEY: Record<Tab, string> = {
@@ -35,6 +35,7 @@ const TAB_KEY: Record<Tab, string> = {
   content: "tabContent",
   audit: "tabAudit",
   admins: "tabAdmins",
+  inquiries: "tabInquiries",
 };
 
 export function AdminView({ live }: { live?: LiveAdmin }) {
@@ -43,7 +44,7 @@ export function AdminView({ live }: { live?: LiveAdmin }) {
   const role: Role = live ? live.role : demoRole;
   const [tab, setTab] = useState<Tab>("overview");
   // The admins tab only exists once real accounts exist.
-  const tabs = ACCESS[role].filter((id) => id !== "admins" || Boolean(live));
+  const tabs = ACCESS[role].filter((id) => (id !== "admins" && id !== "inquiries") || Boolean(live));
   const current = tabs.includes(tab) ? tab : "overview";
 
   return (
@@ -99,6 +100,9 @@ export function AdminView({ live }: { live?: LiveAdmin }) {
             )}
           >
             {t(TAB_KEY[id])}
+            {id === "inquiries" && live && live.inquiries.some((q) => q.status === "new") && (
+              <span className="ml-2 rounded-full bg-sun-500 px-1.5 py-0.5 text-[11px] text-navy-950 tabular-nums">{live.inquiries.filter((q) => q.status === "new").length}</span>
+            )}
             {id === "payments" && (
               <span className="ml-2 rounded-full bg-seal px-1.5 py-0.5 text-[11px] text-white tabular-nums">{live ? live.billing.pending.length : pendingTransfers.length}</span>
             )}
@@ -114,6 +118,7 @@ export function AdminView({ live }: { live?: LiveAdmin }) {
         {current === "content" && (live?.site ? <SiteEditor initial={live.site} canEditPrices={live.role === "super"} /> : <Content />)}
         {current === "audit" && <Audit live={live} />}
         {current === "admins" && live && <LiveAdmins live={live} />}
+        {current === "inquiries" && live && <LiveInquiries live={live} />}
       </div>
     </div>
   );

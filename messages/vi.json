@@ -101,7 +101,8 @@
     "footerAddress": "Tokyo, Nhật Bản (địa chỉ cài trong Admin)",
     "footerCopy": "© 2026 GAIA. All rights reserved.",
     "charactersTitle": "8 nhân vật",
-    "videoCount": "{count} video"
+    "videoCount": "{count} video",
+    "footerFaq": "Câu hỏi thường gặp"
   },
   "library": {
     "title": "Thư viện video",
@@ -459,7 +460,14 @@
     "suspendOrg": "Tạm dừng",
     "resumeOrg": "Mở lại",
     "suspended": "Đang tạm dừng",
-    "deleteHasPayments": "Không xoá được vì đã có thanh toán (cần giữ sổ sách). Hãy dùng Tạm dừng."
+    "deleteHasPayments": "Không xoá được vì đã có thanh toán (cần giữ sổ sách). Hãy dùng Tạm dừng.",
+    "tabInquiries": "Liên hệ",
+    "inquiriesEmpty": "Chưa có liên hệ nào.",
+    "markDone": "Đánh dấu đã xử lý",
+    "markNew": "Đánh dấu chưa xử lý",
+    "statusNew": "Chưa xử lý",
+    "statusDone": "Đã xử lý",
+    "replyByEmail": "Trả lời qua email"
   },
   "auth": {
     "notConfigured": "Chức năng đăng nhập chưa được cài đặt (đang hiển thị bản prototype).",
@@ -606,5 +614,73 @@
     },
     "bankCancel": "Huỷ gói (dùng đến hết kỳ)",
     "bankResume": "Huỷ yêu cầu huỷ gói"
+  },
+  "faq": {
+    "title": "Câu hỏi thường gặp",
+    "lead": "Những câu hỏi khách hàng hay hỏi trước khi đăng ký. Nếu chưa có câu trả lời, hãy liên hệ chúng tôi.",
+    "contactCta": "Liên hệ",
+    "items": [
+      {
+        "q": "Giá bao nhiêu?",
+        "a": "30.000 yên/tháng (đã gồm thuế), gồm 1 tài khoản. Mỗi nhân viên thêm 3.000 yên/tháng (đã gồm thuế). Gói năm: dùng 12 tháng với giá 10 tháng."
+      },
+      {
+        "q": "Cá nhân có đăng ký được không?",
+        "a": "Được. Cá nhân hay doanh nghiệp đều cùng giá. Cá nhân dùng 1 tài khoản."
+      },
+      {
+        "q": "Thanh toán bằng cách nào?",
+        "a": "Thẻ tín dụng hoặc chuyển khoản. Thẻ thì dùng ngay và tự gia hạn mỗi kỳ. Chuyển khoản thì chuyển thẳng vào tài khoản công ty, gói mở sau khi xác nhận đã nhận tiền (phí chuyển khoản do khách trả)."
+      },
+      {
+        "q": "Có xuất 領収書 không?",
+        "a": "Có. Mỗi lần thanh toán đều có 領収書. Xem trong Trang cá nhân → Gói và thanh toán, rồi in hoặc lưu PDF."
+      },
+      {
+        "q": "Huỷ gói lúc nào cũng được chứ?",
+        "a": "Được. Tắt tự gia hạn trong Trang cá nhân bất cứ lúc nào. Bạn vẫn dùng đến hết kỳ, sau đó video trả phí bị khoá. Lịch sử học vẫn được giữ. Không hoàn tiền giữa kỳ."
+      },
+      {
+        "q": "Thêm hoặc xoá nhân viên thế nào?",
+        "a": "Quản lý công ty mời nhân viên qua email trong Trang cá nhân → Nhân viên. Mua thêm tài khoản bằng nút “Thêm tài khoản”. Nhân viên nghỉ việc thì xoá được ngay, ghế đó dùng cho người khác."
+      },
+      {
+        "q": "Hỗ trợ những ngôn ngữ nào?",
+        "a": "7 ngôn ngữ: Nhật, Việt, Anh, Myanmar, Indonesia, Sinhala, Khmer. Đổi bằng biểu tượng quả địa cầu ở góc trên."
+      },
+      {
+        "q": "Xem trên điện thoại được không?",
+        "a": "Được. Xem trên trình duyệt của điện thoại, máy tính bảng hoặc máy tính, không cần cài app."
+      },
+      {
+        "q": "Có tải video về được không?",
+        "a": "Không. Video chỉ phát online cho tài khoản có gói còn hiệu lực. Quay lại hoặc phát tán video bị cấm theo điều khoản sử dụng."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Liên hệ",
+    "lead": "Hỏi về giá, cách dùng hay hợp đồng doanh nghiệp tại đây. Chúng tôi thường trả lời qua email trong 2 ngày làm việc.",
+    "name": "Họ tên",
+    "email": "Email",
+    "company": "Tên công ty (không bắt buộc)",
+    "topic": "Loại câu hỏi",
+    "topics": {
+      "plan": "Giá và gói",
+      "payment": "Thanh toán, 領収書",
+      "account": "Tài khoản, nhân viên",
+      "video": "Video, xem",
+      "other": "Khác"
+    },
+    "message": "Nội dung",
+    "send": "Gửi",
+    "sending": "Đang gửi…",
+    "sent": "Đã gửi. Chúng tôi sẽ trả lời qua email.",
+    "errors": {
+      "required": "Hãy nhập họ tên và nội dung.",
+      "emailFormat": "Kiểm tra lại định dạng email.",
+      "tooMany": "Bạn gửi liên tục trong thời gian ngắn. Hãy thử lại sau ít phút.",
+      "generic": "Không gửi được. Hãy thử lại sau ít phút."
+    }
   }
 }

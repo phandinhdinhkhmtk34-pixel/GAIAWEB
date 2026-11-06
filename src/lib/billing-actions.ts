@@ -6,6 +6,7 @@ import { routing } from "@/i18n/routing";
 import { getViewer } from "./auth";
 import { createAdminClient } from "./supabase/admin";
 import { siteUrl } from "./supabase/config";
+import { ADMIN_NOTIFY, sendEmail } from "./email";
 import {
   currentSubscription,
   getStripe,
@@ -160,6 +161,13 @@ export async function createBankOrderAction(_: BillingState, fd: FormData): Prom
   } else return { error: "generic" };
 
   await db.from("audit_log").insert({ actor_id: me.id, action: "bank_order", target: code, details: { mode } });
+  if (ADMIN_NOTIFY) {
+    const { data: pay } = await db.from("payments").select("amount_jpy").eq("order_code", code).maybeSingle();
+    await sendEmail(ADMIN_NOTIFY, `【GAIA】振込注文 ${code}`, [`${me.org.name} から振込注文がありました。`, `注文番号: ${code}`, `金額: ¥${(pay?.amount_jpy ?? 0).toLocaleString("ja-JP")}`], {
+      href: `${siteUrl()}/ja/admin`,
+      label: "入金確認を開く",
+    });
+  }
   redirect(`/${locale}/checkout?order=${code}`);
 }
 
@@ -247,6 +255,18 @@ export async function confirmBankPaymentAction(_: BillingState, fd: FormData): P
   const id = String(fd.get("paymentId") ?? "");
   const res = await applyVerifiedBankPayment(id, me.id);
   if ("error" in res) return { error: res.error };
+  // Tell the paying organization's manager, with a link to the receipt.
+  const db = createAdminClient();
+  const { data: pay } = await db.from("payments").select("receipt_number, amount_jpy, subscription_id").eq("id", id).maybeSingle();
+  const { data: sub } = pay ? await db.from("subscriptions").select("org_id").eq("id", pay.subscription_id).maybeSingle() : { data: null };
+  const { data: owner } = sub ? await db.from("profiles").select("email, locale").eq("org_id", sub.org_id).eq("member_role", "owner").maybeSingle() : { data: null };
+  if (owner?.email && pay?.receipt_number) {
+    await sendEmail(owner.email, "【GAIA LEARNING】ご入金を確認しました", [
+      "ご入金を確認しました。すべての研修動画をご利用いただけます。",
+      `金額: ¥${pay.amount_jpy.toLocaleString("ja-JP")}（税込）`,
+      `領収書番号: ${pay.receipt_number}`,
+    ], { href: `${siteUrl()}/${owner.locale || "ja"}/receipt/${pay.receipt_number}`, label: "領収書を表示" });
+  }
   await createAdminClient().from("audit_log").insert({ actor_id: me.id, action: "confirm_transfer", target: String(fd.get("code") ?? id) });
   revalidatePath(`/${localeOf(fd)}/admin`);
   return { ok: "confirmed" };

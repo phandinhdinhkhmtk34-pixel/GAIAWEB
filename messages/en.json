@@ -101,7 +101,8 @@
     "footerAddress": "Tokyo, Japan (set address in Admin)",
     "footerCopy": "© 2026 GAIA. All rights reserved.",
     "charactersTitle": "Meet the eight characters",
-    "videoCount": "{count, plural, one {# video} other {# videos}}"
+    "videoCount": "{count, plural, one {# video} other {# videos}}",
+    "footerFaq": "FAQ"
   },
   "library": {
     "title": "Video library",
@@ -459,7 +460,14 @@
     "suspendOrg": "Suspend",
     "resumeOrg": "Resume",
     "suspended": "Suspended",
-    "deleteHasPayments": "Can't delete: it has payment records, which must be kept. Use Suspend instead."
+    "deleteHasPayments": "Can't delete: it has payment records, which must be kept. Use Suspend instead.",
+    "tabInquiries": "Inquiries",
+    "inquiriesEmpty": "No inquiries yet.",
+    "markDone": "Mark done",
+    "markNew": "Mark as new",
+    "statusNew": "New",
+    "statusDone": "Done",
+    "replyByEmail": "Reply by email"
   },
   "auth": {
     "notConfigured": "Sign-in is not set up yet (showing the prototype).",
@@ -606,5 +614,73 @@
     },
     "bankCancel": "Cancel (keep access until the period ends)",
     "bankResume": "Undo cancellation"
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "lead": "What people usually ask before subscribing. Can't find your answer? Contact us.",
+    "contactCta": "Contact us",
+    "items": [
+      {
+        "q": "How much does it cost?",
+        "a": "¥30,000 a month (tax incl.) including one account. Each extra employee is ¥3,000 a month (tax incl.). The annual plan gives 12 months for the price of 10."
+      },
+      {
+        "q": "Can individuals subscribe?",
+        "a": "Yes. Individuals and companies pay the same price; individuals use one account."
+      },
+      {
+        "q": "How can I pay?",
+        "a": "Credit card or bank transfer. Cards start right away and renew automatically. Bank transfers go straight to our account and access starts once we confirm the deposit (transfer fees are paid by the customer)."
+      },
+      {
+        "q": "Do you issue receipts?",
+        "a": "Yes, for every payment. Open it from My page → Plan and billing, then print it or save it as PDF."
+      },
+      {
+        "q": "Can I cancel anytime?",
+        "a": "Yes. Turn off auto-renewal on My page at any time. You keep access until the period ends; then paid videos lock and your learning history stays. No refunds mid-period."
+      },
+      {
+        "q": "How do I add or remove employees?",
+        "a": "The company manager invites employees by email from My page → Employees and buys extra accounts with “Add accounts”. Employees who leave can be removed at any time and their seat is free at once."
+      },
+      {
+        "q": "Which languages are supported?",
+        "a": "Seven: Japanese, Vietnamese, English, Burmese, Indonesian, Sinhala and Khmer. Switch with the globe icon at the top."
+      },
+      {
+        "q": "Can I watch on my phone?",
+        "a": "Yes, in the browser on phones, tablets and computers. No app needed."
+      },
+      {
+        "q": "Can I download videos?",
+        "a": "No. Videos play online for accounts with an active plan. Recording or redistributing them is not allowed under the terms."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Contact us",
+    "lead": "Questions about pricing, getting started or company plans. We usually reply by email within two business days.",
+    "name": "Name",
+    "email": "Email",
+    "company": "Company (optional)",
+    "topic": "Topic",
+    "topics": {
+      "plan": "Pricing and plans",
+      "payment": "Payment and receipts",
+      "account": "Accounts and employees",
+      "video": "Videos and playback",
+      "other": "Other"
+    },
+    "message": "Message",
+    "send": "Send",
+    "sending": "Sending…",
+    "sent": "Sent. We'll reply by email.",
+    "errors": {
+      "required": "Enter your name and message.",
+      "emailFormat": "Check the email address format.",
+      "tooMany": "Too many messages in a short time. Try again later.",
+      "generic": "That didn't send. Try again in a few minutes."
+    }
   }
 }
