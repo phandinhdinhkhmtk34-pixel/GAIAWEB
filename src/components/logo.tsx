@@ -13,7 +13,13 @@ export function Logo({ dark = false, className }: { dark?: boolean; className?: 
     // Height is set in Admin; width follows the image, capped so the menu never overflows.
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src={logoUrl} alt="GAIA LEARNING" style={{ height: logoHeight }} className={clsx("block w-auto max-w-[220px] object-contain", className)} />
+      <img
+        src={logoUrl}
+        alt="GAIA LEARNING"
+        style={{ "--logo-h": `${logoHeight}px` } as React.CSSProperties}
+        // On phones the header stays compact (max 48px); from tablet width up the Admin setting applies.
+        className={clsx("block h-[min(var(--logo-h),48px)] w-auto max-w-[220px] object-contain sm:h-[var(--logo-h)]", className)}
+      />
     );
   }
   return (
