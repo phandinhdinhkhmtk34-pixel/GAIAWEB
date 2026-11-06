@@ -347,6 +347,8 @@
       "mfaWrong": "Mã không đúng hoặc đã hết hạn. Hãy nhập mã mới nhất trong app.",
       "generic": "Không xử lý được. Hãy thử lại sau ít phút."
     },
-    "acceptingInvite": "Đang xác nhận lời mời…"
+    "acceptingInvite": "Đang xác nhận lời mời…",
+    "chosenPlan": "Gói đã chọn",
+    "paymentLater": "Trang thanh toán đang được chuẩn bị. Hiện tại hãy tạo tài khoản trước. Khi thanh toán được xác nhận, bạn sẽ dùng được toàn bộ video và các tài khoản thêm."
   }
 }

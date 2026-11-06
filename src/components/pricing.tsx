@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import clsx from "clsx";
 import { Check, Building2 } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { quote, DEFAULT_PRICES, type Billing, type PriceConfig } from "@/lib/pricing";
 import { formatYen } from "@/lib/format";
 
@@ -20,6 +21,7 @@ export function Pricing({ prices = DEFAULT_PRICES }: { prices?: PriceConfig }) {
     <div>
       <div className="grid gap-6 lg:grid-cols-3 lg:items-stretch">
         <PlanCard
+          billing="monthly"
           name={t("planMonthly")}
           desc={t("planMonthlyDesc")}
           price={yen(monthly.base)}
@@ -31,6 +33,7 @@ export function Pricing({ prices = DEFAULT_PRICES }: { prices?: PriceConfig }) {
           tax={tc("taxIncluded")}
         />
         <PlanCard
+          billing="annual"
           featured
           badge={t("planAnnualBadge")}
           name={t("planAnnual")}
@@ -70,6 +73,7 @@ function PlanCard(props: {
   tax: string;
   featured?: boolean;
   badge?: string;
+  billing: Billing;
 }) {
   const { featured } = props;
   return (
@@ -102,9 +106,9 @@ function PlanCard(props: {
           </li>
         ))}
       </ul>
-      <a href="#calculator" className="btn-3d mt-auto w-full">
+      <Link href={{ pathname: "/signup", query: { plan: props.billing, seats: 1 } }} className="btn-3d mt-auto w-full">
         {props.cta}
-      </a>
+      </Link>
     </div>
   );
 }
@@ -174,9 +178,9 @@ function Calculator({ prices }: { prices: PriceConfig }) {
         <p className="mt-6 border-t border-white/10 pt-5 text-sm text-white/75">
           {t("calcBreakdown", { base: yen(q.base), extra: q.extra, seat: yen(q.seat) })}
         </p>
-        <button type="button" className="btn-3d mt-7 w-full">
+        <Link href={{ pathname: "/signup", query: { plan: billing, seats: users } }} className="btn-3d mt-7 w-full">
           {tc("register")}
-        </button>
+        </Link>
       </div>
     </div>
   );

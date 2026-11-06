@@ -347,6 +347,8 @@
       "mfaWrong": "That code is wrong or expired. Enter the latest code from the app.",
       "generic": "That didn't work. Try again in a few minutes."
     },
-    "acceptingInvite": "Checking your invitation…"
+    "acceptingInvite": "Checking your invitation…",
+    "chosenPlan": "Selected plan",
+    "paymentLater": "Checkout is coming soon. Create your account first; once payment is confirmed, every video and your extra accounts unlock."
   }
 }
