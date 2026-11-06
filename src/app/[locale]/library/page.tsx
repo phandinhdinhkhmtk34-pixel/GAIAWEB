@@ -44,6 +44,7 @@ async function loadLive(locale: string): Promise<LibraryLive> {
         subtitles: v.subtitles,
         progress: pct,
         isNew: v.publishedAt ? new Date(v.publishedAt).getTime() > cutoff : false,
+        thumbnailUrl: v.thumbnailUrl,
       };
     }),
   };

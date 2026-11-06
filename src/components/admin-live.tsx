@@ -3,10 +3,11 @@
 import { useActionState, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import clsx from "clsx";
-import { ShieldCheck, Clock, Upload, Loader2, EyeOff, Trash2, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Clock, Upload, Loader2, EyeOff, Trash2, CheckCircle2, ImagePlus } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import {
   activatePlanAction,
+  createThumbnailUploadAction,
   createVideoUploadAction,
   deleteVideoAction,
   endPlanAction,
@@ -14,6 +15,7 @@ import {
   revokeAdminAction,
   saveVideoAction,
   setSeatsAction,
+  setThumbnailAction,
   setVideoStateAction,
   type AdminActionState,
 } from "@/lib/admin-actions";
@@ -35,7 +37,7 @@ export interface LiveAdmin {
     planEnd: string | null;
     planPeriod: "monthly" | "annual" | null;
   }[];
-  videos: { id: string; title: string; category: string; state: "draft" | "published"; minutes: number; created: string; viewers: number }[];
+  videos: { id: string; title: string; category: string; state: "draft" | "published"; minutes: number; created: string; viewers: number; thumbnailUrl: string | null }[];
   categories: { id: string; name: string }[];
   admins: { userId: string | null; email: string; name: string; role: "super" | "accounting" | "editor"; pending: boolean }[];
   audit: { who: string; what: string; when: string }[];
@@ -52,7 +54,65 @@ const ERR: Record<string, string> = {
   videoMissingFile: "videoMissingFile",
   videoMissingTitle: "videoMissingTitle",
   upload: "videoUploadFailed",
+  imageType: "imageType",
+  imageSize: "imageSize",
 };
+
+/** Grab one frame (10% into the video, at most 5 s) from a local file as a JPEG, in the browser. */
+async function captureFrame(file: File): Promise<Blob | null> {
+  const url = URL.createObjectURL(file);
+  try {
+    const video = document.createElement("video");
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = "auto";
+    video.src = url;
+    await new Promise<void>((ok, fail) => {
+      video.onloadedmetadata = () => ok();
+      video.onerror = () => fail(new Error("load"));
+    });
+    video.currentTime = Math.min(5, (video.duration || 10) * 0.1);
+    await new Promise<void>((ok, fail) => {
+      video.onseeked = () => ok();
+      video.onerror = () => fail(new Error("seek"));
+    });
+    const w = Math.min(1280, video.videoWidth || 1280);
+    const h = Math.round((w / (video.videoWidth || 16)) * (video.videoHeight || 9));
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d")!;
+    ctx.drawImage(video, 0, 0, w, h);
+    // A browser that cannot decode the codec draws a flat frame: skip it rather than save a black cover.
+    const px = ctx.getImageData(0, 0, w, h).data;
+    let sum = 0;
+    let sq = 0;
+    let n = 0;
+    for (let i = 0; i < px.length; i += 4 * 97) {
+      const y = 0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2];
+      sum += y;
+      sq += y * y;
+      n++;
+    }
+    const mean = sum / n;
+    if (Math.sqrt(Math.max(0, sq / n - mean * mean)) < 6) return null;
+    return await new Promise((ok) => canvas.toBlob((b) => ok(b), "image/jpeg", 0.85));
+  } catch {
+    return null; // unsupported codec: the library falls back to generated art
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+/** Upload an image (File or captured Blob) to the thumbnails bucket; returns its path. */
+async function uploadThumbnail(img: Blob): Promise<{ path: string } | { error: string }> {
+  const type = img.type || "image/jpeg";
+  const ticket = await createThumbnailUploadAction({ type, size: img.size });
+  if ("error" in ticket) return { error: ticket.error ?? "generic" };
+  const { createClient } = await import("@/lib/supabase/browser");
+  const { error } = await createClient().storage.from("thumbnails").uploadToSignedUrl(ticket.path, ticket.token, img, { contentType: type });
+  return error ? { error: "upload" } : { path: ticket.path };
+}
 
 export function LiveAdmins({ live }: { live: LiveAdmin }) {
   const t = useTranslations("admin");
@@ -224,6 +284,14 @@ export function VideoManager({ live }: { live: LiveAdmin }) {
       return setMsg({ ok: false, text: t("videoUploadFailed") });
     }
     setBusy("saving");
+    // Cover image: the one chosen, otherwise a frame captured from the video itself.
+    const chosen = fd.get("thumb");
+    const cover = chosen instanceof File && chosen.size > 0 ? chosen : await captureFrame(file);
+    if (cover) {
+      const up = await uploadThumbnail(cover);
+      if ("path" in up) fd.set("thumbnailPath", up.path);
+    }
+    fd.delete("thumb");
     fd.delete("file");
     fd.set("storagePath", ticket.path);
     fd.set("publish", publish ? "1" : "0");
@@ -248,6 +316,11 @@ export function VideoManager({ live }: { live: LiveAdmin }) {
             <label htmlFor="v-file" className="text-sm font-medium">{t("videoFile")}</label>
             <input id="v-file" name="file" type="file" accept="video/mp4,video/webm,video/quicktime" className="mt-2 block w-full text-sm file:mr-4 file:min-h-11 file:rounded-lg file:border-0 file:bg-navy-900 file:px-4 file:font-semibold file:text-white" />
             <p className="mt-1.5 text-xs text-navy-900/55">{t("videoFileHint")}</p>
+          </div>
+          <div className="lg:col-span-2">
+            <label htmlFor="v-thumb" className="text-sm font-medium">{t("thumbField")}</label>
+            <input id="v-thumb" name="thumb" type="file" accept="image/jpeg,image/png,image/webp" className="mt-2 block w-full text-sm file:mr-4 file:min-h-11 file:rounded-lg file:border-0 file:bg-sky-100 file:px-4 file:font-semibold file:text-navy-900" />
+            <p className="mt-1.5 text-xs text-navy-900/55">{t("thumbHint")}</p>
           </div>
           <div>
             <label htmlFor="v-cat" className="text-sm font-medium">{t("videoCategory")}</label>
@@ -310,10 +383,15 @@ export function VideoManager({ live }: { live: LiveAdmin }) {
                 {live.videos.map((v) => (
                   <tr key={v.id} className="border-b border-navy-900/6 last:border-0">
                     <td className="py-3.5">
+                      <div className="flex items-center gap-3">
+                        <ThumbCell videoId={v.id} url={v.thumbnailUrl} title={v.title} canEdit={canEdit} />
+                        <div className="min-w-0">
                       <p className="font-semibold">{v.title}</p>
                       <p className="text-xs text-navy-900/50">
                         {formatDate(v.created, locale)} · {v.minutes ? tc("minutes", { count: v.minutes }) : "—"}
                       </p>
+                        </div>
+                      </div>
                     </td>
                     <td className="py-3.5">{v.category}</td>
                     <td className="py-3.5">
@@ -371,3 +449,60 @@ function DeleteVideo({ id, title }: { id: string; title: string }) {
   );
 }
 
+
+/** Cover image preview with a "change" control for existing videos. */
+function ThumbCell({ videoId, url, title, canEdit }: { videoId: string; url: string | null; title: string; canEdit: boolean }) {
+  const t = useTranslations("admin");
+  const locale = useLocale();
+  const router = useRouter();
+  const input = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function change(file: File) {
+    setBusy(true);
+    setErr(null);
+    const up = await uploadThumbnail(file);
+    if ("error" in up) {
+      setBusy(false);
+      return setErr(t(ERR[up.error] ?? "errGeneric"));
+    }
+    const res = await setThumbnailAction({ videoId, path: up.path, locale });
+    setBusy(false);
+    if ("error" in res) return setErr(t("errGeneric"));
+    router.refresh();
+  }
+
+  return (
+    <div className="shrink-0">
+      <button
+        type="button"
+        disabled={!canEdit || busy}
+        onClick={() => input.current?.click()}
+        aria-label={`${t("thumbChange")}: ${title}`}
+        className="group relative block h-14 w-24 overflow-hidden rounded-lg bg-navy-900 ring-1 ring-navy-900/10"
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {url ? <img src={url} alt="" className="h-full w-full object-cover" /> : null}
+        {canEdit && (
+          <span className="absolute inset-0 flex items-center justify-center bg-navy-950/55 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+            {busy ? <Loader2 size={16} className="animate-spin" aria-hidden /> : <ImagePlus size={16} aria-hidden />}
+          </span>
+        )}
+      </button>
+      <input
+        ref={input}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        className="sr-only"
+        tabIndex={-1}
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) change(f);
+          e.target.value = "";
+        }}
+      />
+      {err && <p role="alert" className="mt-1 max-w-24 text-[11px] text-seal">{err}</p>}
+    </div>
+  );
+}

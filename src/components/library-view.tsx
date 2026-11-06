@@ -23,6 +23,7 @@ export interface LibItem {
   subtitles: string[];
   progress?: number; // 0-100
   isNew?: boolean;
+  thumbnailUrl?: string | null;
 }
 
 /** Real catalogue + the viewer's access, passed by the server when Supabase is configured. */
@@ -37,6 +38,15 @@ export interface LibraryLive {
 type Access = "visitor" | "active" | "pending";
 
 const hueOf = (slug: string) => demoCategories.find((c) => c.id === slug)?.hue ?? 220;
+
+/** The video's cover image, or generated art when none was uploaded. */
+function Cover({ v, className, cover = false, hideName = false }: { v: LibItem; className?: string; cover?: boolean; hideName?: boolean }) {
+  if (v.thumbnailUrl) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={v.thumbnailUrl} alt="" loading="lazy" decoding="async" className={clsx("block h-full w-full object-cover", className)} />;
+  }
+  return <VideoThumb hue={hueOf(v.category)} character={hideName ? "" : v.character} cover={cover} className={className} />;
+}
 
 function demoItems(locale: string): LibItem[] {
   return demoVideos.map((v) => ({
@@ -155,7 +165,7 @@ export function LibraryView({ live }: { live?: LibraryLive }) {
       {hero && (
         <section className="relative isolate overflow-hidden">
           <div className="absolute inset-0 -z-10 opacity-60">
-            <VideoThumb hue={hueOf(hero.category)} character="" cover />
+            <Cover v={hero} cover hideName />
           </div>
           <div className="absolute inset-0 -z-10 bg-gradient-to-r from-navy-950 via-navy-950/85 to-navy-950/20" />
           <div className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-navy-950 to-transparent" />
@@ -297,7 +307,7 @@ function Card({ v, canWatch, onOpen }: { v: LibItem; canWatch: boolean; onOpen: 
   return (
     <button type="button" onClick={() => onOpen(v.id)} className="group block w-full text-left">
       <div className="relative aspect-video overflow-hidden rounded-xl ring-1 ring-white/10 transition-shadow group-hover:ring-sun-400/60">
-        <VideoThumb hue={hueOf(v.category)} character={v.character} className={clsx("transition-transform duration-500 group-hover:scale-[1.04]", !canWatch && "opacity-70")} />
+        <Cover v={v} className={clsx("transition-transform duration-500 group-hover:scale-[1.04]", !canWatch && "opacity-70")} />
         {!canWatch && (
           <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 rounded-full bg-navy-950/75 px-2.5 py-1 text-xs font-medium text-white backdrop-blur">
             <Lock size={11} aria-hidden />
@@ -349,7 +359,7 @@ function PlayerDialog(props: {
           <RealPlayer videoId={v.id} durationSeconds={v.durationSeconds} startPercent={v.progress} />
         ) : (
           <>
-            <VideoThumb hue={hueOf(v.category)} character={v.character} className={canWatch ? "" : "opacity-40 blur-[2px]"} />
+            <Cover v={v} className={canWatch ? "" : "opacity-40 blur-[2px]"} />
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-navy-950/40 p-6 text-center">
               {canWatch ? (
                 <>

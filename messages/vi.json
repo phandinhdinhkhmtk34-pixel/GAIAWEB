@@ -336,7 +336,12 @@
     "unpublish": "Ẩn video",
     "delete": "Xoá",
     "deleteConfirm": "Xoá luôn",
-    "cancel": "Huỷ"
+    "cancel": "Huỷ",
+    "thumbField": "Ảnh bìa (không bắt buộc)",
+    "thumbHint": "JPG, PNG hoặc WebP, tối đa 5 MB. Nên dùng ảnh ngang (16:9). Nếu không chọn, hệ thống tự lấy một khung hình trong video.",
+    "thumbChange": "Đổi ảnh bìa",
+    "imageType": "Hãy chọn ảnh JPG, PNG hoặc WebP.",
+    "imageSize": "Ảnh tối đa 5 MB."
   },
   "auth": {
     "notConfigured": "Chức năng đăng nhập chưa được cài đặt (đang hiển thị bản prototype).",

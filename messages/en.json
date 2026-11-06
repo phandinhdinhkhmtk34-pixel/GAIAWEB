@@ -336,7 +336,12 @@
     "unpublish": "Unpublish",
     "delete": "Delete",
     "deleteConfirm": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "thumbField": "Cover image (optional)",
+    "thumbHint": "JPG, PNG or WebP, up to 5 MB. Landscape (16:9) works best. If you skip it, a frame from the video is used.",
+    "thumbChange": "Change cover image",
+    "imageType": "Choose a JPG, PNG or WebP image.",
+    "imageSize": "Images can be up to 5 MB."
   },
   "auth": {
     "notConfigured": "Sign-in is not set up yet (showing the prototype).",

@@ -336,7 +336,12 @@
     "unpublish": "非公開にする",
     "delete": "削除",
     "deleteConfirm": "削除する",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "thumbField": "サムネイル画像（任意）",
+    "thumbHint": "JPG・PNG・WebP、5 MB まで。横長（16:9）がおすすめです。選ばない場合は、動画の一場面を自動で使います。",
+    "thumbChange": "サムネイルを変更",
+    "imageType": "JPG・PNG・WebP の画像を選んでください。",
+    "imageSize": "画像は 5 MB までです。"
   },
   "auth": {
     "notConfigured": "ログイン機能はまだ設定されていません（プロトタイプ表示中）。",

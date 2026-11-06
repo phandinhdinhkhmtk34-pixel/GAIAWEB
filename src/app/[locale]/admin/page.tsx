@@ -27,6 +27,7 @@ const ACTION_LABEL: Record<string, string> = {
   publish_video: "動画を公開 / Publish video",
   unpublish_video: "動画を非公開 / Unpublish video",
   delete_video: "動画を削除 / Delete video",
+  set_thumbnail: "サムネイルを変更 / Change cover image",
 };
 
 async function loadLive(locale: string): Promise<LiveAdmin> {
@@ -121,6 +122,7 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
       minutes: v.durationSeconds ? Math.max(1, Math.round(v.durationSeconds / 60)) : 0,
       created: v.createdAt,
       viewers: viewersByVideo.get(v.id) ?? 0,
+      thumbnailUrl: v.thumbnailUrl,
     })),
     audit: auditRows.map((a) => ({
       who: (a.actor_id && byId.get(a.actor_id)?.email) || "—",

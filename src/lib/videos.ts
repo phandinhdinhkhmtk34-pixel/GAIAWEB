@@ -1,6 +1,10 @@
 import "server-only";
 import { createClient } from "./supabase/server";
 import { createAdminClient } from "./supabase/admin";
+import { supabaseUrl } from "./supabase/config";
+
+/** Public URL of a cover image in the "thumbnails" bucket. */
+export const thumbnailUrl = (path: string | null) => (path ? `${supabaseUrl}/storage/v1/object/public/thumbnails/${path}` : null);
 
 export interface CatalogCategory {
   id: string;
@@ -21,6 +25,7 @@ export interface CatalogVideo {
   state: "draft" | "published";
   publishedAt: string | null;
   createdAt: string;
+  thumbnailUrl: string | null;
 }
 
 type Tr = { entity_type: string; entity_id: string; locale: string; title: string; description: string };
@@ -39,7 +44,7 @@ export async function loadCatalog(locale: string, opts: { includeDrafts?: boolea
   const db = opts.includeDrafts ? createAdminClient() : await createClient();
   let videoQuery = db
     .from("videos")
-    .select("id, category_id, character_name, duration_seconds, state, published_at, created_at")
+    .select("id, category_id, character_name, duration_seconds, state, published_at, created_at, thumbnail_path")
     .order("published_at", { ascending: false, nullsFirst: true })
     .order("created_at", { ascending: false });
   if (!opts.includeDrafts) videoQuery = videoQuery.eq("state", "published");
@@ -73,6 +78,7 @@ export async function loadCatalog(locale: string, opts: { includeDrafts?: boolea
       state: v.state,
       publishedAt: v.published_at,
       createdAt: v.created_at,
+      thumbnailUrl: thumbnailUrl(v.thumbnail_path),
     };
   });
   return { categories, videos, translations: vtr };

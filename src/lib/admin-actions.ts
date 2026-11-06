@@ -125,6 +125,8 @@ export async function saveVideoAction(_: AdminActionState, fd: FormData): Promis
   const path = String(fd.get("storagePath") ?? "");
   const categoryId = String(fd.get("categoryId") ?? "");
   const character = String(fd.get("character") ?? "").trim().slice(0, 60);
+  const rawThumb = String(fd.get("thumbnailPath") ?? "");
+  const thumbnailPath = /^\d{4}-\d{2}\/[0-9a-f-]{36}\.(jpg|png|webp)$/.test(rawThumb) ? rawThumb : null;
   const publish = fd.get("publish") === "1";
   const titles = Object.fromEntries(LOCALES_FOR_TEXT.map((l) => [l, String(fd.get(`title_${l}`) ?? "").trim().slice(0, 120)]));
   const descs = Object.fromEntries(LOCALES_FOR_TEXT.map((l) => [l, String(fd.get(`desc_${l}`) ?? "").trim().slice(0, 600)]));
@@ -144,6 +146,7 @@ export async function saveVideoAction(_: AdminActionState, fd: FormData): Promis
       category_id: categoryId,
       storage_path: path,
       character_name: character,
+      thumbnail_path: thumbnailPath,
       state: publish ? "published" : "draft",
       published_at: publish ? new Date().toISOString() : null,
       created_by: me.id,
@@ -187,8 +190,9 @@ export async function deleteVideoAction(fd: FormData) {
   if (!me) return;
   const id = String(fd.get("videoId") ?? "");
   const db = createAdminClient();
-  const { data: v } = await db.from("videos").select("storage_path").eq("id", id).maybeSingle();
+  const { data: v } = await db.from("videos").select("storage_path, thumbnail_path").eq("id", id).maybeSingle();
   if (!v) return;
+  if (v.thumbnail_path) await db.storage.from("thumbnails").remove([v.thumbnail_path]);
   await db.from("translations").delete().eq("entity_type", "video").eq("entity_id", id);
   await db.from("videos").delete().eq("id", id);
   if (v.storage_path) await db.storage.from("videos").remove([v.storage_path]);
@@ -254,4 +258,43 @@ export async function endPlanAction(fd: FormData) {
   await db.from("subscriptions").update({ status: "expired", current_period_end: new Date().toISOString() }).eq("org_id", orgId).in("status", ["active", "cancelled"]);
   await db.from("audit_log").insert({ actor_id: me.id, action: "end_plan", target: org?.name ?? orgId });
   revalidatePath(`/${localeOf(fd)}/admin`);
+}
+
+/* -------------------------------------------------------------- thumbnails */
+
+/** Only paths this app issues: "YYYY-MM/<uuid>.<ext>". */
+const THUMB_PATH = /^\d{4}-\d{2}\/[0-9a-f-]{36}\.(jpg|png|webp)$/;
+
+const IMAGE_TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+/** A one-time URL for uploading a cover image to the public thumbnails bucket. */
+export async function createThumbnailUploadAction(input: { type: string; size: number }) {
+  const me = await requireRole(["super", "editor"]);
+  if (!me) return { error: "forbidden" as const };
+  const ext = IMAGE_TYPES[input.type];
+  if (!ext) return { error: "imageType" as const };
+  if (!(input.size > 0) || input.size > MAX_IMAGE_BYTES) return { error: "imageSize" as const };
+  const path = `${new Date().toISOString().slice(0, 7)}/${crypto.randomUUID()}.${ext}`;
+  const { data, error } = await createAdminClient().storage.from("thumbnails").createSignedUploadUrl(path);
+  if (error || !data) return { error: "generic" as const };
+  return { path: data.path, token: data.token };
+}
+
+/** Point a video at a newly uploaded cover image and remove the old one. */
+export async function setThumbnailAction(input: { videoId: string; path: string; locale: string }) {
+  const me = await requireRole(["super", "editor"]);
+  if (!me) return { error: "forbidden" as const };
+  if (!THUMB_PATH.test(input.path)) return { error: "generic" as const };
+  const db = createAdminClient();
+  const { data: v } = await db.from("videos").select("thumbnail_path").eq("id", input.videoId).maybeSingle();
+  if (!v) return { error: "generic" as const };
+  const { error } = await db.from("videos").update({ thumbnail_path: input.path }).eq("id", input.videoId);
+  if (error) return { error: "generic" as const };
+  if (v.thumbnail_path && v.thumbnail_path !== input.path) await db.storage.from("thumbnails").remove([v.thumbnail_path]);
+  await db.from("audit_log").insert({ actor_id: me.id, action: "set_thumbnail", target: input.videoId });
+  const locale = (routing.locales as readonly string[]).includes(input.locale) ? input.locale : routing.defaultLocale;
+  revalidatePath(`/${locale}/admin`);
+  revalidatePath(`/${locale}/library`);
+  return { ok: true as const };
 }
