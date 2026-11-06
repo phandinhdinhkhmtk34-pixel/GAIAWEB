@@ -22,7 +22,10 @@ export default async function SignupPage({
   const { locale } = await params;
   const { plan, seats } = await searchParams;
   setRequestLocale(locale);
-  if (await getViewer()) redirect(`/${locale}/dashboard`);
+  // Already signed in: a chosen plan goes straight to checkout.
+  if (await getViewer()) {
+    redirect(plan ? `/${locale}/checkout?period=${plan === "annual" ? "annual" : "monthly"}&seats=${encodeURIComponent(seats ?? "1")}` : `/${locale}/dashboard`);
+  }
   const t = await getTranslations("auth");
   const th = await getTranslations("home");
   const tc = await getTranslations("common");

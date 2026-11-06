@@ -9,6 +9,7 @@ import { getViewer } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createAdminClient, hasServiceRole } from "@/lib/supabase/admin";
 import { loadCatalog } from "@/lib/videos";
+import { loadPrices, planAmount } from "@/lib/billing";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -27,6 +28,13 @@ const ACTION_LABEL: Record<string, string> = {
   publish_video: "動画を公開 / Publish video",
   unpublish_video: "動画を非公開 / Unpublish video",
   delete_video: "動画を削除 / Delete video",
+  bank_order: "振込注文を作成 / Bank transfer order",
+  confirm_transfer: "入金を確認 / Confirm transfer",
+  reject_transfer: "振込を差し戻し / Reject transfer",
+  billing_settings: "振込先・領収書設定を変更 / Billing settings",
+  add_seats_card: "カードでアカウント追加 / Add seats by card",
+  cancel_plan: "自動更新を停止 / Turn off renewal",
+  resume_plan: "自動更新を再開 / Resume renewal",
   set_thumbnail: "サムネイルを変更 / Change cover image",
 };
 
@@ -48,6 +56,9 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
     audit: [],
     videos: [],
     categories: [],
+    billing: { pending: [], recent: [], settings: {} },
+    kpis: null,
+    charts: null,
   };
   if (!hasServiceRole) return base;
 
@@ -65,15 +76,55 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
       : Promise.resolve({ data: [] }),
     db.from("profiles").select("org_id"),
   ]);
-  const [subs, catalog, progress] = await Promise.all([
-    db.from("subscriptions").select("org_id, status, period, current_period_end").in("status", ["active", "cancelled"]).gt("current_period_end", new Date().toISOString()),
+  const money = viewer.adminRole !== "editor";
+  const [subs, catalog, progress, pays, settings, prices] = await Promise.all([
+    db.from("subscriptions").select("id, org_id, status, period, seats, current_period_end").in("status", ["active", "cancelled"]).gt("current_period_end", new Date().toISOString()),
     loadCatalog(locale, { includeDrafts: true }),
-    db.from("watch_progress").select("video_id"),
+    db.from("watch_progress").select("video_id, updated_at"),
+    money
+      ? db.from("payments").select("id, subscription_id, order_code, amount_jpy, method, status, kind, seats, created_at, verified_at, receipt_number").order("created_at", { ascending: false }).limit(1000)
+      : Promise.resolve({ data: [] }),
+    money ? db.from("billing_settings").select("*").eq("id", 1).maybeSingle() : Promise.resolve({ data: null }),
+    loadPrices(),
   ]);
   const planByOrg = new Map(((subs.data ?? []) as { org_id: string; status: "active" | "cancelled"; period: "monthly" | "annual"; current_period_end: string }[]).map((x) => [x.org_id, x]));
   const viewersByVideo = new Map<string, number>();
   for (const r of (progress.data ?? []) as { video_id: string }[]) viewersByVideo.set(r.video_id, (viewersByVideo.get(r.video_id) ?? 0) + 1);
   const catName = new Map(catalog.categories.map((c) => [c.id, c.name]));
+
+  // Payments → organization names (payments reference subscriptions, which reference organizations).
+  type Pay = { id: string; subscription_id: string; order_code: string; amount_jpy: number; method: string; status: string; kind: string; seats: number | null; created_at: string; verified_at: string | null; receipt_number: string | null };
+  const payRows = (pays.data ?? []) as Pay[];
+  const subIds = [...new Set(payRows.map((p) => p.subscription_id))];
+  const { data: subOrgs } = subIds.length ? await db.from("subscriptions").select("id, org_id").in("id", subIds) : { data: [] as { id: string; org_id: string }[] };
+  const orgName = new Map((orgs.data ?? []).map((o) => [o.id, o.name]));
+  const orgOfSub = new Map((subOrgs ?? []).map((x) => [x.id, x.org_id]));
+  const nameOfPay = (p: Pay) => orgName.get(orgOfSub.get(p.subscription_id) ?? "") ?? "—";
+  const verified = payRows.filter((p) => p.status === "verified");
+
+  // Monthly recurring revenue: each live plan's price per month (annual plans count as 1/12).
+  const activeSubs = (subs.data ?? []) as { id: string; org_id: string; period: "monthly" | "annual"; seats: number }[];
+  const mrr = Math.round(
+    activeSubs.reduce((n, x) => n + planAmount(prices[x.period], x.seats) / (x.period === "annual" ? 12 : 1), 0),
+  );
+  const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+  const months = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date();
+    d.setDate(1);
+    d.setMonth(d.getMonth() - (5 - i));
+    return { key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`, label: `${d.getMonth() + 1}月` };
+  });
+  const revenueByMonth = new Map(months.map((m) => [m.key, 0]));
+  for (const p of verified) {
+    const key = (p.verified_at ?? p.created_at).slice(0, 7);
+    if (revenueByMonth.has(key)) revenueByMonth.set(key, (revenueByMonth.get(key) ?? 0) + p.amount_jpy);
+  }
+  const catOfVideo = new Map(catalog.videos.map((v) => [v.id, v.categoryId]));
+  const viewsByCat = new Map<string, number>();
+  for (const r of (progress.data ?? []) as { video_id: string }[]) {
+    const c = catOfVideo.get(r.video_id);
+    if (c) viewsByCat.set(c, (viewsByCat.get(c) ?? 0) + 1);
+  }
   const usedByOrg = new Map<string, number>();
   for (const r of (seatsUsed.data ?? []) as { org_id: string }[]) usedByOrg.set(r.org_id, (usedByOrg.get(r.org_id) ?? 0) + 1);
 
@@ -114,6 +165,33 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
         .map((p) => ({ userId: null, email: p.email, name: "", role: p.role, pending: true })),
     ],
     categories: catalog.categories.map((c) => ({ id: c.id, name: c.name })),
+    billing: {
+      pending: payRows
+        .filter((p) => p.status === "awaiting" && p.method === "bank_transfer")
+        .map((p) => ({ id: p.id, code: p.order_code, org: nameOfPay(p), amount: p.amount_jpy, kind: p.kind, seats: p.seats, created: p.created_at })),
+      recent: verified.slice(0, 20).map((p) => ({
+        code: p.order_code,
+        org: nameOfPay(p),
+        amount: p.amount_jpy,
+        method: p.method,
+        receipt: p.receipt_number,
+        date: p.verified_at ?? p.created_at,
+      })),
+      settings: Object.fromEntries(Object.entries((settings.data ?? {}) as Record<string, unknown>).map(([k, v]) => [k, v == null ? "" : String(v)])),
+    },
+    kpis: {
+      paid: new Set(activeSubs.map((x) => x.org_id)).size,
+      activeSubs: activeSubs.length,
+      mrr,
+      total: verified.reduce((n, p) => n + p.amount_jpy, 0),
+      pending: payRows.filter((p) => p.status === "awaiting").length,
+      videos: catalog.videos.filter((v) => v.state === "published").length,
+      views: ((progress.data ?? []) as { updated_at: string }[]).filter((r) => r.updated_at >= monthStart).length,
+    },
+    charts: {
+      revenue: months.map((m) => ({ label: m.label, revenue: revenueByMonth.get(m.key) ?? 0 })),
+      views: catalog.categories.map((c) => ({ name: c.name, views: viewsByCat.get(c.id) ?? 0 })),
+    },
     videos: catalog.videos.map((v) => ({
       id: v.id,
       title: v.title,

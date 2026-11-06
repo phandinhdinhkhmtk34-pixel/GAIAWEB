@@ -13,7 +13,7 @@ import {
 import { DEFAULT_PRICES, quote } from "@/lib/pricing";
 import { formatDate, formatDateTime, formatNumber, formatYen } from "@/lib/format";
 import { DemoTag } from "./demo-banner";
-import { LiveAdmins, PlanControls, SeatsEditor, VideoManager, type LiveAdmin } from "./admin-live";
+import { LiveAdmins, LivePayments, PlanControls, SeatsEditor, VideoManager, type LiveAdmin } from "./admin-live";
 
 export type { LiveAdmin };
 
@@ -99,7 +99,7 @@ export function AdminView({ live }: { live?: LiveAdmin }) {
           >
             {t(TAB_KEY[id])}
             {id === "payments" && (
-              <span className="ml-2 rounded-full bg-seal px-1.5 py-0.5 text-[11px] text-white tabular-nums">{pendingTransfers.length}</span>
+              <span className="ml-2 rounded-full bg-seal px-1.5 py-0.5 text-[11px] text-white tabular-nums">{live ? live.billing.pending.length : pendingTransfers.length}</span>
             )}
           </button>
         ))}
@@ -107,7 +107,7 @@ export function AdminView({ live }: { live?: LiveAdmin }) {
 
       <div id="admin-panel" role="tabpanel" className="pt-8">
         {current === "overview" && <Overview role={role} live={live} />}
-        {current === "payments" && <Payments />}
+        {current === "payments" && (live ? <LivePayments live={live} /> : <Payments />)}
         {current === "users" && <Members live={live} />}
         {current === "videos" && (live ? <VideoManager live={live} /> : <Videos />)}
         {current === "content" && <Content />}
@@ -123,27 +123,31 @@ function Overview({ role, live }: { role: Role; live?: LiveAdmin }) {
   const locale = useLocale();
   const money = role !== "editor";
   const n = (v: number) => formatNumber(v, locale);
+  const k = live?.kpis;
   const kpis = [
     { icon: Users, label: t("kpiUsers"), value: n(live ? live.counts.users : adminKpis.users) },
-    { icon: BadgeCheck, label: t("kpiPaid"), value: n(adminKpis.paid) },
+    { icon: BadgeCheck, label: t("kpiPaid"), value: n(k ? k.paid : adminKpis.paid) },
     { icon: Building2, label: t("kpiCompanies"), value: n(live ? live.counts.companies : adminKpis.companies) },
-    { icon: Repeat, label: t("kpiActiveSubs"), value: n(adminKpis.activeSubs) },
-    { icon: Wallet, label: t("kpiMrr"), value: formatYen(adminKpis.mrr, locale), money: true, lead: true },
-    { icon: PiggyBank, label: t("kpiTotal"), value: formatYen(adminKpis.total, locale), money: true },
-    { icon: Hourglass, label: t("kpiPending"), value: n(adminKpis.pending), money: true },
-    { icon: Film, label: t("kpiVideos"), value: n(adminKpis.videos) },
-    { icon: Eye, label: t("kpiViews"), value: n(adminKpis.views) },
+    { icon: Repeat, label: t("kpiActiveSubs"), value: n(k ? k.activeSubs : adminKpis.activeSubs) },
+    { icon: Wallet, label: t("kpiMrr"), value: formatYen(k ? k.mrr : adminKpis.mrr, locale), money: true, lead: true },
+    { icon: PiggyBank, label: t("kpiTotal"), value: formatYen(k ? k.total : adminKpis.total, locale), money: true },
+    { icon: Hourglass, label: t("kpiPending"), value: n(k ? k.pending : adminKpis.pending), money: true },
+    { icon: Film, label: t("kpiVideos"), value: n(k ? k.videos : adminKpis.videos) },
+    { icon: Eye, label: t("kpiViews"), value: n(k ? k.views : adminKpis.views) },
   ].filter((k) => money || !k.money);
 
-  const revenue = monthlyRevenue.map((m) => ({ ...m, label: m.month }));
-  const views = viewsByCategory.map((v) => ({ name: pick(categories.find((c) => c.id === v.id)!.name, locale), views: v.views }));
+  const revenue = live?.charts ? live.charts.revenue : monthlyRevenue.map((m) => ({ ...m, label: m.month }));
+  const views = live?.charts
+    ? live.charts.views
+    : viewsByCategory.map((v) => ({ name: pick(categories.find((c) => c.id === v.id)!.name, locale), views: v.views }));
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-2">
-        <DemoTag />
-        {live && <p className="text-sm text-navy-900/60">{t("liveKpiNote")}</p>}
-      </div>
+      {!live && (
+        <div className="flex flex-wrap items-center gap-2">
+          <DemoTag />
+        </div>
+      )}
       <dl className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
         {kpis.map(({ icon: Icon, label, value, lead }) => (
           <div
@@ -169,17 +173,17 @@ function Overview({ role, live }: { role: Role; live?: LiveAdmin }) {
       )}
       <div className="grid gap-6 lg:grid-cols-2">
         {money && (
-          <ChartPanel title={t("revenueChart")}>
+          <ChartPanel title={t("revenueChart")} demo={!live}>
             <BarChart data={revenue} margin={{ left: 8, right: 8, top: 8 }}>
               <CartesianGrid vertical={false} stroke="#0D1A3A14" />
               <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: "#0D1A3A99", fontSize: 12 }} />
-              <YAxis tickLine={false} axisLine={false} width={48} tick={{ fill: "#0D1A3A99", fontSize: 12 }} tickFormatter={(v: number) => `${v / 1_000_000}M`} />
+              <YAxis tickLine={false} axisLine={false} width={48} tick={{ fill: "#0D1A3A99", fontSize: 12 }} tickFormatter={(v: number) => (v >= 1_000_000 ? `${v / 1_000_000}M` : v >= 1000 ? `${v / 1000}k` : String(v))} />
               <Tooltip formatter={(v) => formatYen(Number(v), locale)} cursor={{ fill: "#0D1A3A0A" }} contentStyle={{ borderRadius: 12 }} />
               <Bar dataKey="revenue" fill="#16264F" radius={[8, 8, 0, 0]} activeBar={{ fill: "#E2A030" }} />
             </BarChart>
           </ChartPanel>
         )}
-        <ChartPanel title={t("viewsChart")}>
+        <ChartPanel title={t("viewsChart")} demo={!live}>
           <BarChart data={views} layout="vertical" margin={{ left: 8, right: 16, top: 4 }}>
             <CartesianGrid horizontal={false} stroke="#0D1A3A14" />
             <XAxis type="number" tickLine={false} axisLine={false} tick={{ fill: "#0D1A3A99", fontSize: 12 }} />
@@ -193,12 +197,12 @@ function Overview({ role, live }: { role: Role; live?: LiveAdmin }) {
   );
 }
 
-function ChartPanel({ title, children }: { title: string; children: React.ReactElement }) {
+function ChartPanel({ title, children, demo = true }: { title: string; children: React.ReactElement; demo?: boolean }) {
   return (
     <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-bold">{title}</h2>
-        <DemoTag />
+        {demo && <DemoTag />}
       </div>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">

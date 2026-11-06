@@ -7,7 +7,7 @@ import { isSupabaseConfigured, supabaseAnonKey, supabaseUrl } from "./lib/supaba
 const intl = createIntlMiddleware(routing);
 
 /** Paths (after the locale) that need a signed-in user. Role and 2FA checks happen on the server page itself. */
-const PROTECTED = ["/dashboard", "/admin", "/mfa", "/set-password"];
+const PROTECTED = ["/dashboard", "/admin", "/mfa", "/set-password", "/checkout", "/receipt"];
 
 export default async function middleware(request: NextRequest) {
   const response = intl(request);

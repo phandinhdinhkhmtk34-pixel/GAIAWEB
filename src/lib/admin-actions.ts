@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { routing } from "@/i18n/routing";
 import { getViewer, type AdminRole } from "./auth";
 import { createAdminClient, hasServiceRole } from "./supabase/admin";
+import { addPeriod } from "./billing";
 
 export type AdminActionState = { error?: string; ok?: string; email?: string } | undefined;
 
@@ -222,9 +223,7 @@ export async function activatePlanAction(_: AdminActionState, fd: FormData): Pro
   const amount = base + Math.max(0, org.seat_limit - (plan?.included_seats ?? 1)) * seat;
 
   const start = new Date();
-  const end = new Date(start);
-  if (period === "annual") end.setFullYear(end.getFullYear() + 1);
-  else end.setMonth(end.getMonth() + 1);
+  const end = addPeriod(start, period);
 
   // One live subscription per organization: close any previous one first.
   await db.from("subscriptions").update({ status: "expired", current_period_end: start.toISOString() }).eq("org_id", orgId).in("status", ["active", "cancelled", "pending_payment"]);
@@ -243,6 +242,11 @@ export async function activatePlanAction(_: AdminActionState, fd: FormData): Pro
     status: "verified",
     verified_by: me.id,
     verified_at: start.toISOString(),
+    receipt_number: String((await db.rpc("next_receipt_number")).data),
+    kind: "plan",
+    period,
+    seats: org.seat_limit,
+    note: "manual activation",
   });
   await db.from("audit_log").insert({ actor_id: me.id, action: "activate_plan", target: org.name, details: { period, amount, order_code: code } });
   revalidatePath(`/${localeOf(fd)}/admin`);

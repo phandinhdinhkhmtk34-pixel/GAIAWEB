@@ -49,7 +49,7 @@ async function loadLive(locale: string): Promise<LiveMember> {
     loadCatalog(locale),
     loadMemberLearning(viewer.id),
     // RLS shows payments of the member's own organization (owners and employees alike).
-    supabase.from("payments").select("order_code, method, amount_jpy, status, created_at").order("created_at", { ascending: false }).limit(24),
+    supabase.from("payments").select("order_code, method, amount_jpy, status, created_at, receipt_number").order("created_at", { ascending: false }).limit(24),
   ]);
   const byId = new Map(catalog.videos.map((v) => [v.id, v]));
   const recent = [...learning.progress].sort((a, b) => b.updated_at.localeCompare(a.updated_at));
@@ -93,12 +93,20 @@ async function loadLive(locale: string): Promise<LiveMember> {
       amount: p.amount_jpy as number,
       method: p.method as "card" | "bank_transfer",
       status: p.status as string,
-    })),
+      receipt: (p.receipt_number as string | null) ?? null,
+    })).filter((p) => !(p.status === "rejected")),
   };
 }
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ checkout?: string }>;
+}) {
   const { locale } = await params;
+  const { checkout } = await searchParams;
   setRequestLocale(locale);
   const live = isSupabaseConfigured ? await loadLive(locale) : undefined;
   return (
@@ -106,7 +114,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <DemoBanner />
       <SiteHeader />
       <main id="main">
-        <DashboardView live={live} />
+        <DashboardView live={live} notice={checkout === "success" ? "checkoutSuccess" : undefined} />
       </main>
       <SiteFooter />
     </>

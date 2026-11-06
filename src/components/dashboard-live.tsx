@@ -26,7 +26,7 @@ export interface LiveMember {
     history: { id: string; title: string; minutes: number; progress: number }[];
     favorites: { id: string; title: string; minutes: number }[];
   };
-  payments: { date: string; code: string; amount: number; method: "card" | "bank_transfer"; status: string }[];
+  payments: { date: string; code: string; amount: number; method: "card" | "bank_transfer"; status: string; receipt: string | null }[];
 }
 
 export function LiveCompany({ live }: { live: LiveMember }) {
@@ -44,7 +44,12 @@ export function LiveCompany({ live }: { live: LiveMember }) {
           <div className="mt-4 h-2 overflow-hidden rounded-full bg-sky-100" aria-hidden>
             <div className="h-full rounded-full bg-sun-500" style={{ width: `${Math.min(100, (used / live.org.seatLimit) * 100)}%` }} />
           </div>
-          {used >= live.org.seatLimit && <p className="mt-4 text-sm text-navy-900/70">{t("seatsHowTo")}</p>}
+          {used >= live.org.seatLimit && (
+            <p className="mt-4 text-sm text-navy-900/70">
+              {t("seatsHowToLive")}{" "}
+              <Link href="/checkout" className="font-semibold text-navy-700 underline-offset-4 hover:underline">{t("addSeatsLink")}</Link>
+            </p>
+          )}
         </section>
         <form action={action} noValidate className="rounded-2xl border border-navy-900/10 bg-white p-6">
           <input type="hidden" name="locale" value={locale} />
@@ -190,7 +195,7 @@ function LivePlanCard({ live }: { live: LiveMember }) {
           </p>
           <p className="relative mt-3 max-w-lg text-sm text-white/70">{live.memberRole === "owner" ? t("noPlanOwner") : t("noPlanEmployee")}</p>
           {live.memberRole === "owner" && (
-            <Link href="/#pricing" className="btn-3d relative mt-6">{th("pricingTitle")}</Link>
+            <Link href="/checkout" className="btn-3d relative mt-6">{t("subscribeNow")}</Link>
           )}
         </>
       )}
@@ -261,9 +266,20 @@ export function LiveOverview({ live }: { live: LiveMember }) {
 export function LiveBilling({ live }: { live: LiveMember }) {
   const t = useTranslations("dashboard");
   const locale = useLocale();
+  const pending = live.payments.find((p) => p.status === "awaiting" && p.method === "bank_transfer");
   return (
     <div className="space-y-6">
       <LivePlanCard live={live} />
+      {live.memberRole === "owner" && (
+        <div className="flex flex-wrap items-center gap-3">
+          <Link href="/checkout" className="btn-3d">{live.plan ? t("managePlan") : t("subscribeNow")}</Link>
+          {pending && (
+            <Link href={{ pathname: "/checkout", query: { order: pending.code } }} className="rounded-xl bg-sun-200/60 px-4 py-3 text-sm font-semibold text-sun-700">
+              {t("pendingOrder", { code: pending.code })}
+            </Link>
+          )}
+        </div>
+      )}
       <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
         <h2 className="mb-5 text-lg font-bold">{t("paymentHistory")}</h2>
         {live.payments.length === 0 ? (
@@ -278,6 +294,7 @@ export function LiveBilling({ live }: { live: LiveMember }) {
                   <th className="py-3 font-medium">{t("method")}</th>
                   <th className="py-3 text-right font-medium">{t("amount")}</th>
                   <th className="py-3 font-medium">{t("status")}</th>
+                  <th className="py-3 font-medium">{t("receipt")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -294,8 +311,17 @@ export function LiveBilling({ live }: { live: LiveMember }) {
                     <td className="py-3.5 text-right font-semibold tabular-nums">{formatYen(p.amount, locale)}</td>
                     <td className="py-3.5">
                       <span className={clsx("rounded-full px-2.5 py-1 text-xs font-semibold", p.status === "verified" ? "bg-leaf/10 text-leaf" : "bg-sun-200 text-sun-700")}>
-                        {p.status === "verified" ? t("paid") : t("awaiting")}
+                        {p.status === "verified" ? t("paid") : p.status === "rejected" ? t("rejected") : t("awaiting")}
                       </span>
+                    </td>
+                    <td className="py-3.5">
+                      {p.receipt ? (
+                        <Link href={`/receipt/${p.receipt}`} className="font-semibold text-navy-700 underline-offset-4 hover:underline">
+                          {t("viewReceipt")}
+                        </Link>
+                      ) : (
+                        "—"
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -303,7 +329,7 @@ export function LiveBilling({ live }: { live: LiveMember }) {
             </table>
           </div>
         )}
-        <p className="mt-4 text-xs text-navy-900/50">{t("receiptLater")}</p>
+        <p className="mt-4 text-xs text-navy-900/50">{t("receiptHow")}</p>
       </section>
     </div>
   );

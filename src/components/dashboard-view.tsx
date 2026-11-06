@@ -23,7 +23,7 @@ const TAB_KEY: Record<Tab, string> = {
   profile: "tabProfile",
 };
 
-export function DashboardView({ live }: { live?: LiveMember }) {
+export function DashboardView({ live, notice }: { live?: LiveMember; notice?: "checkoutSuccess" }) {
   const t = useTranslations("dashboard");
   const [tab, setTab] = useState<Tab>("overview");
   // Only company managers manage employees.
@@ -48,6 +48,8 @@ export function DashboardView({ live }: { live?: LiveMember }) {
           {roleLabel}
         </span>
       </div>
+
+      {notice && <p role="status" className="mt-6 rounded-xl bg-leaf/10 px-4 py-3 text-sm font-medium text-leaf">{t(notice)}</p>}
 
       <div role="tablist" aria-label={t("title")} className="no-scrollbar mt-8 -mx-4 flex gap-1 overflow-x-auto border-b border-navy-900/10 px-4 sm:mx-0 sm:px-0">
         {tabs.map((id) => (

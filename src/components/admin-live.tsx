@@ -19,7 +19,9 @@ import {
   setVideoStateAction,
   type AdminActionState,
 } from "@/lib/admin-actions";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatYen } from "@/lib/format";
+import { confirmBankPaymentAction, rejectBankPaymentAction, saveBillingSettingsAction, type BillingState } from "@/lib/billing-actions";
+import { Link } from "@/i18n/navigation";
 
 export interface LiveAdmin {
   role: "super" | "accounting" | "editor";
@@ -39,6 +41,13 @@ export interface LiveAdmin {
   }[];
   videos: { id: string; title: string; category: string; state: "draft" | "published"; minutes: number; created: string; viewers: number; thumbnailUrl: string | null }[];
   categories: { id: string; name: string }[];
+  billing: {
+    pending: { id: string; code: string; org: string; amount: number; kind: string; seats: number | null; created: string }[];
+    recent: { code: string; org: string; amount: number; method: string; receipt: string | null; date: string }[];
+    settings: Record<string, string>;
+  };
+  kpis: { paid: number; activeSubs: number; mrr: number; total: number; pending: number; videos: number; views: number } | null;
+  charts: { revenue: { label: string; revenue: number }[]; views: { name: string; views: number }[] } | null;
   admins: { userId: string | null; email: string; name: string; role: "super" | "accounting" | "editor"; pending: boolean }[];
   audit: { who: string; what: string; when: string }[];
 }
@@ -503,6 +512,136 @@ function ThumbCell({ videoId, url, title, canEdit }: { videoId: string; url: str
         }}
       />
       {err && <p role="alert" className="mt-1 max-w-24 text-[11px] text-seal">{err}</p>}
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- payments */
+
+function ConfirmButton({ id, code }: { id: string; code: string }) {
+  const t = useTranslations("admin");
+  const locale = useLocale();
+  const [state, action, pending] = useActionState<BillingState, FormData>(confirmBankPaymentAction, undefined);
+  return (
+    <form action={action} className="flex flex-col items-end gap-1">
+      <input type="hidden" name="locale" value={locale} />
+      <input type="hidden" name="paymentId" value={id} />
+      <input type="hidden" name="code" value={code} />
+      <button type="submit" disabled={pending} className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-leaf px-4 text-sm font-semibold text-white hover:brightness-110 disabled:opacity-60">
+        <CheckCircle2 size={16} aria-hidden />
+        {t("approve")}
+      </button>
+      {state?.error && <span role="alert" className="text-xs text-seal">{t("errGeneric")}</span>}
+    </form>
+  );
+}
+
+export function LivePayments({ live }: { live: LiveAdmin }) {
+  const t = useTranslations("admin");
+  const tb = useTranslations("billing");
+  const locale = useLocale();
+  const [state, action, pending] = useActionState<BillingState, FormData>(saveBillingSettingsAction, undefined);
+  const b = live.billing;
+  const field = "mt-1.5 w-full rounded-lg border border-navy-900/20 bg-white px-3 py-2.5 text-sm focus:border-navy-700 focus:outline-none";
+  const F = ({ name, label, wide }: { name: string; label: string; wide?: boolean }) => (
+    <div className={wide ? "sm:col-span-2" : ""}>
+      <label htmlFor={`bs-${name}`} className="text-xs font-medium text-navy-900/70">{label}</label>
+      <input id={`bs-${name}`} name={name} defaultValue={b.settings[name] ?? ""} className={field} />
+    </div>
+  );
+  return (
+    <div className="space-y-6">
+      <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
+        <h2 className="text-lg font-bold">{t("pendingTitle")}</h2>
+        <p className="mt-2 max-w-3xl text-sm text-navy-900/65">{t("pendingBodyLive")}</p>
+        {b.pending.length === 0 ? (
+          <p className="mt-6 rounded-xl bg-sky-100 p-6 text-center text-navy-900/65">{t("noPending")}</p>
+        ) : (
+          <ul className="mt-6 divide-y divide-navy-900/8">
+            {b.pending.map((p) => (
+              <li key={p.id} className="flex flex-wrap items-center gap-x-6 gap-y-3 py-4">
+                <div className="min-w-32">
+                  <p className="text-xs text-navy-900/50">{t("orderCode")}</p>
+                  <p className="font-mono font-semibold">{p.code}</p>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold">{p.org}</p>
+                  <p className="text-sm text-navy-900/55">
+                    {tb(`kind.${p.kind}`)}{p.seats ? ` · ${tb("seatsCount", { count: p.seats })}` : ""} · {formatDate(p.created, locale)}
+                  </p>
+                </div>
+                <p className="font-serif text-xl font-bold tabular-nums">{formatYen(p.amount, locale)}</p>
+                <div className="flex items-start gap-2">
+                  <form action={rejectBankPaymentAction}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="paymentId" value={p.id} />
+                    <button type="submit" className="min-h-11 rounded-xl border border-navy-900/15 px-3 text-sm font-semibold hover:bg-sky-100">{t("reject")}</button>
+                  </form>
+                  <ConfirmButton id={p.id} code={p.code} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
+        <h2 className="mb-4 text-lg font-bold">{t("recentPayments")}</h2>
+        {b.recent.length === 0 ? (
+          <p className="text-sm text-navy-900/60">{t("noRecent")}</p>
+        ) : (
+          <div className="-mx-6 overflow-x-auto px-6">
+            <table className="w-full min-w-[640px] text-left text-sm">
+              <thead className="text-navy-900/55">
+                <tr className="border-b border-navy-900/10">
+                  <th className="py-3 font-medium">{t("requested")}</th>
+                  <th className="py-3 font-medium">{t("customer")}</th>
+                  <th className="py-3 font-medium">{tb("method")}</th>
+                  <th className="py-3 text-right font-medium">{tb("amount")}</th>
+                  <th className="py-3 font-medium">{tb("receipt")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {b.recent.map((r) => (
+                  <tr key={r.code} className="border-b border-navy-900/6 last:border-0">
+                    <td className="py-3 whitespace-nowrap">{formatDate(r.date, locale)}</td>
+                    <td className="py-3">{r.org}</td>
+                    <td className="py-3">{r.method === "card" ? tb("methodCard") : tb("methodBank")}</td>
+                    <td className="py-3 text-right font-semibold tabular-nums">{formatYen(r.amount, locale)}</td>
+                    <td className="py-3">
+                      {r.receipt ? <Link href={`/receipt/${r.receipt}`} className="font-semibold text-navy-700 hover:underline">{r.receipt}</Link> : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <form action={action} className="grid gap-4 rounded-2xl border border-navy-900/10 bg-white p-6 sm:grid-cols-2">
+        <input type="hidden" name="locale" value={locale} />
+        <div className="sm:col-span-2">
+          <h2 className="text-lg font-bold">{t("billingSettings")}</h2>
+          <p className="mt-1 text-sm text-navy-900/60">{t("billingSettingsBody")}</p>
+        </div>
+        <F name="bank_name" label={tb("bankName")} />
+        <F name="branch_name" label={tb("branchName")} />
+        <F name="account_type" label={tb("accountType")} />
+        <F name="account_number" label={tb("accountNumber")} />
+        <F name="account_holder_kana" label={tb("accountHolder")} wide />
+        <F name="transfer_note" label={t("transferNote")} wide />
+        <F name="issuer_name" label={t("issuerName")} />
+        <F name="issuer_phone" label={t("issuerPhone")} />
+        <F name="issuer_address" label={t("issuerAddress")} wide />
+        <F name="invoice_reg_no" label={t("invoiceRegNo")} />
+        <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
+          <button type="submit" disabled={pending} className="btn-3d disabled:opacity-60">{t("saveSettings")}</button>
+          <p role="status" className={clsx("text-sm", state?.ok ? "text-leaf" : "text-seal")}>
+            {state?.ok ? t("settingsSaved") : state?.error === "invoiceRegNo" ? t("invoiceRegNoInvalid") : state?.error ? t("errGeneric") : ""}
+          </p>
+        </div>
+      </form>
     </div>
   );
 }
