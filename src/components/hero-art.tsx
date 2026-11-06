@@ -21,12 +21,17 @@ const FIGURES = [
 
 export function HeroArt() {
   const t = useTranslations("common");
-  const { heroImageUrl } = useSite();
+  const { heroImageUrl, heroFit, heroFocus } = useSite();
   if (heroImageUrl) {
+    const focus = heroFocus === "left" ? "object-left" : heroFocus === "right" ? "object-right" : "object-center";
     return (
       <figure className="relative overflow-hidden rounded-[28px] bg-navy-900 shadow-[0_40px_80px_-30px_rgb(13_26_58/0.6)] ring-1 ring-navy-900/10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={heroImageUrl} alt="GAIA" className="block aspect-[840/520] w-full object-cover" />
+        <img
+          src={heroImageUrl}
+          alt="GAIA"
+          className={heroFit === "crop" ? `block aspect-[840/520] w-full object-cover ${focus}` : "block h-auto w-full"}
+        />
       </figure>
     );
   }

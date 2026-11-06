@@ -398,7 +398,15 @@
     "cmsSeatMonthly": "Gói tháng: mỗi người thêm",
     "cmsBaseAnnual": "Gói năm: giá cơ bản (gồm 1 người)",
     "cmsSeatAnnual": "Gói năm: mỗi người thêm",
-    "previewBanner": "Đang xem trước — chưa xuất bản"
+    "previewBanner": "Đang xem trước — chưa xuất bản",
+    "cmsLogoSize": "Kích thước logo (chiều cao)",
+    "cmsHeroFit": "Cách hiển thị ảnh chính",
+    "cmsHeroFitFull": "Hiện toàn bộ ảnh (không cắt)",
+    "cmsHeroFitCrop": "Cắt cho vừa khung",
+    "cmsHeroFocus": "Phần giữ lại khi cắt",
+    "cmsHeroFocus_left": "Trái",
+    "cmsHeroFocus_center": "Giữa",
+    "cmsHeroFocus_right": "Phải"
   },
   "auth": {
     "notConfigured": "Chức năng đăng nhập chưa được cài đặt (đang hiển thị bản prototype).",

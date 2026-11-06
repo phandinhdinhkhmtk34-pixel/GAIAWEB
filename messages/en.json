@@ -398,7 +398,15 @@
     "cmsSeatMonthly": "Monthly per extra user",
     "cmsBaseAnnual": "Annual base (1 user)",
     "cmsSeatAnnual": "Annual per extra user",
-    "previewBanner": "Preview — not published yet"
+    "previewBanner": "Preview — not published yet",
+    "cmsLogoSize": "Logo size (height)",
+    "cmsHeroFit": "Main image display",
+    "cmsHeroFitFull": "Show the whole image (no cropping)",
+    "cmsHeroFitCrop": "Crop to fit the frame",
+    "cmsHeroFocus": "Keep this part when cropping",
+    "cmsHeroFocus_left": "Left",
+    "cmsHeroFocus_center": "Centre",
+    "cmsHeroFocus_right": "Right"
   },
   "auth": {
     "notConfigured": "Sign-in is not set up yet (showing the prototype).",

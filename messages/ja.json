@@ -398,7 +398,15 @@
     "cmsSeatMonthly": "月額 追加 1 名",
     "cmsBaseAnnual": "年額 基本料金（1 名込み）",
     "cmsSeatAnnual": "年額 追加 1 名",
-    "previewBanner": "プレビュー表示中 — まだ公開されていません"
+    "previewBanner": "プレビュー表示中 — まだ公開されていません",
+    "cmsLogoSize": "ロゴの大きさ（高さ）",
+    "cmsHeroFit": "メイン画像の表示",
+    "cmsHeroFitFull": "画像全体を表示（切り抜かない）",
+    "cmsHeroFitCrop": "枠に合わせて切り抜く",
+    "cmsHeroFocus": "切り抜くときに残す位置",
+    "cmsHeroFocus_left": "左",
+    "cmsHeroFocus_center": "中央",
+    "cmsHeroFocus_right": "右"
   },
   "auth": {
     "notConfigured": "ログイン機能はまだ設定されていません（プロトタイプ表示中）。",

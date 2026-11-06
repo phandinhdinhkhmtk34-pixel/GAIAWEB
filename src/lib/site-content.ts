@@ -10,9 +10,17 @@ export interface SiteCharacter {
   role: L10nText;
 }
 
+export type HeroFit = "full" | "crop";
+export type HeroFocus = "left" | "center" | "right";
+
 export interface SiteContent {
   logoUrl: string | null;
+  /** Logo height in the header, in pixels. */
+  logoHeight: number;
   heroImageUrl: string | null;
+  /** "full" shows the whole image at its own proportions; "crop" fills the frame and trims the edges. */
+  heroFit: HeroFit;
+  heroFocus: HeroFocus;
   heroTitle: L10nText;
   heroLead: L10nText;
   introTitle: L10nText;
@@ -27,7 +35,10 @@ export const DEFAULT_CHARACTER_NAMES = ["Hikari", "Sora", "Ren", "Aoi", "Kaito",
 
 export const emptySiteContent = (): SiteContent => ({
   logoUrl: null,
+  logoHeight: 44,
   heroImageUrl: null,
+  heroFit: "full",
+  heroFocus: "center",
   heroTitle: {},
   heroLead: {},
   introTitle: {},
@@ -53,7 +64,10 @@ export function normalizeSiteContent(raw: unknown): SiteContent {
   const chars = Array.isArray(r.characters) ? r.characters : [];
   return {
     logoUrl: url(r.logoUrl),
+    logoHeight: typeof r.logoHeight === "number" && r.logoHeight >= 28 && r.logoHeight <= 80 ? Math.round(r.logoHeight) : d.logoHeight,
     heroImageUrl: url(r.heroImageUrl),
+    heroFit: r.heroFit === "crop" ? "crop" : "full",
+    heroFocus: r.heroFocus === "left" || r.heroFocus === "right" ? r.heroFocus : "center",
     heroTitle: text(r.heroTitle),
     heroLead: text(r.heroLead),
     introTitle: text(r.introTitle),

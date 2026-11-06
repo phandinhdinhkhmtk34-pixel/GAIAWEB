@@ -184,8 +184,67 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
       <section className={section}>
         <h2 className="text-lg font-bold">{t("cmsBrand")}</h2>
         <div className="mt-4 grid gap-6 md:grid-cols-2">
-          <ImageField label={t("cmsLogo")} hint={t("cmsLogoHint")} url={c.logoUrl} onChange={(logoUrl) => update({ logoUrl })} aspect="aspect-[3/1]" />
-          <ImageField label={t("cmsHeroImage")} hint={t("cmsHeroImageHint")} url={c.heroImageUrl} onChange={(heroImageUrl) => update({ heroImageUrl })} />
+          <div className="space-y-4">
+            <ImageField label={t("cmsLogo")} hint={t("cmsLogoHint")} url={c.logoUrl} onChange={(logoUrl) => update({ logoUrl })} aspect="aspect-[3/1]" />
+            <div>
+              <label htmlFor="logo-size" className="text-sm font-medium">
+                {t("cmsLogoSize")}: <span className="tabular-nums">{c.logoHeight}px</span>
+              </label>
+              <input
+                id="logo-size"
+                type="range"
+                min={28}
+                max={80}
+                step={2}
+                value={c.logoHeight}
+                onChange={(e) => update({ logoHeight: Number(e.target.value) })}
+                className="mt-2 h-10 w-full max-w-xs cursor-pointer accent-[#16264F]"
+              />
+              {c.logoUrl && (
+                <div className="mt-2 flex h-20 items-center rounded-xl border border-navy-900/10 bg-sky-50 px-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={c.logoUrl} alt="" style={{ height: c.logoHeight }} className="w-auto max-w-[220px] object-contain" />
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="space-y-4">
+            <ImageField label={t("cmsHeroImage")} hint={t("cmsHeroImageHint")} url={c.heroImageUrl} onChange={(heroImageUrl) => update({ heroImageUrl })} />
+            <fieldset>
+              <legend className="text-sm font-medium">{t("cmsHeroFit")}</legend>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {(["full", "crop"] as const).map((v) => (
+                  <label key={v} className={clsx("cursor-pointer rounded-lg border px-3 py-2 text-sm has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-sun-400", c.heroFit === v ? "border-navy-900 bg-navy-900 text-white" : "border-navy-900/15")}>
+                    <input type="radio" name="heroFit" value={v} checked={c.heroFit === v} onChange={() => update({ heroFit: v })} className="sr-only" />
+                    {t(v === "full" ? "cmsHeroFitFull" : "cmsHeroFitCrop")}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            {c.heroFit === "crop" && (
+              <fieldset>
+                <legend className="text-sm font-medium">{t("cmsHeroFocus")}</legend>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {(["left", "center", "right"] as const).map((v) => (
+                    <label key={v} className={clsx("cursor-pointer rounded-lg border px-3 py-2 text-sm has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-sun-400", c.heroFocus === v ? "border-navy-900 bg-navy-900 text-white" : "border-navy-900/15")}>
+                      <input type="radio" name="heroFocus" value={v} checked={c.heroFocus === v} onChange={() => update({ heroFocus: v })} className="sr-only" />
+                      {t(`cmsHeroFocus_${v}`)}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            )}
+            {c.heroImageUrl && (
+              <div className="max-w-sm overflow-hidden rounded-xl ring-1 ring-navy-900/10">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={c.heroImageUrl}
+                  alt=""
+                  className={c.heroFit === "crop" ? `block aspect-[840/520] w-full object-cover ${c.heroFocus === "left" ? "object-left" : c.heroFocus === "right" ? "object-right" : "object-center"}` : "block h-auto w-full"}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </section>
 

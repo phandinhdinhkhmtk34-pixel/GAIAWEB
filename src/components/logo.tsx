@@ -8,10 +8,13 @@ import clsx from "clsx";
 export function Logo({ dark = false, className }: { dark?: boolean; className?: string }) {
   // Unique per instance: a hidden copy of the logo must not own the gradient the visible one uses.
   const gid = `logo-sun-${useId().replace(/:/g, "")}`;
-  const { logoUrl } = useSite();
+  const { logoUrl, logoHeight } = useSite();
   if (logoUrl) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={logoUrl} alt="GAIA LEARNING" className={clsx("block h-10 w-auto max-w-[180px] object-contain", className)} />;
+    // Height is set in Admin; width follows the image, capped so the menu never overflows.
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={logoUrl} alt="GAIA LEARNING" style={{ height: logoHeight }} className={clsx("block w-auto max-w-[220px] object-contain", className)} />
+    );
   }
   return (
     <span className={clsx("inline-flex items-center gap-2.5", className)}>
