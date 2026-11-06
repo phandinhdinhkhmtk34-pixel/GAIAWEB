@@ -431,7 +431,15 @@
     "hideSection": "Hide",
     "showSection": "Show",
     "shown": "Shown",
-    "hidden": "Hidden"
+    "hidden": "Hidden",
+    "cmsLegal": "Terms and policies (Japanese)",
+    "cmsLegalHint": "Pages linked from the footer. A line starting with “## ” is a heading; “| item | value |” is a table row. Templates are not legal advice; have them checked by a specialist before launch.",
+    "cmsLegal_tokushoho": "Specified Commercial Transactions Act notice",
+    "cmsLegal_privacy": "Privacy policy",
+    "cmsLegal_terms": "Terms of service",
+    "cmsLegalTemplate": "Insert template",
+    "cmsLegalOpen": "Open public page",
+    "cmsLegalTodo": "Some 【要入力】 placeholders remain. Replace them with the real details."
   },
   "auth": {
     "notConfigured": "Sign-in is not set up yet (showing the prototype).",

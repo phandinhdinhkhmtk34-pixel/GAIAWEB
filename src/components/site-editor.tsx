@@ -5,7 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import clsx from "clsx";
 import { ImagePlus, Loader2, Trash2, ExternalLink, Save, Send, GripVertical, ArrowUp, ArrowDown, Eye, EyeOff } from "lucide-react";
 import { createSiteImageUploadAction, publishSiteAction, saveSiteDraftAction } from "@/lib/admin-actions";
-import type { HeroLayout, HomeSection, L10nText, SiteContent } from "@/lib/site-content";
+import type { HeroLayout, HomeSection, L10nText, LegalSlug, SiteContent } from "@/lib/site-content";
+import { LEGAL_TEMPLATES } from "@/lib/legal-templates";
 
 type Lang = "ja" | "vi" | "en";
 const LANGS: { id: Lang; label: string }[] = [
@@ -302,6 +303,38 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
           <div className="sm:col-span-2">
             {textArea("footerAbout", 2, t("cmsFooterAbout"))}
           </div>
+        </div>
+      </section>
+
+      <section className={section}>
+        <h2 className="text-lg font-bold">{t("cmsLegal")}</h2>
+        <p className="mt-1 text-sm text-navy-900/60">{t("cmsLegalHint")}</p>
+        <div className="mt-4 space-y-6">
+          {(["tokushoho", "privacy", "terms"] as const satisfies readonly LegalSlug[]).map((k) => (
+            <div key={k}>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label htmlFor={`legal-${k}`} className="text-sm font-medium">{t(`cmsLegal_${k}`)}</label>
+                <div className="flex items-center gap-3">
+                  <a href={`/${locale}/legal/${k}`} target="_blank" rel="noopener" className="text-xs font-semibold text-navy-700 hover:underline">{t("cmsLegalOpen")}</a>
+                  {!c.legal[k].trim() && (
+                    <button type="button" onClick={() => update({ legal: { ...c.legal, [k]: LEGAL_TEMPLATES[k] } })} className="min-h-9 rounded-lg border border-navy-900/20 px-3 text-xs font-semibold hover:bg-sky-100">
+                      {t("cmsLegalTemplate")}
+                    </button>
+                  )}
+                </div>
+              </div>
+              <textarea
+                id={`legal-${k}`}
+                rows={10}
+                lang="ja"
+                value={c.legal[k]}
+                placeholder={LEGAL_TEMPLATES[k].slice(0, 160) + "…"}
+                onChange={(e) => update({ legal: { ...c.legal, [k]: e.target.value } })}
+                className={clsx(field, "font-mono text-[13px] leading-relaxed")}
+              />
+              {c.legal[k].includes("【要入力】") && <p className="mt-1 text-xs text-sun-700">{t("cmsLegalTodo")}</p>}
+            </div>
+          ))}
         </div>
       </section>
 

@@ -4,7 +4,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import clsx from "clsx";
 import { routing } from "@/i18n/routing";
-import { notoSans, notoSerif, notoSansJP, notoSerifJP, scriptFonts } from "../fonts";
+import { notoSans, notoSerif, notoSerifJP, scriptFonts } from "../fonts";
 import { SiteProvider } from "@/components/site-context";
 import { loadPublishedSiteContent } from "@/lib/site-content-server";
 import "../globals.css";
@@ -40,7 +40,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={clsx(notoSans.variable, notoSerif.variable, notoSansJP.variable, notoSerifJP.variable, ...scriptFonts)}
+      className={clsx(notoSans.variable, notoSerif.variable, notoSerifJP.variable, ...scriptFonts)}
     >
       <body className="min-h-dvh antialiased">
         <NextIntlClientProvider messages={messages}>

@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DemoBanner } from "@/components/demo-banner";
@@ -50,8 +49,15 @@ async function loadLive(locale: string): Promise<LibraryLive> {
   };
 }
 
-export default async function LibraryPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function LibraryPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ c?: string; v?: string }>;
+}) {
   const { locale } = await params;
+  const { c, v } = await searchParams;
   setRequestLocale(locale);
   const live = isSupabaseConfigured ? await loadLive(locale) : undefined;
   return (
@@ -59,9 +65,7 @@ export default async function LibraryPage({ params }: { params: Promise<{ locale
       {!live && <DemoBanner />}
       <SiteHeader tone="dark" />
       <main id="main">
-        <Suspense>
-          <LibraryView live={live} />
-        </Suspense>
+        <LibraryView live={live} initialCategory={c} initialOpen={v} />
       </main>
       <SiteFooter />
     </div>

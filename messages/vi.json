@@ -431,7 +431,15 @@
     "hideSection": "Ẩn",
     "showSection": "Hiện",
     "shown": "Hiện",
-    "hidden": "Ẩn"
+    "hidden": "Ẩn",
+    "cmsLegal": "Điều khoản và chính sách (tiếng Nhật)",
+    "cmsLegalHint": "Các trang mở từ footer. Dòng bắt đầu bằng “## ” là tiêu đề, “| mục | nội dung |” là một dòng bảng. Mẫu soạn sẵn không phải tư vấn pháp lý; nên nhờ chuyên gia kiểm tra trước khi mở chính thức.",
+    "cmsLegal_tokushoho": "特定商取引法に基づく表記",
+    "cmsLegal_privacy": "Chính sách bảo mật (プライバシーポリシー)",
+    "cmsLegal_terms": "Điều khoản sử dụng (利用規約)",
+    "cmsLegalTemplate": "Chèn mẫu soạn sẵn",
+    "cmsLegalOpen": "Mở trang công khai",
+    "cmsLegalTodo": "Còn mục 【要入力】. Hãy thay bằng thông tin chính thức."
   },
   "auth": {
     "notConfigured": "Chức năng đăng nhập chưa được cài đặt (đang hiển thị bản prototype).",

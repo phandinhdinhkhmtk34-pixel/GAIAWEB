@@ -28,7 +28,8 @@
   --color-seal: #b8392a;
   --color-leaf: #217a5b;
 
-  --font-sans: var(--font-noto-sans), var(--font-noto-sans-jp), var(--font-myanmar), var(--font-sinhala), var(--font-khmer), system-ui, sans-serif;
+  /* Japanese body text uses the device's own Japanese font (no download); headings keep the web serif. */
+  --font-sans: var(--font-noto-sans), "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", YuGothic, Meiryo, "Noto Sans JP", "Noto Sans CJK JP", var(--font-myanmar), var(--font-sinhala), var(--font-khmer), system-ui, sans-serif;
   --font-serif: var(--font-noto-serif), var(--font-noto-serif-jp), var(--font-myanmar), var(--font-sinhala), var(--font-khmer), serif;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);

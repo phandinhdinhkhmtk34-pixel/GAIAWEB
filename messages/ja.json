@@ -431,7 +431,15 @@
     "hideSection": "非表示にする",
     "showSection": "表示する",
     "shown": "表示",
-    "hidden": "非表示"
+    "hidden": "非表示",
+    "cmsLegal": "規約とポリシー（日本語）",
+    "cmsLegalHint": "フッターから開くページです。「## 」で見出し、「| 項目 | 内容 |」で表になります。ひな形は法的助言ではありません。公開前に専門家の確認をおすすめします。",
+    "cmsLegal_tokushoho": "特定商取引法に基づく表記",
+    "cmsLegal_privacy": "プライバシーポリシー",
+    "cmsLegal_terms": "利用規約",
+    "cmsLegalTemplate": "ひな形を挿入",
+    "cmsLegalOpen": "公開ページを開く",
+    "cmsLegalTodo": "【要入力】が残っています。正式な情報に差し替えてください。"
   },
   "auth": {
     "notConfigured": "ログイン機能はまだ設定されていません（プロトタイプ表示中）。",

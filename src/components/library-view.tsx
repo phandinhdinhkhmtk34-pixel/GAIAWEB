@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
 import clsx from "clsx";
 import { Search, Lock, Play, Clock, Heart, X, Subtitles, FlaskConical, Loader2, LogIn } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -64,11 +63,10 @@ function demoItems(locale: string): LibItem[] {
   }));
 }
 
-export function LibraryView({ live }: { live?: LibraryLive }) {
+export function LibraryView({ live, initialCategory, initialOpen }: { live?: LibraryLive; initialCategory?: string; initialOpen?: string }) {
   const t = useTranslations("library");
   const tc = useTranslations("common");
   const locale = useLocale();
-  const params = useSearchParams();
 
   const items = useMemo(() => live?.items ?? demoItems(locale), [live, locale]);
   const cats = useMemo(
@@ -77,10 +75,10 @@ export function LibraryView({ live }: { live?: LibraryLive }) {
   );
 
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<string>(params.get("c") ?? "all");
+  const [category, setCategory] = useState<string>(initialCategory ?? "all");
   const [subLang, setSubLang] = useState<string>("any");
   const [demoAccess, setDemoAccess] = useState<Access>("active");
-  const [openId, setOpenId] = useState<string | null>(params.get("v"));
+  const [openId, setOpenId] = useState<string | null>(initialOpen ?? null);
   const [favorites, setFavorites] = useState<string[]>(live?.favorites ?? ["v03", "v07"]);
 
   // Every video is paid: playable only with a verified subscription.

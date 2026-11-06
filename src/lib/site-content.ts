@@ -42,7 +42,12 @@ export interface SiteContent {
   characters: SiteCharacter[];
   company: { name: string; address: string; email: string; phone: string };
   prices: { baseMonthly: number; seatMonthly: number; baseAnnual: number; seatAnnual: number };
+  /** Legal pages, written in Japanese (the governing language). Plain text: "## " starts a heading, "| a | b |" a table row. */
+  legal: Record<LegalSlug, string>;
 }
+
+export const LEGAL_SLUGS = ["tokushoho", "privacy", "terms"] as const;
+export type LegalSlug = (typeof LEGAL_SLUGS)[number];
 
 export const DEFAULT_CHARACTER_NAMES = ["Hikari", "Sora", "Ren", "Aoi", "Kaito", "Mei", "Daichi", "Yui"];
 
@@ -63,6 +68,7 @@ export const emptySiteContent = (): SiteContent => ({
   characters: DEFAULT_CHARACTER_NAMES.map((name) => ({ name, imageUrl: null, role: {} })),
   company: { name: "", address: "", email: "", phone: "" },
   prices: { baseMonthly: 30000, seatMonthly: 3000, baseAnnual: 300000, seatAnnual: 30000 },
+  legal: { tokushoho: "", privacy: "", terms: "" },
 });
 
 /** Merge stored JSON over the defaults, keeping types sane whatever was saved. */
@@ -101,6 +107,11 @@ export function normalizeSiteContent(raw: unknown): SiteContent {
       address: str(r.company?.address),
       email: str(r.company?.email),
       phone: str(r.company?.phone),
+    },
+    legal: {
+      tokushoho: typeof r.legal?.tokushoho === "string" ? r.legal.tokushoho.slice(0, 40000) : "",
+      privacy: typeof r.legal?.privacy === "string" ? r.legal.privacy.slice(0, 40000) : "",
+      terms: typeof r.legal?.terms === "string" ? r.legal.terms.slice(0, 40000) : "",
     },
     prices: {
       baseMonthly: num(r.prices?.baseMonthly, d.prices.baseMonthly),
