@@ -5,7 +5,11 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import clsx from "clsx";
 import { routing } from "@/i18n/routing";
 import { notoSans, notoSerif, notoSansJP, notoSerifJP, scriptFonts } from "../fonts";
+import { SiteProvider } from "@/components/site-context";
+import { loadPublishedSiteContent } from "@/lib/site-content-server";
 import "../globals.css";
+
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -31,7 +35,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  const messages = await getMessages();
+  const [messages, site] = await Promise.all([getMessages(), loadPublishedSiteContent()]);
 
   return (
     <html
@@ -39,7 +43,9 @@ export default async function LocaleLayout({
       className={clsx(notoSans.variable, notoSerif.variable, notoSansJP.variable, notoSerifJP.variable, ...scriptFonts)}
     >
       <body className="min-h-dvh antialiased">
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>
+          <SiteProvider value={site}>{children}</SiteProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -302,3 +302,65 @@ export async function setThumbnailAction(input: { videoId: string; path: string;
   revalidatePath(`/${locale}/library`);
   return { ok: true as const };
 }
+
+/* ------------------------------------------------------------- site content */
+
+/** One-time URL for a site image (logo, banner, character) in the public "site" bucket. */
+export async function createSiteImageUploadAction(input: { type: string; size: number }) {
+  const me = await requireRole(["super", "editor"]);
+  if (!me) return { error: "forbidden" as const };
+  const ext = IMAGE_TYPES[input.type];
+  if (!ext) return { error: "imageType" as const };
+  if (!(input.size > 0) || input.size > MAX_IMAGE_BYTES) return { error: "imageSize" as const };
+  const path = `${new Date().toISOString().slice(0, 7)}/${crypto.randomUUID()}.${ext}`;
+  const db = createAdminClient();
+  const { data, error } = await db.storage.from("site").createSignedUploadUrl(path);
+  if (error || !data) return { error: "generic" as const };
+  const publicUrl = db.storage.from("site").getPublicUrl(path).data.publicUrl;
+  return { path: data.path, token: data.token, publicUrl };
+}
+
+/** Save the working copy. Visitors keep seeing the published version until "publish". */
+export async function saveSiteDraftAction(input: { content: unknown; locale: string }) {
+  const me = await requireRole(["super", "editor"]);
+  if (!me) return { error: "forbidden" as const };
+  const { normalizeSiteContent } = await import("./site-content");
+  const content = normalizeSiteContent(input.content);
+  const db = createAdminClient();
+  const { error } = await db
+    .from("site_content")
+    .upsert({ key: "site", locale: "*", draft: content, updated_by: me.id }, { onConflict: "key,locale" });
+  if (error) return { error: "generic" as const };
+  return { ok: true as const };
+}
+
+/** Publish the working copy: visitors see it immediately, and billing uses the new prices. */
+export async function publishSiteAction(input: { content: unknown; locale: string }) {
+  const me = await requireRole(["super", "editor"]);
+  if (!me) return { error: "forbidden" as const };
+  const { normalizeSiteContent } = await import("./site-content");
+  const content = normalizeSiteContent(input.content);
+  const db = createAdminClient();
+  // Prices decide what customers are charged, so only a Super admin may change them.
+  const { data: current } = await db.from("pricing_plans").select("period, base_price_jpy, seat_price_jpy");
+  const cur = (p: string) => current?.find((r) => r.period === p);
+  const priceChanged =
+    cur("monthly")?.base_price_jpy !== content.prices.baseMonthly ||
+    cur("monthly")?.seat_price_jpy !== content.prices.seatMonthly ||
+    cur("annual")?.base_price_jpy !== content.prices.baseAnnual ||
+    cur("annual")?.seat_price_jpy !== content.prices.seatAnnual;
+  if (priceChanged && me.adminRole !== "super") return { error: "pricesSuperOnly" as const };
+
+  const { error } = await db.from("site_content").upsert(
+    { key: "site", locale: "*", draft: content, published: content, published_at: new Date().toISOString(), updated_by: me.id },
+    { onConflict: "key,locale" },
+  );
+  if (error) return { error: "generic" as const };
+  if (priceChanged) {
+    await db.from("pricing_plans").update({ base_price_jpy: content.prices.baseMonthly, seat_price_jpy: content.prices.seatMonthly, updated_at: new Date().toISOString() }).eq("period", "monthly");
+    await db.from("pricing_plans").update({ base_price_jpy: content.prices.baseAnnual, seat_price_jpy: content.prices.seatAnnual, updated_at: new Date().toISOString() }).eq("period", "annual");
+  }
+  await db.from("audit_log").insert({ actor_id: me.id, action: "publish_site", target: "site", details: { priceChanged } });
+  revalidatePath("/", "layout");
+  return { ok: true as const };
+}

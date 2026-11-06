@@ -1,5 +1,8 @@
+"use client";
+
 import { useTranslations } from "next-intl";
 import { ImageIcon } from "lucide-react";
+import { useSite } from "./site-context";
 
 /**
  * Golden-hour scene standing in for the GAIA V8 key visual.
@@ -18,6 +21,15 @@ const FIGURES = [
 
 export function HeroArt() {
   const t = useTranslations("common");
+  const { heroImageUrl } = useSite();
+  if (heroImageUrl) {
+    return (
+      <figure className="relative overflow-hidden rounded-[28px] bg-navy-900 shadow-[0_40px_80px_-30px_rgb(13_26_58/0.6)] ring-1 ring-navy-900/10">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={heroImageUrl} alt="GAIA" className="block aspect-[840/520] w-full object-cover" />
+      </figure>
+    );
+  }
   return (
     <figure className="relative overflow-hidden rounded-[28px] bg-navy-900 shadow-[0_40px_80px_-30px_rgb(13_26_58/0.6)] ring-1 ring-navy-900/10">
       <svg viewBox="0 0 840 520" className="block h-auto w-full" role="img" aria-label={t("placeholderArt")}>

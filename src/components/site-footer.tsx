@@ -1,16 +1,23 @@
-import { useTranslations } from "next-intl";
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
+import { useSite } from "./site-context";
+import { pickText } from "@/lib/site-content";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "./logo";
 
 export function SiteFooter() {
   const t = useTranslations();
+  const locale = useLocale();
+  const site = useSite();
+  const about = pickText(site.footerAbout, locale) ?? t("home.footerAbout");
   const col = "space-y-2.5 text-sm text-white/65";
   return (
     <footer className="bg-navy-950 text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div className="max-w-sm">
           <Logo dark />
-          <p className="mt-5 text-sm leading-relaxed text-white/65">{t("home.footerAbout")}</p>
+          <p className="mt-5 text-sm leading-relaxed text-white/65">{about}</p>
         </div>
         <div>
           <h2 className="mb-4 text-sm font-semibold text-sun-300">{t("home.footerService")}</h2>
@@ -23,9 +30,10 @@ export function SiteFooter() {
         <div>
           <h2 className="mb-4 text-sm font-semibold text-sun-300">{t("home.footerCompany")}</h2>
           <ul className={col}>
-            <li>{t("home.footerCompanyName")}</li>
-            <li>{t("home.footerAddress")}</li>
-            <li><a className="hover:text-white" href="mailto:info@example.com">{t("home.footerContact")}</a></li>
+            <li>{site.company.name || t("home.footerCompanyName")}</li>
+            <li>{site.company.address || t("home.footerAddress")}</li>
+            {site.company.phone && <li>TEL {site.company.phone}</li>}
+            <li className="select-all">{site.company.email ? `${t("home.footerContact")}: ${site.company.email}` : t("home.footerContact")}</li>
           </ul>
         </div>
         <div>

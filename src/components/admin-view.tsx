@@ -13,6 +13,7 @@ import {
 import { DEFAULT_PRICES, quote } from "@/lib/pricing";
 import { formatDate, formatDateTime, formatNumber, formatYen } from "@/lib/format";
 import { DemoTag } from "./demo-banner";
+import { SiteEditor } from "./site-editor";
 import { LiveAdmins, LivePayments, PlanControls, SeatsEditor, VideoManager, type LiveAdmin } from "./admin-live";
 
 export type { LiveAdmin };
@@ -110,7 +111,7 @@ export function AdminView({ live }: { live?: LiveAdmin }) {
         {current === "payments" && (live ? <LivePayments live={live} /> : <Payments />)}
         {current === "users" && <Members live={live} />}
         {current === "videos" && (live ? <VideoManager live={live} /> : <Videos />)}
-        {current === "content" && <Content />}
+        {current === "content" && (live?.site ? <SiteEditor initial={live.site} canEditPrices={live.role === "super"} /> : <Content />)}
         {current === "audit" && <Audit live={live} />}
         {current === "admins" && live && <LiveAdmins live={live} />}
       </div>

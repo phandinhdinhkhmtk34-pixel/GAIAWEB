@@ -46,6 +46,7 @@ export interface LiveAdmin {
     recent: { code: string; org: string; amount: number; method: string; receipt: string | null; date: string }[];
     settings: Record<string, string>;
   };
+  site: import("@/lib/site-content").SiteContent | null;
   kpis: { paid: number; activeSubs: number; mrr: number; total: number; pending: number; videos: number; views: number } | null;
   charts: { revenue: { label: string; revenue: number }[]; views: { name: string; views: number }[] } | null;
   admins: { userId: string | null; email: string; name: string; role: "super" | "accounting" | "editor"; pending: boolean }[];

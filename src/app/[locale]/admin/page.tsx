@@ -10,6 +10,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createAdminClient, hasServiceRole } from "@/lib/supabase/admin";
 import { loadCatalog } from "@/lib/videos";
 import { loadPrices, planAmount } from "@/lib/billing";
+import { loadDraftSiteContent } from "@/lib/site-content-server";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -29,6 +30,7 @@ const ACTION_LABEL: Record<string, string> = {
   unpublish_video: "動画を非公開 / Unpublish video",
   delete_video: "動画を削除 / Delete video",
   bank_order: "振込注文を作成 / Bank transfer order",
+  publish_site: "サイトを公開 / Publish site content",
   confirm_transfer: "入金を確認 / Confirm transfer",
   reject_transfer: "振込を差し戻し / Reject transfer",
   billing_settings: "振込先・領収書設定を変更 / Billing settings",
@@ -57,6 +59,7 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
     videos: [],
     categories: [],
     billing: { pending: [], recent: [], settings: {} },
+    site: null,
     kpis: null,
     charts: null,
   };
@@ -165,6 +168,7 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
         .map((p) => ({ userId: null, email: p.email, name: "", role: p.role, pending: true })),
     ],
     categories: catalog.categories.map((c) => ({ id: c.id, name: c.name })),
+    site: viewer.adminRole === "accounting" ? null : await loadDraftSiteContent(),
     billing: {
       pending: payRows
         .filter((p) => p.status === "awaiting" && p.method === "bank_transfer")

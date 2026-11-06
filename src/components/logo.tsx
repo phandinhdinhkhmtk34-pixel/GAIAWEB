@@ -1,10 +1,18 @@
+"use client";
+
 import { useId } from "react";
+import { useSite } from "./site-context";
 import clsx from "clsx";
 
 /** Placeholder wordmark until the official GAIA logo file is supplied (Admin → site content). */
 export function Logo({ dark = false, className }: { dark?: boolean; className?: string }) {
   // Unique per instance: a hidden copy of the logo must not own the gradient the visible one uses.
   const gid = `logo-sun-${useId().replace(/:/g, "")}`;
+  const { logoUrl } = useSite();
+  if (logoUrl) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={logoUrl} alt="GAIA LEARNING" className={clsx("block h-10 w-auto max-w-[180px] object-contain", className)} />;
+  }
   return (
     <span className={clsx("inline-flex items-center gap-2.5", className)}>
       <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden>
