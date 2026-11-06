@@ -7,8 +7,8 @@ Tên các nút trên Supabase/Vercel có thể khác đôi chút theo phiên b�
 1. Mở project trên **supabase.com** → menu trái **SQL Editor** → **New query**.
 2. Mở file [`supabase/migrations/0001_initial_schema.sql`](../supabase/migrations/0001_initial_schema.sql) trên GitHub,
    bấm **Raw**, copy toàn bộ, dán vào SQL Editor → **Run**. Phải thấy "Success".
-3. Làm tương tự với [`0002_auth_onboarding.sql`](../supabase/migrations/0002_auth_onboarding.sql)
-   , [`0003_paid_seats.sql`](../supabase/migrations/0003_paid_seats.sql)
+3. Làm tương tự với [`0002_auth_onboarding.sql`](../supabase/migrations/0002_auth_onboarding.sql),
+   [`0003_paid_seats.sql`](../supabase/migrations/0003_paid_seats.sql)
    và [`0004_videos_and_access.sql`](../supabase/migrations/0004_videos_and_access.sql).
    Chạy đúng thứ tự 0001 → 0002 → 0003 → 0004, mỗi file chỉ chạy một lần.
 
