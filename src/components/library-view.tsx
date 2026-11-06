@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { localeNames, locales, type Locale } from "@/i18n/routing";
 import { categories as demoCategories, videos as demoVideos, pick } from "@/lib/demo-data";
 import { VideoThumb } from "./video-thumb";
+import { responsive } from "@/lib/img";
 
 /** One video as the library shows it, whether it comes from demo data or the database. */
 export interface LibItem {
@@ -42,7 +43,7 @@ const hueOf = (slug: string) => demoCategories.find((c) => c.id === slug)?.hue ?
 function Cover({ v, className, cover = false, hideName = false }: { v: LibItem; className?: string; cover?: boolean; hideName?: boolean }) {
   if (v.thumbnailUrl) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={v.thumbnailUrl} alt="" loading="lazy" decoding="async" className={clsx("block h-full w-full object-cover", className)} />;
+    return <img {...responsive(v.thumbnailUrl, [384, 640, 1080])} sizes="(min-width: 1024px) 33vw, 100vw" alt="" loading="lazy" decoding="async" className={clsx("block h-full w-full object-cover", className)} />;
   }
   return <VideoThumb hue={hueOf(v.category)} character={hideName ? "" : v.character} cover={cover} className={className} />;
 }

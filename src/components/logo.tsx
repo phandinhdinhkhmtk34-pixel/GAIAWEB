@@ -3,6 +3,7 @@
 import { useId } from "react";
 import { useSite } from "./site-context";
 import clsx from "clsx";
+import { resized } from "@/lib/img";
 
 /** Placeholder wordmark until the official GAIA logo file is supplied (Admin → site content). */
 export function Logo({ dark = false, className }: { dark?: boolean; className?: string }) {
@@ -14,7 +15,7 @@ export function Logo({ dark = false, className }: { dark?: boolean; className?: 
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={logoUrl}
+        src={resized(logoUrl, 384)}
         alt="GAIA LEARNING"
         style={{ "--logo-h": `${logoHeight}px` } as React.CSSProperties}
         // On phones the header stays compact (max 48px); from tablet width up the Admin setting applies.

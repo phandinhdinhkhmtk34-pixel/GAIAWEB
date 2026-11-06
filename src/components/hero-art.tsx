@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { ImageIcon } from "lucide-react";
 import { useSite } from "./site-context";
 import { EditableImage } from "./edit-context";
+import { responsive } from "@/lib/img";
 
 /**
  * Golden-hour scene standing in for the GAIA V8 key visual.
@@ -38,7 +39,8 @@ function HeroImage() {
       <figure className="relative overflow-hidden rounded-[28px] bg-navy-900 shadow-[0_40px_80px_-30px_rgb(13_26_58/0.6)] ring-1 ring-navy-900/10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={heroImageUrl}
+          {...responsive(heroImageUrl, [640, 1080, 1920])}
+          sizes="(min-width: 1024px) 50vw, 100vw"
           alt="GAIA"
           fetchPriority="high"
           decoding="async"

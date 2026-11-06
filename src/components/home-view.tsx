@@ -17,6 +17,7 @@ import type { HomeCatalog } from "@/lib/site-content-server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { Editable, EditableImage, useEdit } from "./edit-context";
 import { AdminEditButton } from "./admin-edit-button";
+import { responsive } from "@/lib/img";
 
 const FEATURE_ICONS = [BookOpenCheck, Languages, LineChart, ShieldCheck];
 
@@ -110,7 +111,7 @@ export function HomeView({ content, catalog, preview = false }: { content: SiteC
                   <div className="relative aspect-[3/4] bg-gradient-to-b from-navy-700 via-dusk to-sun-300">
                     {c.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={c.imageUrl} alt={c.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                      <img {...responsive(c.imageUrl, [384, 640])} sizes="(min-width: 640px) 25vw, 50vw" alt={c.name} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
                     ) : (
                       <svg viewBox="0 0 120 160" className="absolute inset-0 h-full w-full" aria-hidden>
                         <circle cx="60" cy="62" r="18" fill="#0B1533" />
@@ -148,7 +149,7 @@ export function HomeView({ content, catalog, preview = false }: { content: SiteC
                     <div className="relative aspect-video overflow-hidden rounded-2xl ring-1 ring-white/10">
                       {v.thumbnailUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={v.thumbnailUrl} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+                        <img {...responsive(v.thumbnailUrl, [384, 640])} sizes="(min-width: 1024px) 25vw, 50vw" alt="" loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
                       ) : (
                         <VideoThumb hue={catMap[v.categorySlug]?.hue ?? 220} character={v.character} className="transition-transform duration-500 group-hover:scale-[1.04]" />
                       )}
@@ -251,7 +252,7 @@ function Hero({ content }: { content: SiteContent }) {
     return (
       <section className="relative isolate overflow-hidden bg-navy-950">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={content.heroImageUrl!} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover" />
+        <img {...responsive(content.heroImageUrl!, [828, 1200, 1920])} sizes="100vw" alt="" fetchPriority="high" className="absolute inset-0 -z-10 h-full w-full object-cover" />
         <div aria-hidden className={align === "center" ? "absolute inset-0 -z-10 bg-navy-950/60" : "absolute inset-0 -z-10 bg-gradient-to-r from-navy-950/90 via-navy-950/60 to-navy-950/10"} />
         <div className={`mx-auto flex min-h-[560px] max-w-7xl items-center px-4 py-20 sm:px-6 lg:min-h-[640px] lg:px-8 ${align === "center" ? "justify-center" : ""}`}>
           <div className={align === "center" ? "max-w-3xl" : "max-w-2xl"}>
