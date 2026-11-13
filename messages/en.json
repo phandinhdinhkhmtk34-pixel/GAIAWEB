@@ -554,11 +554,16 @@
       "emailFormat": "Check the email address format.",
       "linkInvalid": "This link has expired or was already used. If your email is already confirmed, just sign in.",
       "mfaWrong": "That code is wrong or expired. Enter the latest code from the app.",
-      "generic": "That didn't work. Try again in a few minutes."
+      "generic": "That didn't work. Try again in a few minutes.",
+      "agreeRequired": "Please agree to the Terms of service and the Privacy policy."
     },
     "acceptingInvite": "Checking your invitation…",
     "chosenPlan": "Selected plan",
-    "paymentLater": "Checkout is coming soon. Create your account first; once payment is confirmed, every video and your extra accounts unlock."
+    "paymentLater": "Checkout is coming soon. Create your account first; once payment is confirmed, every video and your extra accounts unlock.",
+    "agreeLabel": "I have read and agree to the <terms>Terms of service</terms> and the <privacy>Privacy policy</privacy>.",
+    "agreeTitle": "Agree to the terms",
+    "agreeLead": "To use GAIA LEARNING, please read and agree to the Terms of service and the Privacy policy.",
+    "agreeButton": "Agree and continue"
   },
   "billing": {
     "title": "Plan and payment",

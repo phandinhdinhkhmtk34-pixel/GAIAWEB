@@ -58,6 +58,7 @@ export async function signUpAction(_: FormState, fd: FormData): Promise<FormStat
   if (!displayName || !email || !password || (kind === "company" && !orgName)) return { error: "required" };
   if (!EMAIL.test(email)) return { error: "emailFormat" };
   if (password.length < 8) return { error: "weakPassword" };
+  if (fd.get("agree") !== "on") return { error: "agreeRequired" };
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
@@ -65,7 +66,8 @@ export async function signUpAction(_: FormState, fd: FormData): Promise<FormStat
     password,
     options: {
       // Read by the handle_new_user() trigger (supabase/migrations/0002).
-      data: { kind, display_name: displayName, org_name: kind === "company" ? orgName : displayName, locale },
+      // terms_agreed_at: the time the person ticked "I agree" (kept on the account as evidence).
+      data: { kind, display_name: displayName, org_name: kind === "company" ? orgName : displayName, locale, terms_agreed_at: new Date().toISOString() },
       emailRedirectTo: callbackUrl(`/${locale}/dashboard`),
     },
   });
@@ -93,9 +95,28 @@ export async function setPasswordAction(_: FormState, fd: FormData): Promise<For
   const password = String(fd.get("password") ?? "");
   if (password.length < 8) return { error: "weakPassword" };
   const supabase = await createClient();
-  const { error } = await supabase.auth.updateUser({ password });
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  // Invited staff agree to the terms here, when they first set their password.
+  const needsTerms = !user?.user_metadata?.terms_agreed_at;
+  if (needsTerms && fd.get("agree") !== "on") return { error: "agreeRequired" };
+  const { error } = await supabase.auth.updateUser({
+    password,
+    ...(needsTerms ? { data: { terms_agreed_at: new Date().toISOString() } } : {}),
+  });
   if (error) return { error: errorKey(error) };
   redirect(`/${locale}/dashboard`);
+}
+
+export async function agreeTermsAction(_: FormState, fd: FormData): Promise<FormState> {
+  if (!isSupabaseConfigured) return { error: "generic" };
+  const locale = localeOf(fd);
+  if (fd.get("agree") !== "on") return { error: "agreeRequired" };
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ data: { terms_agreed_at: new Date().toISOString() } });
+  if (error) return { error: errorKey(error) };
+  redirect(safeNext(fd.get("next"), `/${locale}/dashboard`));
 }
 
 export async function signOutAction(fd: FormData) {

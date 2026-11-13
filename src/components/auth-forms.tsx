@@ -10,6 +10,7 @@ import {
   setPasswordAction,
   signInAction,
   signUpAction,
+  agreeTermsAction,
   type FormState,
 } from "@/lib/auth-actions";
 
@@ -56,6 +57,28 @@ function Field(props: {
         </p>
       )}
     </div>
+  );
+}
+
+/** Required "I agree to the Terms and Privacy Policy" box; the links open in a new tab so the form keeps its input. */
+function AgreeBox({ invalid }: { invalid?: boolean }) {
+  const t = useTranslations("auth");
+  const locale = useLocale();
+  const link = (href: string) => (chunks: React.ReactNode) => (
+    <a href={`/${locale}${href}`} target="_blank" rel="noopener" className="font-semibold text-navy-700 underline underline-offset-2">
+      {chunks}
+    </a>
+  );
+  return (
+    <label
+      className={clsx(
+        "flex cursor-pointer items-start gap-3 rounded-xl border bg-white p-4 text-sm leading-relaxed",
+        invalid ? "border-seal" : "border-navy-900/15",
+      )}
+    >
+      <input type="checkbox" name="agree" required aria-invalid={invalid || undefined} className="mt-1 h-4 w-4 shrink-0 accent-navy-900" />
+      <span>{t.rich("agreeLabel", { terms: link("/legal/terms"), privacy: link("/legal/privacy") })}</span>
+    </label>
   );
 }
 
@@ -127,6 +150,7 @@ export function SignupForm() {
       <Field id="displayName" name="displayName" autoComplete="name" label={t("displayName")} />
       <Field id="email" name="email" type="email" autoComplete="email" label={t("email")} />
       <Field id="password" name="password" type="password" autoComplete="new-password" label={t("password")} hint={t("passwordHint")} />
+      <AgreeBox invalid={state?.error === "agreeRequired"} />
       <ErrorText state={state} id="signup-error" />
       <button type="submit" disabled={pending} className="btn-3d w-full disabled:opacity-70">
         {pending ? t("signingUp") : t("signUp")}
@@ -185,17 +209,36 @@ export function ForgotForm() {
   );
 }
 
-export function SetPasswordForm() {
+export function SetPasswordForm({ needsTerms = false }: { needsTerms?: boolean }) {
   const t = useTranslations("auth");
   const locale = useLocale();
   const [state, action, pending] = useActionState<FormState, FormData>(setPasswordAction, undefined);
   return (
     <form action={action} className="space-y-5" noValidate>
       <input type="hidden" name="locale" value={locale} />
-      <Field id="password" name="password" type="password" autoComplete="new-password" label={t("newPassword")} hint={t("passwordHint")} invalid={Boolean(state?.error)} />
+      <Field id="password" name="password" type="password" autoComplete="new-password" label={t("newPassword")} hint={t("passwordHint")} invalid={Boolean(state?.error) && state?.error !== "agreeRequired"} />
+      {needsTerms && <AgreeBox invalid={state?.error === "agreeRequired"} />}
       <ErrorText state={state} id="setpw-error" />
       <button type="submit" disabled={pending} className="btn-3d w-full disabled:opacity-70">
         {t("savePassword")}
+      </button>
+    </form>
+  );
+}
+
+/** Accounts made before agreement was required, or created another way, agree here once before using the service. */
+export function AgreeForm({ next }: { next: string }) {
+  const t = useTranslations("auth");
+  const locale = useLocale();
+  const [state, action, pending] = useActionState<FormState, FormData>(agreeTermsAction, undefined);
+  return (
+    <form action={action} className="space-y-5" noValidate>
+      <input type="hidden" name="locale" value={locale} />
+      <input type="hidden" name="next" value={next} />
+      <AgreeBox invalid={state?.error === "agreeRequired"} />
+      <ErrorText state={state} id="agree-error" />
+      <button type="submit" disabled={pending} className="btn-3d w-full disabled:opacity-70">
+        {t("agreeButton")}
       </button>
     </form>
   );

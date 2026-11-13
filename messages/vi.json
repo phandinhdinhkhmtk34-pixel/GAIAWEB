@@ -554,11 +554,16 @@
       "emailFormat": "Kiểm tra lại định dạng email.",
       "linkInvalid": "Link đã hết hạn hoặc đã được dùng. Nếu bạn đã xác nhận email, hãy đăng nhập luôn.",
       "mfaWrong": "Mã không đúng hoặc đã hết hạn. Hãy nhập mã mới nhất trong app.",
-      "generic": "Không xử lý được. Hãy thử lại sau ít phút."
+      "generic": "Không xử lý được. Hãy thử lại sau ít phút.",
+      "agreeRequired": "Bạn cần đồng ý với Điều khoản sử dụng và Chính sách bảo mật."
     },
     "acceptingInvite": "Đang xác nhận lời mời…",
     "chosenPlan": "Gói đã chọn",
-    "paymentLater": "Trang thanh toán đang được chuẩn bị. Hiện tại hãy tạo tài khoản trước. Khi thanh toán được xác nhận, bạn sẽ dùng được toàn bộ video và các tài khoản thêm."
+    "paymentLater": "Trang thanh toán đang được chuẩn bị. Hiện tại hãy tạo tài khoản trước. Khi thanh toán được xác nhận, bạn sẽ dùng được toàn bộ video và các tài khoản thêm.",
+    "agreeLabel": "Tôi đã đọc và đồng ý với <terms>Điều khoản sử dụng</terms> và <privacy>Chính sách bảo mật</privacy>.",
+    "agreeTitle": "Đồng ý điều khoản sử dụng",
+    "agreeLead": "Để sử dụng GAIA LEARNING, bạn cần đồng ý với Điều khoản sử dụng và Chính sách bảo mật. Vui lòng đọc và xác nhận.",
+    "agreeButton": "Đồng ý và bắt đầu sử dụng"
   },
   "billing": {
     "title": "Thanh toán và gói",
