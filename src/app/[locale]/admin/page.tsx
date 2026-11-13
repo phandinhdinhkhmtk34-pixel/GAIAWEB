@@ -62,7 +62,7 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
     audit: [],
     videos: [],
     categories: [],
-    billing: { pending: [], recent: [], settings: {} },
+    billing: { pending: [], recent: [], contracts: [], settings: {} },
     site: null,
     inquiries: [],
     kpis: null,
@@ -85,7 +85,7 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
     db.from("profiles").select("org_id"),
   ]);
   const money = viewer.adminRole !== "editor";
-  const [subs, catalog, progress, pays, settings, prices] = await Promise.all([
+  const [subs, catalog, progress, pays, settings, prices, contractRows] = await Promise.all([
     db.from("subscriptions").select("id, org_id, status, period, seats, current_period_end").in("status", ["active", "cancelled"]).gt("current_period_end", new Date().toISOString()),
     loadCatalog(locale, { includeDrafts: true }),
     db.from("watch_progress").select("video_id, updated_at"),
@@ -94,6 +94,10 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
       : Promise.resolve({ data: [] }),
     money ? db.from("billing_settings").select("*").eq("id", 1).maybeSingle() : Promise.resolve({ data: null }),
     loadPrices(),
+    // Missing table (migration not run yet) simply yields no rows.
+    money
+      ? db.from("agreements").select("contract_no, customer_name, customer_kind, period, seats, amount_jpy, method, agreed_at").order("agreed_at", { ascending: false }).limit(30)
+      : Promise.resolve({ data: [] }),
   ]);
   const planByOrg = new Map(((subs.data ?? []) as { org_id: string; status: "active" | "cancelled"; period: "monthly" | "annual"; current_period_end: string }[]).map((x) => [x.org_id, x]));
   const viewersByVideo = new Map<string, number>();
@@ -192,6 +196,11 @@ async function loadLive(locale: string): Promise<LiveAdmin> {
         receipt: p.receipt_number,
         date: p.verified_at ?? p.created_at,
       })),
+      contracts: ((contractRows.data ?? []) as {
+        contract_no: string | null; customer_name: string; customer_kind: string; period: string; seats: number; amount_jpy: number; method: string; agreed_at: string;
+      }[])
+        .filter((c) => c.contract_no)
+        .map((c) => ({ no: c.contract_no!, customer: c.customer_name, company: c.customer_kind === "company", period: c.period, seats: c.seats, amount: c.amount_jpy, method: c.method, date: c.agreed_at })),
       settings: Object.fromEntries(Object.entries((settings.data ?? {}) as Record<string, unknown>).map(([k, v]) => [k, v == null ? "" : String(v)])),
     },
     kpis: {

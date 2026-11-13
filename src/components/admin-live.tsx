@@ -48,6 +48,7 @@ export interface LiveAdmin {
   billing: {
     pending: { id: string; code: string; org: string; amount: number; kind: string; seats: number | null; created: string }[];
     recent: { code: string; org: string; amount: number; method: string; receipt: string | null; date: string }[];
+    contracts: { no: string; customer: string; company: boolean; period: string; seats: number; amount: number; method: string; date: string }[];
     settings: Record<string, string>;
   };
   site: import("@/lib/site-content").SiteContent | null;
@@ -547,6 +548,7 @@ function ConfirmButton({ id, code }: { id: string; code: string }) {
 export function LivePayments({ live }: { live: LiveAdmin }) {
   const t = useTranslations("admin");
   const tb = useTranslations("billing");
+  const th = useTranslations("home");
   const locale = useLocale();
   const [state, action, pending] = useActionState<BillingState, FormData>(saveBillingSettingsAction, undefined);
   const b = live.billing;
@@ -618,6 +620,44 @@ export function LivePayments({ live }: { live: LiveAdmin }) {
                     <td className="py-3 text-right font-semibold tabular-nums">{formatYen(r.amount, locale)}</td>
                     <td className="py-3">
                       {r.receipt ? <Link href={`/receipt/${r.receipt}`} className="font-semibold text-navy-700 hover:underline">{r.receipt}</Link> : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
+        <h2 className="text-lg font-bold">{t("contractsTitle")}</h2>
+        <p className="mt-1 mb-4 text-sm text-navy-900/70">{t("contractsBody")}</p>
+        {b.contracts.length === 0 ? (
+          <p className="text-sm text-navy-900/70">{t("contractsEmpty")}</p>
+        ) : (
+          <div className="-mx-6 overflow-x-auto px-6">
+            <table className="w-full min-w-[640px] text-left text-sm">
+              <thead className="text-navy-900/70">
+                <tr className="border-b border-navy-900/10">
+                  <th className="py-3 font-medium">{t("contractDate")}</th>
+                  <th className="py-3 font-medium">{t("customer")}</th>
+                  <th className="py-3 font-medium">{t("contractPlan")}</th>
+                  <th className="py-3 text-right font-medium">{tb("amount")}</th>
+                  <th className="py-3 font-medium">{t("contractNo")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {b.contracts.map((c) => (
+                  <tr key={c.no} className="border-b border-navy-900/6 last:border-0">
+                    <td className="py-3 whitespace-nowrap">{formatDate(c.date, locale)}</td>
+                    <td className="py-3">
+                      {c.customer}
+                      <span className="ml-2 rounded-full bg-sky-100 px-2 py-0.5 text-xs text-navy-900/75">{c.company ? t("contractCompany") : t("contractPerson")}</span>
+                    </td>
+                    <td className="py-3">{c.period === "annual" ? th("planAnnual") : th("planMonthly")} · {c.seats} · {c.method === "card" ? tb("methodCard") : tb("methodBank")}</td>
+                    <td className="py-3 text-right font-semibold tabular-nums">{formatYen(c.amount, locale)}</td>
+                    <td className="py-3">
+                      <Link href={`/contract/${c.no}`} className="font-mono font-semibold text-navy-700 hover:underline">{c.no}</Link>
                     </td>
                   </tr>
                 ))}

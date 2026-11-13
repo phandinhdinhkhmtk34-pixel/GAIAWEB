@@ -244,7 +244,13 @@
     "removeEmployee": "Xoá",
     "cancelInvite": "Huỷ lời mời",
     "removeConfirm": "Xoá luôn",
-    "keep": "Thôi"
+    "keep": "Thôi",
+    "contracts": "Hợp đồng",
+    "contractsHint": "Hợp đồng theo nội dung bạn đã đồng ý khi đăng ký. Có thể in hoặc lưu PDF.",
+    "viewContract": "Xem hợp đồng",
+    "contractMonthly": "Gói tháng",
+    "contractAnnual": "Gói năm",
+    "contractSeats": "{count} tài khoản"
   },
   "admin": {
     "title": "Trung tâm quản trị",
@@ -481,7 +487,15 @@
     "cmsIntroVideo": "Video giới thiệu (link YouTube)",
     "cmsIntroVideoHint": "Dán link video YouTube, nút 「紹介動画を見てみる」 ở đầu trang sẽ phát video này. Để trống thì nút dẫn tới thư viện video. Video để chế độ \"Không công khai\" (Unlisted) trên YouTube vẫn phát được.",
     "cmsIntroVideoInvalid": "Không đọc được link này là video YouTube.",
-    "cmsLegal_contract": "Về hợp đồng (ご契約について)"
+    "cmsLegal_contract": "Về hợp đồng (ご契約について)",
+    "contractsTitle": "Hợp đồng",
+    "contractsBody": "Danh sách hợp đồng khách đã đồng ý khi đăng ký. Bấm số hợp đồng để mở.",
+    "contractsEmpty": "Chưa có hợp đồng nào.",
+    "contractDate": "Ngày ký",
+    "contractPlan": "Gói · số người · thanh toán",
+    "contractNo": "Số hợp đồng",
+    "contractCompany": "Công ty",
+    "contractPerson": "Cá nhân"
   },
   "auth": {
     "notConfigured": "Chức năng đăng nhập chưa được cài đặt (đang hiển thị bản prototype).",
@@ -625,7 +639,8 @@
       "generic": "Không xử lý được. Hãy thử lại sau ít phút.",
       "forbidden": "Bạn không có quyền làm thao tác này.",
       "notPending": "Đơn này đã được xử lý.",
-      "agreeRequired": "Bạn cần đồng ý với Điều khoản sử dụng để đăng ký."
+      "agreeRequired": "Bạn cần đồng ý với Điều khoản sử dụng để đăng ký.",
+      "partyRequired": "Vui lòng nhập thông tin bên ký (tên, địa chỉ, người phụ trách)."
     },
     "bankCancel": "Huỷ gói (dùng đến hết kỳ)",
     "bankResume": "Huỷ yêu cầu huỷ gói",
@@ -633,7 +648,16 @@
     "step2": "Thanh toán",
     "step3": "Bắt đầu học",
     "stepsLabel": "Các bước đăng ký",
-    "agreeLabel": "Tôi đã đọc và đồng ý với <terms>Điều khoản sử dụng</terms> và <contract>Thông tin hợp đồng</contract>."
+    "agreeLabel": "Tôi đã đọc và đồng ý với <terms>Điều khoản sử dụng</terms> và <contract>Thông tin hợp đồng</contract>.",
+    "partyTitle": "Thông tin bên ký hợp đồng",
+    "partyHint": "Thông tin này được in trên hợp đồng. Nếu đã có sẵn từ lần trước, bạn chỉ cần kiểm tra lại.",
+    "partyCompany": "Tên công ty (tên chính thức)",
+    "partyPerson": "Họ tên",
+    "partyCompanyAddress": "Địa chỉ trụ sở",
+    "partyAddress": "Địa chỉ",
+    "partyRep": "Người đại diện",
+    "partyContact": "Người phụ trách",
+    "optional": "Không bắt buộc"
   },
   "faq": {
     "title": "Câu hỏi thường gặp",

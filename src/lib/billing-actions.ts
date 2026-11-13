@@ -7,7 +7,7 @@ import { getViewer } from "./auth";
 import { createAdminClient } from "./supabase/admin";
 import { siteUrl } from "./supabase/config";
 import { ADMIN_NOTIFY, sendEmail } from "./email";
-import { recordAgreement } from "./agreements";
+import { partyFromForm, recordAgreement } from "./agreements";
 import {
   currentSubscription,
   getStripe,
@@ -50,11 +50,13 @@ export async function startCardCheckoutAction(_: BillingState, fd: FormData): Pr
   const seats = me.org.kind === "individual" ? 1 : intIn(fd.get("seats"), 1, 500);
   if (!seats) return { error: "seatsInvalid" };
   if (fd.get("agree") !== "on") return { error: "agreeRequired" };
+  const party = partyFromForm(fd, me.org.kind);
+  if (!party) return { error: "partyRequired" };
   const existing = await currentSubscription(me.org.id);
   if (existing && existing.status !== "pending_payment") return { error: "alreadyActive" };
 
   const p = (await loadPrices())[period];
-  await recordAgreement(me, { method: "card", period, seats, amount: planAmount(p, seats) });
+  await recordAgreement(me, party, { method: "card", period, seats, amount: planAmount(p, seats) });
   const interval = period === "annual" ? "year" : "month";
   const db = createAdminClient();
   const { data: org } = await db.from("organizations").select("stripe_customer_id, name").eq("id", me.org.id).maybeSingle();
@@ -115,7 +117,8 @@ export async function createBankOrderAction(_: BillingState, fd: FormData): Prom
     const seats = me.org.kind === "individual" ? 1 : intIn(fd.get("seats"), 1, 500);
     if (!seats) return { error: "seatsInvalid" };
     if (fd.get("agree") !== "on") return { error: "agreeRequired" };
-    await recordAgreement(me, { method: "bank_transfer", period, seats, amount: planAmount(prices[period], seats) });
+    const party = partyFromForm(fd, me.org.kind);
+    if (!party) return { error: "partyRequired" };
     // Replace any earlier unpaid order so there is only one to pay.
     if (existing?.status === "pending_payment") {
       await db.from("payments").update({ status: "rejected", note: "replaced" }).eq("subscription_id", existing.id).eq("status", "awaiting");
@@ -127,6 +130,7 @@ export async function createBankOrderAction(_: BillingState, fd: FormData): Prom
       .select("id")
       .single();
     if (error || !sub) return { error: "generic" };
+    await recordAgreement(me, party, { method: "bank_transfer", period, seats, amount: planAmount(prices[period], seats), subscriptionId: sub.id });
     await db.from("payments").insert({
       subscription_id: sub.id,
       order_code: code,

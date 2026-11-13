@@ -52,6 +52,18 @@ async function loadLive(locale: string): Promise<LiveMember> {
     // RLS shows payments of the member's own organization (owners and employees alike).
     supabase.from("payments").select("order_code, method, amount_jpy, status, created_at, receipt_number").order("created_at", { ascending: false }).limit(24),
   ]);
+  // Contracts are server-only rows; the organization's manager sees their own.
+  const contracts =
+    isOwner && hasServiceRole
+      ? ((
+          await createAdminClient()
+            .from("agreements")
+            .select("contract_no, agreed_at, period, seats, amount_jpy, method")
+            .eq("org_id", viewer.org.id)
+            .order("agreed_at", { ascending: false })
+            .limit(24)
+        ).data ?? [])
+      : [];
   const byId = new Map(catalog.videos.map((v) => [v.id, v]));
   // Invited people who haven't set a password yet (owners only; read with the service role).
   const pendingIds = new Set<string>();
@@ -99,6 +111,15 @@ async function loadLive(locale: string): Promise<LiveMember> {
         .slice(0, 6)
         .map((id) => ({ id, title: byId.get(id)!.title, minutes: byId.get(id)!.minutes })),
     },
+    contracts: contracts
+      .filter((c) => c.contract_no)
+      .map((c) => ({
+        no: c.contract_no as string,
+        date: c.agreed_at as string,
+        period: c.period as string,
+        seats: c.seats as number,
+        amount: c.amount_jpy as number,
+      })),
     payments: (pays ?? []).map((p) => ({
       date: p.created_at as string,
       code: p.order_code as string,

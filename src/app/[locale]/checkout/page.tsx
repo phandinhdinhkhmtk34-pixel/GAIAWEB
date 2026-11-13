@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CheckoutView, type BankInfo, type CheckoutData } from "@/components/checkout-view";
 import { getViewer } from "@/lib/auth";
+import { lastParty } from "@/lib/agreements";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { cardPaymentsEnabled, currentSubscription, loadPrices } from "@/lib/billing";
@@ -34,12 +35,13 @@ export default async function CheckoutPage({
     body = <p className="rounded-2xl border border-navy-900/10 bg-white p-6 text-navy-900/75">{t("ownerOnly")}</p>;
   } else {
     const db = createAdminClient();
-    const [prices, sub, { data: settings }, { count: people }, { data: orgSubs }] = await Promise.all([
+    const [prices, sub, { data: settings }, { count: people }, { data: orgSubs }, last] = await Promise.all([
       loadPrices(),
       currentSubscription(viewer.org.id),
       db.from("billing_settings").select("bank_name, branch_name, account_type, account_number, account_holder_kana, transfer_note").eq("id", 1).maybeSingle(),
       db.from("profiles").select("id", { count: "exact", head: true }).eq("org_id", viewer.org.id),
       db.from("subscriptions").select("id").eq("org_id", viewer.org.id),
+      lastParty(viewer.org.id),
     ]);
     const subIds = (orgSubs ?? []).map((s) => s.id);
     const { data: pays } = subIds.length
@@ -55,6 +57,13 @@ export default async function CheckoutPage({
     const data: CheckoutData = {
       orgKind: viewer.org.kind,
       orgName: viewer.org.name,
+      // Contract party, prefilled from the last contract, then from the account.
+      party: {
+        name: last.name || (viewer.org.kind === "company" ? viewer.org.name : viewer.displayName || viewer.org.name),
+        address: last.address ?? "",
+        representative: last.representative ?? "",
+        contact: last.contact || viewer.displayName,
+      },
       prices,
       cardEnabled: cardPaymentsEnabled,
       bank: (settings as BankInfo | null) ?? { bank_name: "", branch_name: "", account_type: "", account_number: "", account_holder_kana: "", transfer_note: "" },

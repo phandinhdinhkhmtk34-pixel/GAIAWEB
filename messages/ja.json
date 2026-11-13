@@ -244,7 +244,13 @@
     "removeEmployee": "削除",
     "cancelInvite": "招待を取り消す",
     "removeConfirm": "削除する",
-    "keep": "やめる"
+    "keep": "やめる",
+    "contracts": "ご契約書",
+    "contractsHint": "お申し込み時に同意いただいた内容の契約書です。印刷または PDF で保存できます。",
+    "viewContract": "契約書を見る",
+    "contractMonthly": "月額プラン",
+    "contractAnnual": "年額プラン",
+    "contractSeats": "{count} アカウント"
   },
   "admin": {
     "title": "管理センター",
@@ -439,7 +445,7 @@
     "cmsSection_features": "機能",
     "cmsSection_characters": "キャラクター",
     "cmsSection_featured": "おすすめ動画",
-    "cmsSection_categories": "学べること（カテゴリ）",
+    "cmsSection_categories": "コンテンツ目次（カテゴリ）",
     "cmsSection_pricing": "料金",
     "moveUp": "上へ",
     "moveDown": "下へ",
@@ -481,7 +487,15 @@
     "cmsIntroVideo": "紹介動画（YouTube の URL）",
     "cmsIntroVideoHint": "YouTube の動画 URL を貼ると、トップの「紹介動画を見てみる」ボタンで再生されます。空欄なら動画ライブラリへ移動します。YouTube 側は「限定公開」でも再生できます。",
     "cmsIntroVideoInvalid": "YouTube の動画 URL として読み取れません。",
-    "cmsLegal_contract": "ご契約について"
+    "cmsLegal_contract": "ご契約について",
+    "contractsTitle": "契約書",
+    "contractsBody": "お客様が申し込み時に同意した契約書の一覧です。番号を押すと契約書を開きます。",
+    "contractsEmpty": "まだ契約書はありません。",
+    "contractDate": "締結日",
+    "contractPlan": "プラン・人数・支払方法",
+    "contractNo": "契約番号",
+    "contractCompany": "法人",
+    "contractPerson": "個人"
   },
   "auth": {
     "notConfigured": "ログイン機能はまだ設定されていません（プロトタイプ表示中）。",
@@ -625,7 +639,8 @@
       "generic": "処理できませんでした。時間をおいてもう一度お試しください。",
       "forbidden": "この操作の権限がありません。",
       "notPending": "この注文はすでに処理されています。",
-      "agreeRequired": "お申し込みには、利用規約への同意が必要です。"
+      "agreeRequired": "お申し込みには、利用規約への同意が必要です。",
+      "partyRequired": "契約者情報（名称・住所・ご担当者名）を入力してください。"
     },
     "bankCancel": "解約する（期間の終わりまで利用可）",
     "bankResume": "解約を取り消す",
@@ -633,7 +648,16 @@
     "step2": "お支払い",
     "step3": "利用開始",
     "stepsLabel": "お申し込みの流れ",
-    "agreeLabel": "<terms>利用規約</terms>と<contract>ご契約について</contract>の内容を確認し、同意します。"
+    "agreeLabel": "<terms>利用規約</terms>と<contract>ご契約について</contract>の内容を確認し、同意します。",
+    "partyTitle": "契約者情報",
+    "partyHint": "契約書に記載されます。前回の内容が入っている場合は、確認だけで大丈夫です。",
+    "partyCompany": "会社名（正式名称）",
+    "partyPerson": "氏名",
+    "partyCompanyAddress": "本店所在地",
+    "partyAddress": "住所",
+    "partyRep": "代表者名",
+    "partyContact": "ご担当者名",
+    "optional": "任意"
   },
   "faq": {
     "title": "よくある質問",

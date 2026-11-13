@@ -30,6 +30,7 @@ export interface BankInfo {
 export interface CheckoutData {
   orgKind: "individual" | "company";
   orgName: string;
+  party: { name: string; address: string; representative: string; contact: string };
   prices: PriceSet;
   cardEnabled: boolean;
   bank: BankInfo;
@@ -171,6 +172,8 @@ function NewPlan({ data }: { data: CheckoutData }) {
           <input type="hidden" name="seats" value="1" />
         )}
 
+        <Party data={data} />
+
         <fieldset>
           <legend className="text-lg font-bold">{t("chooseMethod")}</legend>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -231,6 +234,34 @@ function NewPlan({ data }: { data: CheckoutData }) {
         </div>
       </aside>
     </form>
+  );
+}
+
+/** Who signs the contract: filled in once, printed on the contract document. */
+function Party({ data }: { data: CheckoutData }) {
+  const t = useTranslations("billing");
+  const company = data.orgKind === "company";
+  const input = "mt-1.5 h-12 w-full rounded-xl border border-navy-900/20 bg-white px-4 focus:border-navy-700 focus:outline-none";
+  const field = (name: string, label: string, value: string, opts: { required?: boolean; auto?: string; wide?: boolean } = {}) => (
+    <div className={opts.wide ? "sm:col-span-2" : undefined}>
+      <label htmlFor={`party-${name}`} className="text-sm font-medium">
+        {label}
+        {opts.required ? <span className="ml-1 text-seal" aria-hidden>*</span> : <span className="ml-2 text-xs font-normal text-navy-900/60">{t("optional")}</span>}
+      </label>
+      <input id={`party-${name}`} name={name} defaultValue={value} required={opts.required} autoComplete={opts.auto} maxLength={200} className={input} />
+    </div>
+  );
+  return (
+    <fieldset>
+      <legend className="text-lg font-bold">{t("partyTitle")}</legend>
+      <p className="mt-1 text-sm text-navy-900/70">{t("partyHint")}</p>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        {field("partyName", company ? t("partyCompany") : t("partyPerson"), data.party.name, { required: true, auto: company ? "organization" : "name", wide: true })}
+        {field("partyAddress", company ? t("partyCompanyAddress") : t("partyAddress"), data.party.address, { required: true, auto: "street-address", wide: true })}
+        {company && field("partyRep", t("partyRep"), data.party.representative)}
+        {company && field("partyContact", t("partyContact"), data.party.contact, { required: true, auto: "name" })}
+      </div>
+    </fieldset>
   );
 }
 

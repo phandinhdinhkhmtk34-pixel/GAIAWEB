@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import clsx from "clsx";
-import { Mail, CheckCircle2, Lock, Clock, PlayCircle, Heart, Landmark, CreditCard } from "lucide-react";
+import { Mail, CheckCircle2, Lock, Clock, PlayCircle, Heart, Landmark, CreditCard, FileSignature } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { inviteEmployeeAction, removeEmployeeAction, updateProfileAction, type ActionState } from "@/lib/member-actions";
 import { useState } from "react";
@@ -28,6 +28,7 @@ export interface LiveMember {
     favorites: { id: string; title: string; minutes: number }[];
   };
   payments: { date: string; code: string; amount: number; method: "card" | "bank_transfer"; status: string; receipt: string | null }[];
+  contracts: { no: string; date: string; period: string; seats: number; amount: number }[];
 }
 
 export function LiveCompany({ live }: { live: LiveMember }) {
@@ -283,6 +284,32 @@ export function LiveBilling({ live }: { live: LiveMember }) {
             </Link>
           )}
         </div>
+      )}
+      {live.contracts.length > 0 && (
+        <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
+          <h2 className="text-lg font-bold">{t("contracts")}</h2>
+          <p className="mt-1 text-sm text-navy-900/70">{t("contractsHint")}</p>
+          <ul className="mt-4 divide-y divide-navy-900/8">
+            {live.contracts.map((c) => (
+              <li key={c.no} className="flex flex-wrap items-center justify-between gap-3 py-3.5">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-900 text-sun-300">
+                    <FileSignature size={19} aria-hidden />
+                  </span>
+                  <div>
+                    <p className="font-mono text-sm font-semibold">{c.no}</p>
+                    <p className="text-xs text-navy-900/70">
+                      {formatDate(c.date, locale)} · {t(c.period === "annual" ? "contractAnnual" : "contractMonthly")} · {t("contractSeats", { count: c.seats })} · {formatYen(c.amount, locale)}
+                    </p>
+                  </div>
+                </div>
+                <Link href={`/contract/${c.no}`} className="inline-flex min-h-10 items-center rounded-lg border border-navy-900/20 px-4 text-sm font-semibold hover:bg-navy-900 hover:text-white">
+                  {t("viewContract")}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
       <section className="rounded-2xl border border-navy-900/10 bg-white p-6">
         <h2 className="mb-5 text-lg font-bold">{t("paymentHistory")}</h2>

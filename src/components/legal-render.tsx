@@ -1,5 +1,5 @@
 /** Plain text → headings ("## "), table rows ("| a | b |") and paragraphs. No HTML is ever interpreted. */
-export function renderLegal(text: string) {
+export function renderLegal(text: string, opts: { nested?: boolean } = {}) {
   const out: React.ReactNode[] = [];
   let rows: string[][] = [];
   let para: string[] = [];
@@ -34,11 +34,14 @@ export function renderLegal(text: string) {
     } else if (l.startsWith("## ")) {
       flushRows();
       flushPara();
+      const first = !out.some((n) => (n as { props?: { "data-top"?: boolean } })?.props?.["data-top"]);
+      // Inside another document (a contract's appendix) the headings sit two levels lower.
+      const [Top, Sub] = opts.nested ? (["h3", "h4"] as const) : (["h1", "h2"] as const);
       out.push(
-        out.some((n) => (n as { type?: unknown })?.type === "h1") ? (
-          <h2 key={`h${out.length}`} className="mt-10 mb-3 font-serif text-xl font-bold">{l.slice(3)}</h2>
+        first ? (
+          <Top key={`h${out.length}`} data-top className={opts.nested ? "mb-4 font-serif text-xl font-bold" : "mb-6 font-serif text-2xl font-bold sm:text-3xl"}>{l.slice(3)}</Top>
         ) : (
-          <h1 key={`h${out.length}`} className="mb-6 font-serif text-2xl font-bold sm:text-3xl">{l.slice(3)}</h1>
+          <Sub key={`h${out.length}`} className={opts.nested ? "mt-6 mb-2 font-bold" : "mt-10 mb-3 font-serif text-xl font-bold"}>{l.slice(3)}</Sub>
         ),
       );
     } else if (!l.trim()) {
