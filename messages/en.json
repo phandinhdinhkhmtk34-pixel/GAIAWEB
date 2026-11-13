@@ -32,17 +32,17 @@
     "faq": "FAQ"
   },
   "home": {
-    "heroTitle": "Learn the job through stories, not manuals.",
+    "heroTitle": "When you change, your company changes.\nWhen companies change, society changes.",
     "heroLead": "Short training videos on business manners, workplace safety, Japanese and IT, told by GAIA's eight characters. Available to international staff in seven languages.",
     "heroPrimary": "See pricing and subscribe",
-    "heroSecondary": "Browse the videos",
+    "heroSecondary": "Watch the introduction",
     "heroNote": "From ¥30,000 a month (tax incl.) for one account",
     "introTitle": "Training that reaches the people doing the work.",
     "introBody": "No time to read manuals. Language gets in the way. GAIA LEARNING turns each topic into a 5–15 minute anime story that works on a phone during a break. Managers can see who has learned what at a glance.",
     "introStat1": "Training categories",
     "introStat2": "Languages",
     "introStat3": "Average length",
-    "featuresTitle": "What training managers asked for.",
+    "featuresTitle": "Why GAIA LEARNING",
     "features": [
       {
         "title": "Stories you remember",
@@ -63,15 +63,15 @@
     ],
     "featuredTitle": "Picked for this week",
     "featuredAll": "See the full library",
-    "categoriesTitle": "What you can learn",
-    "pricingTitle": "Simple pricing.",
+    "categoriesTitle": "Contents",
+    "pricingTitle": "Plans & pricing",
     "pricingLead": "The same price for individuals and companies. To add employees, just add the per-account price.",
     "planMonthly": "Monthly",
     "planMonthlyDesc": "Start with one month. Cancel anytime and keep access until the period ends.",
     "planAnnual": "Annual",
     "planAnnualDesc": "Twelve months for the price of ten, paid once a year.",
     "planAnnualBadge": "2 months free",
-    "planEnterprise": "Enterprise",
+    "planEnterprise": "Custom quote for companies",
     "planEnterpriseDesc": "For 50+ accounts, invoice billing or custom training categories, let's talk.",
     "planEnterprisePrice": "Custom quote",
     "planContact": "Ask for a quote",
@@ -107,7 +107,11 @@
     "footerFaq": "FAQ",
     "ctaMonthly": "Subscribe monthly",
     "ctaAnnual": "Subscribe annually",
-    "ctaCalc": "Subscribe with this"
+    "ctaCalc": "Subscribe with this",
+    "heroTagline": "Learning for the heart, in every workplace.",
+    "footerContract": "About your contract",
+    "introVideoTitle": "Introduction video",
+    "introVideoClose": "Close"
   },
   "library": {
     "title": "Video library",
@@ -472,7 +476,12 @@
     "markNew": "Mark as new",
     "statusNew": "New",
     "statusDone": "Done",
-    "replyByEmail": "Reply by email"
+    "replyByEmail": "Reply by email",
+    "fieldHeroTagline": "Tagline (under the headline)",
+    "cmsIntroVideo": "Introduction video (YouTube link)",
+    "cmsIntroVideoHint": "Paste a YouTube link and the hero's intro-video button plays it. Leave empty to send the button to the video library. Unlisted YouTube videos work too.",
+    "cmsIntroVideoInvalid": "This doesn't look like a YouTube video link.",
+    "cmsLegal_contract": "About your contract"
   },
   "auth": {
     "notConfigured": "Sign-in is not set up yet (showing the prototype).",
@@ -615,14 +624,16 @@
       "alreadyActive": "You already have an active plan.",
       "generic": "That didn't work. Try again in a few minutes.",
       "forbidden": "You don't have permission for this.",
-      "notPending": "This order was already handled."
+      "notPending": "This order was already handled.",
+      "agreeRequired": "Please agree to the Terms of service to continue."
     },
     "bankCancel": "Cancel (keep access until the period ends)",
     "bankResume": "Undo cancellation",
     "step1": "Choose a plan",
     "step2": "Pay",
     "step3": "Start learning",
-    "stepsLabel": "Sign-up steps"
+    "stepsLabel": "Sign-up steps",
+    "agreeLabel": "I have read and agree to the <terms>Terms of service</terms> and <contract>contract information</contract>."
   },
   "faq": {
     "title": "Frequently asked questions",

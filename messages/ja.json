@@ -32,17 +32,17 @@
     "faq": "よくある質問"
   },
   "home": {
-    "heroTitle": "仕事の「できる」を、物語で身につける。",
+    "heroTitle": "自分が変われば、会社が変わる。\n会社が変われば、社会が変わる。",
     "heroLead": "GAIA の 8 人のキャラクターと一緒に、ビジネスマナー、安全衛生、日本語、IT を短い動画で学ぶ企業研修プラットフォーム。外国籍スタッフにも 7 言語で届きます。",
     "heroPrimary": "料金を見て申し込む",
-    "heroSecondary": "動画を見てみる",
+    "heroSecondary": "紹介動画を見てみる",
     "heroNote": "1 アカウント 月額 30,000 円（税込）から",
     "introTitle": "現場で働く人のための研修を、もっと身近に。",
     "introBody": "研修資料を読む時間がない。言葉の壁で伝わらない。GAIA LEARNING は、アニメの物語仕立てで、5〜15 分の動画にまとめました。スマートフォンでも、休憩時間でも。管理者は誰がどこまで学んだかを一目で確認できます。",
     "introStat1": "研修カテゴリ",
     "introStat2": "対応言語",
     "introStat3": "1 本あたりの平均",
-    "featuresTitle": "研修担当者が、ほしかった機能。",
+    "featuresTitle": "GAIA LEARNING の特長",
     "features": [
       {
         "title": "物語で覚える動画",
@@ -63,15 +63,15 @@
     ],
     "featuredTitle": "今週のおすすめ",
     "featuredAll": "ライブラリをすべて見る",
-    "categoriesTitle": "学べること",
-    "pricingTitle": "料金はシンプルに。",
+    "categoriesTitle": "コンテンツ目次",
+    "pricingTitle": "料金プラン",
     "pricingLead": "個人でも法人でも同じ料金です。社員を追加するときは 1 名あたりの料金を足すだけ。",
     "planMonthly": "月額プラン",
     "planMonthlyDesc": "まずは 1 か月から。いつでも解約でき、契約期間の終わりまで利用できます。",
     "planAnnual": "年額プラン",
     "planAnnualDesc": "12 か月分を 10 か月分の料金で。年に一度の支払いで済みます。",
     "planAnnualBadge": "2 か月分お得",
-    "planEnterprise": "大企業向け",
+    "planEnterprise": "法人向け個別見積り",
     "planEnterpriseDesc": "50 名以上、請求書払い、専用カテゴリの制作などはご相談ください。",
     "planEnterprisePrice": "お見積り",
     "planContact": "お見積りを相談する",
@@ -107,7 +107,11 @@
     "footerFaq": "よくある質問",
     "ctaMonthly": "月額プランで申し込む",
     "ctaAnnual": "年額プランで申し込む",
-    "ctaCalc": "この内容で申し込む"
+    "ctaCalc": "この内容で申し込む",
+    "heroTagline": "心の学びを、すべての職場に。",
+    "footerContract": "ご契約について",
+    "introVideoTitle": "紹介動画",
+    "introVideoClose": "閉じる"
   },
   "library": {
     "title": "動画ライブラリ",
@@ -472,7 +476,12 @@
     "markNew": "未対応に戻す",
     "statusNew": "未対応",
     "statusDone": "対応済み",
-    "replyByEmail": "メールで返信"
+    "replyByEmail": "メールで返信",
+    "fieldHeroTagline": "キャッチコピー（見出しの下の一文）",
+    "cmsIntroVideo": "紹介動画（YouTube の URL）",
+    "cmsIntroVideoHint": "YouTube の動画 URL を貼ると、トップの「紹介動画を見てみる」ボタンで再生されます。空欄なら動画ライブラリへ移動します。YouTube 側は「限定公開」でも再生できます。",
+    "cmsIntroVideoInvalid": "YouTube の動画 URL として読み取れません。",
+    "cmsLegal_contract": "ご契約について"
   },
   "auth": {
     "notConfigured": "ログイン機能はまだ設定されていません（プロトタイプ表示中）。",
@@ -615,14 +624,16 @@
       "alreadyActive": "すでに有効なプランがあります。",
       "generic": "処理できませんでした。時間をおいてもう一度お試しください。",
       "forbidden": "この操作の権限がありません。",
-      "notPending": "この注文はすでに処理されています。"
+      "notPending": "この注文はすでに処理されています。",
+      "agreeRequired": "お申し込みには、利用規約への同意が必要です。"
     },
     "bankCancel": "解約する（期間の終わりまで利用可）",
     "bankResume": "解約を取り消す",
     "step1": "プランを選ぶ",
     "step2": "お支払い",
     "step3": "利用開始",
-    "stepsLabel": "お申し込みの流れ"
+    "stepsLabel": "お申し込みの流れ",
+    "agreeLabel": "<terms>利用規約</terms>と<contract>ご契約について</contract>の内容を確認し、同意します。"
   },
   "faq": {
     "title": "よくある質問",

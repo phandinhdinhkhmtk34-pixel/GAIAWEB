@@ -8,6 +8,7 @@ import { publishSiteAction, saveSiteDraftAction } from "@/lib/admin-actions";
 import { uploadSiteImage } from "./edit-context";
 import type { ImageKind } from "@/lib/image-optimize";
 import type { HeroLayout, HomeSection, L10nText, LegalSlug, SiteContent } from "@/lib/site-content";
+import { youtubeId } from "@/lib/site-content";
 import { LEGAL_TEMPLATES } from "@/lib/legal-templates";
 import { renderLegal } from "./legal-render";
 import { Link } from "@/i18n/navigation";
@@ -105,7 +106,7 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
     setC((prev) => ({ ...prev, ...patch }));
     setDirty(true);
   };
-  const text = (key: "heroTitle" | "heroLead" | "introTitle" | "introBody" | "footerAbout") => ({
+  const text = (key: "heroTitle" | "heroLead" | "heroTagline" | "introTitle" | "introBody" | "footerAbout") => ({
     value: c[key][lang] ?? "",
     onChange: (v: string) => update({ [key]: { ...c[key], [lang]: v } as L10nText }),
   });
@@ -113,6 +114,7 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
   const fallback: Record<string, string> = {
     heroTitle: th("heroTitle"),
     heroLead: th("heroLead"),
+    heroTagline: th("heroTagline"),
     introTitle: th("introTitle"),
     introBody: th("introBody"),
     footerAbout: th("footerAbout"),
@@ -132,7 +134,7 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
 
   const section = "rounded-2xl border border-navy-900/10 bg-white p-6";
   // A plain render function (not a nested component) so the textarea keeps focus while typing.
-  const textArea = (k: "heroTitle" | "heroLead" | "introTitle" | "introBody" | "footerAbout", rows: number, label: string) => {
+  const textArea = (k: "heroTitle" | "heroLead" | "heroTagline" | "introTitle" | "introBody" | "footerAbout", rows: number, label: string) => {
     const f = text(k);
     return (
       <div>
@@ -260,7 +262,22 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
         <h2 className="text-lg font-bold">{t("cmsHomeTexts")}</h2>
         <div className="mt-4 grid gap-4">
           {textArea("heroTitle", 2, t("fieldHeroTitle"))}
+          {textArea("heroTagline", 1, t("fieldHeroTagline"))}
           {textArea("heroLead", 3, t("fieldHeroLead"))}
+          <div>
+            <label htmlFor="cms-introVideo" className="text-sm font-medium">{t("cmsIntroVideo")}</label>
+            <input
+              id="cms-introVideo"
+              type="url"
+              inputMode="url"
+              placeholder="https://www.youtube.com/watch?v=..."
+              value={c.introVideoUrl ?? ""}
+              onChange={(e) => update({ introVideoUrl: e.target.value.trim() || null })}
+              className={field}
+            />
+            <p className="mt-1 text-xs text-navy-900/70">{t("cmsIntroVideoHint")}</p>
+            {c.introVideoUrl && !youtubeId(c.introVideoUrl) && <p className="mt-1 text-xs text-seal">{t("cmsIntroVideoInvalid")}</p>}
+          </div>
           {textArea("introTitle", 2, t("cmsIntroTitle"))}
           {textArea("introBody", 4, t("cmsIntroBody"))}
         </div>
@@ -311,7 +328,7 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
         <h2 className="text-lg font-bold">{t("cmsLegal")}</h2>
         <p className="mt-1 text-sm text-navy-900/70">{t("cmsLegalHint")}</p>
         <div className="mt-4 space-y-6">
-          {(["tokushoho", "privacy", "terms"] as const satisfies readonly LegalSlug[]).map((k) => (
+          {(["tokushoho", "privacy", "terms", "contract"] as const satisfies readonly LegalSlug[]).map((k) => (
             <div key={k}>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <label htmlFor={`legal-${k}`} className="text-sm font-medium">{t(`cmsLegal_${k}`)}</label>

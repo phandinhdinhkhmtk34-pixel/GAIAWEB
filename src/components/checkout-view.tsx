@@ -109,6 +109,7 @@ function NewPlan({ data }: { data: CheckoutData }) {
   const [period, setPeriod] = useState<Period>(data.initial.period);
   const [seats, setSeats] = useState(data.orgKind === "individual" ? 1 : Math.max(data.initial.seats, data.people));
   const [method, setMethod] = useState<"card" | "bank">(data.cardEnabled ? "card" : "bank");
+  const [agree, setAgree] = useState(false);
   const [cardState, cardAction, cardPending] = useActionState<BillingState, FormData>(startCardCheckoutAction, undefined);
   const [bankState, bankAction, bankPending] = useActionState<BillingState, FormData>(createBankOrderAction, undefined);
   const p = data.prices[period];
@@ -210,8 +211,17 @@ function NewPlan({ data }: { data: CheckoutData }) {
         <p className="font-serif text-4xl font-bold text-sun-300 tabular-nums">{formatYen(amount, locale)}</p>
         <p className="mt-1 text-xs text-white/65">{tc("taxIncluded")} · {t("taxNote", { tax: formatYen(Math.floor((amount * 10) / 110), locale) })}</p>
         <div className="mt-7 space-y-3">
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl bg-white/5 p-3 text-sm leading-relaxed text-white/85">
+            <input type="checkbox" name="agree" required checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-sun-400" />
+            <span>
+              {t.rich("agreeLabel", {
+                terms: (chunks) => <a href={`/${locale}/legal/terms`} target="_blank" rel="noopener" className="font-semibold text-sun-300 underline underline-offset-2">{chunks}</a>,
+                contract: (chunks) => <a href={`/${locale}/legal/contract`} target="_blank" rel="noopener" className="font-semibold text-sun-300 underline underline-offset-2">{chunks}</a>,
+              })}
+            </span>
+          </label>
           <ErrorText state={method === "card" ? cardState : bankState} />
-          <button type="submit" disabled={cardPending || bankPending} className="btn-3d w-full disabled:opacity-60">
+          <button type="submit" disabled={cardPending || bankPending || !agree} className="btn-3d w-full disabled:opacity-60">
             {method === "card" ? t("payByCard") : t("orderByBank")}
           </button>
           <p className="flex items-start gap-2 text-xs text-white/65">

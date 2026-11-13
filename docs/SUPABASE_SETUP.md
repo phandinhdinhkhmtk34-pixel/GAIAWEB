@@ -15,8 +15,9 @@ Tên các nút trên Supabase/Vercel có thể khác đôi chút theo phiên b�
    [`0007_site_content.sql`](../supabase/migrations/0007_site_content.sql)
    [`0008_security_fixes.sql`](../supabase/migrations/0008_security_fixes.sql)
    [`0009_account_controls.sql`](../supabase/migrations/0009_account_controls.sql)
-   và [`0010_inquiries.sql`](../supabase/migrations/0010_inquiries.sql).
-   Chạy đúng thứ tự 0001 → 0010.
+   [`0010_inquiries.sql`](../supabase/migrations/0010_inquiries.sql)
+   và [`0011_agreements.sql`](../supabase/migrations/0011_agreements.sql).
+   Chạy đúng thứ tự 0001 → 0011.
 
 ## 2. Địa chỉ web
 **Authentication → URL Configuration**

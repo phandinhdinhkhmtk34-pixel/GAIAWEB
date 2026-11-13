@@ -44,6 +44,7 @@ export function SiteFooter() {
           <h2 className="mb-4 text-sm font-semibold text-sun-300">{t("home.footerLegal")}</h2>
           <ul className={col}>
             <li><Link className="hover:text-white" href="/legal/terms">{t("home.footerTerms")}</Link></li>
+            <li><Link className="hover:text-white" href="/legal/contract">{t("home.footerContract")}</Link></li>
             <li><Link className="hover:text-white" href="/legal/privacy">{t("home.footerPrivacy")}</Link></li>
             <li><Link className="hover:text-white" href="/legal/tokushoho">{t("home.footerTokushoho")}</Link></li>
           </ul>

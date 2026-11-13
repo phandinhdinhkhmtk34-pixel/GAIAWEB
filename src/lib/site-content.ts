@@ -36,6 +36,10 @@ export interface SiteContent {
   sections: HomeSection[];
   heroTitle: L10nText;
   heroLead: L10nText;
+  /** Short line under the headline. */
+  heroTagline: L10nText;
+  /** YouTube link played by the hero's "intro video" button; null sends the button to the library. */
+  introVideoUrl: string | null;
   introTitle: L10nText;
   introBody: L10nText;
   footerAbout: L10nText;
@@ -46,7 +50,7 @@ export interface SiteContent {
   legal: Record<LegalSlug, string>;
 }
 
-export const LEGAL_SLUGS = ["tokushoho", "privacy", "terms"] as const;
+export const LEGAL_SLUGS = ["tokushoho", "privacy", "terms", "contract"] as const;
 export type LegalSlug = (typeof LEGAL_SLUGS)[number];
 
 export const DEFAULT_CHARACTER_NAMES = ["Hikari", "Sora", "Ren", "Aoi", "Kaito", "Mei", "Daichi", "Yui"];
@@ -64,14 +68,22 @@ export const emptySiteContent = (): SiteContent => ({
   sections: HOME_SECTIONS.map((id) => ({ id, visible: true })),
   heroTitle: {},
   heroLead: {},
+  heroTagline: {},
+  introVideoUrl: null,
   introTitle: {},
   introBody: {},
   footerAbout: {},
   characters: DEFAULT_CHARACTER_NAMES.map((name, i) => ({ name, imageUrl: DEFAULT_CHARACTER_IMAGES[i], role: {} })),
   company: { name: "", address: "", email: "", phone: "" },
   prices: { baseMonthly: 30000, seatMonthly: 3000, baseAnnual: 300000, seatAnnual: 30000 },
-  legal: { tokushoho: "", privacy: "", terms: "" },
+  legal: { tokushoho: "", privacy: "", terms: "", contract: "" },
 });
+
+/** The video id of a YouTube link (watch, youtu.be, shorts or embed form), or null. */
+export function youtubeId(url: string): string | null {
+  const m = url.trim().match(/^https:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})(?:[?&#/].*)?$/);
+  return m ? m[1] : null;
+}
 
 /** Merge stored JSON over the defaults, keeping types sane whatever was saved. */
 export function normalizeSiteContent(raw: unknown): SiteContent {
@@ -97,6 +109,8 @@ export function normalizeSiteContent(raw: unknown): SiteContent {
     sections: normalizeSections(r.sections),
     heroTitle: text(r.heroTitle),
     heroLead: text(r.heroLead),
+    heroTagline: text(r.heroTagline),
+    introVideoUrl: typeof r.introVideoUrl === "string" && youtubeId(r.introVideoUrl) ? r.introVideoUrl : null,
     introTitle: text(r.introTitle),
     introBody: text(r.introBody),
     footerAbout: text(r.footerAbout),
@@ -114,6 +128,7 @@ export function normalizeSiteContent(raw: unknown): SiteContent {
       tokushoho: typeof r.legal?.tokushoho === "string" ? r.legal.tokushoho.slice(0, 40000) : "",
       privacy: typeof r.legal?.privacy === "string" ? r.legal.privacy.slice(0, 40000) : "",
       terms: typeof r.legal?.terms === "string" ? r.legal.terms.slice(0, 40000) : "",
+      contract: typeof r.legal?.contract === "string" ? r.legal.contract.slice(0, 40000) : "",
     },
     prices: {
       baseMonthly: num(r.prices?.baseMonthly, d.prices.baseMonthly),

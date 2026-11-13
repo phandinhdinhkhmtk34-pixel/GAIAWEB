@@ -1,16 +1,50 @@
 {
-  "common": { "locked": "Khusus anggota", "signIn": "Masuk", "register": "Berlangganan", "perMonth": "/bulan", "perYear": "/tahun", "taxIncluded": "termasuk pajak", "minutes": "{count} menit", "close": "Tutup", "save": "Simpan", "language": "Bahasa", "demo": "Demo",
+  "common": {
+    "locked": "Khusus anggota",
+    "signIn": "Masuk",
+    "register": "Berlangganan",
+    "perMonth": "/bulan",
+    "perYear": "/tahun",
+    "taxIncluded": "termasuk pajak",
+    "minutes": "{count} menit",
+    "close": "Tutup",
+    "save": "Simpan",
+    "language": "Bahasa",
+    "demo": "Demo",
     "demoBanner": "Ini adalah prototipe. Semua angka, orang, dan transaksi yang ditampilkan adalah data demo.",
-    "draftTranslation": "Bahasa ini adalah draf terjemahan AI yang menunggu pemeriksaan penutur asli." },
-  "nav": { "home": "Beranda", "library": "Perpustakaan video", "dashboard": "Halaman saya", "admin": "Pusat admin", "menu": "Menu" },
-  "home": {
-    "heroTitle": "Belajar pekerjaan lewat cerita, bukan buku panduan.",
-    "heroLead": "Video pelatihan singkat tentang etika bisnis, keselamatan kerja, bahasa Jepang, dan IT, dibawakan oleh delapan karakter GAIA. Tersedia untuk staf asing dalam tujuh bahasa.",
-    "heroPrimary": "Berlangganan untuk perusahaan", "heroSecondary": "Lihat videonya",
-    "heroNote": "Mulai ¥30.000 per bulan (termasuk pajak) untuk satu akun",
-    "pricingTitle": "Harga yang sederhana.", "planMonthly": "Bulanan", "planAnnual": "Tahunan", "planEnterprise": "Perusahaan besar"
+    "draftTranslation": "Bahasa ini adalah draf terjemahan AI yang menunggu pemeriksaan penutur asli."
   },
-  "library": { "title": "Perpustakaan video", "search": "Cari video", "allCategories": "Semua", "play": "Putar", "continue": "Lanjutkan menonton" },
-  "dashboard": { "title": "Halaman saya", "greeting": "Halo, {name}" },
-  "admin": { "title": "Pusat admin" }
+  "nav": {
+    "home": "Beranda",
+    "library": "Perpustakaan video",
+    "dashboard": "Halaman saya",
+    "admin": "Pusat admin",
+    "menu": "Menu"
+  },
+  "home": {
+    "heroTitle": "Saat Anda berubah, perusahaan berubah.\nSaat perusahaan berubah, masyarakat berubah.",
+    "heroLead": "Video pelatihan singkat tentang etika bisnis, keselamatan kerja, bahasa Jepang, dan IT, dibawakan oleh delapan karakter GAIA. Tersedia untuk staf asing dalam tujuh bahasa.",
+    "heroPrimary": "Berlangganan untuk perusahaan",
+    "heroSecondary": "Tonton video perkenalan",
+    "heroNote": "Mulai ¥30.000 per bulan (termasuk pajak) untuk satu akun",
+    "pricingTitle": "Paket & harga",
+    "planMonthly": "Bulanan",
+    "planAnnual": "Tahunan",
+    "planEnterprise": "Penawaran khusus perusahaan",
+    "heroTagline": "Pembelajaran hati, untuk setiap tempat kerja."
+  },
+  "library": {
+    "title": "Perpustakaan video",
+    "search": "Cari video",
+    "allCategories": "Semua",
+    "play": "Putar",
+    "continue": "Lanjutkan menonton"
+  },
+  "dashboard": {
+    "title": "Halaman saya",
+    "greeting": "Halo, {name}"
+  },
+  "admin": {
+    "title": "Pusat admin"
+  }
 }

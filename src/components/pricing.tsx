@@ -50,7 +50,7 @@ export function Pricing({ prices = DEFAULT_PRICES }: { prices?: PriceConfig }) {
           <Building2 className="text-navy-700" size={28} aria-hidden />
           <h3 className="mt-5 font-serif text-2xl font-bold">{t("planEnterprise")}</h3>
           <p className="mt-3 text-navy-900/70">{t("planEnterpriseDesc")}</p>
-          <p className="mt-8 font-serif text-3xl font-bold text-navy-900">{t("planEnterprisePrice")}</p>
+          <p className="mt-8 font-serif text-2xl font-bold text-navy-900">{t("planEnterprisePrice")}</p>
           <Link href="/contact" className="btn-ghost mt-auto text-navy-900 hover:bg-navy-900 hover:text-white">
             {t("planContact")}
           </Link>
@@ -91,8 +91,8 @@ function PlanCard(props: {
       <h3 className="font-serif text-2xl font-bold">{props.name}</h3>
       <p className={clsx("mt-3", featured ? "text-white/70" : "text-navy-900/70")}>{props.desc}</p>
       <p className="mt-8 flex items-baseline gap-1.5">
-        <span className={clsx("font-serif text-[2.6rem] leading-none font-bold tabular-nums", featured && "text-sun-300")}>{props.price}</span>
-        <span className={featured ? "text-white/70" : "text-navy-900/70"}>{props.unit}</span>
+        <span className={clsx("font-serif text-2xl leading-none font-bold tabular-nums", featured && "text-sun-300")}>{props.price}</span>
+        <span className={clsx("text-sm", featured ? "text-white/70" : "text-navy-900/70")}>{props.unit}</span>
       </p>
       <p className={clsx("mt-2 text-sm", featured ? "text-white/60" : "text-navy-900/70")}>
         {props.tax} · {props.includes}
@@ -171,7 +171,7 @@ function Calculator({ prices }: { prices: PriceConfig }) {
       <div className="rounded-2xl bg-navy-900 p-8 text-white" aria-live="polite">
         <p className="text-sm text-white/65">{t("calcTotal")}</p>
         <p className="mt-2 flex items-baseline gap-1.5">
-          <span className="font-serif text-5xl font-bold text-sun-300 tabular-nums">{yen(q.total)}</span>
+          <span className="font-serif text-3xl font-bold text-sun-300 tabular-nums">{yen(q.total)}</span>
           <span className="text-white/65">{billing === "monthly" ? tc("perMonth") : tc("perYear")}</span>
         </p>
         <p className="mt-1 text-sm text-white/65">{tc("taxIncluded")}</p>

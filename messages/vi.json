@@ -32,17 +32,17 @@
     "faq": "Câu hỏi thường gặp"
   },
   "home": {
-    "heroTitle": "Học việc qua câu chuyện, không phải qua sổ tay.",
+    "heroTitle": "Khi bản thân thay đổi, công ty sẽ thay đổi.\nKhi công ty thay đổi, xã hội sẽ thay đổi.",
     "heroLead": "Video đào tạo ngắn về tác phong công sở, an toàn lao động, tiếng Nhật và IT, do 8 nhân vật của GAIA thể hiện. Nhân viên nước ngoài xem được bằng 7 ngôn ngữ.",
     "heroPrimary": "Xem giá và đăng ký",
-    "heroSecondary": "Xem thử video",
+    "heroSecondary": "Xem video giới thiệu",
     "heroNote": "Từ 30.000 yên/tháng (đã gồm thuế) cho 1 tài khoản",
     "introTitle": "Đào tạo đến tận tay người làm việc.",
     "introBody": "Không có thời gian đọc tài liệu. Rào cản ngôn ngữ khiến khó truyền đạt. GAIA LEARNING biến mỗi chủ đề thành một câu chuyện anime 5–15 phút, xem được trên điện thoại trong giờ nghỉ. Quản lý thấy ngay ai đã học đến đâu.",
     "introStat1": "Chủ đề đào tạo",
     "introStat2": "Ngôn ngữ",
     "introStat3": "Độ dài trung bình",
-    "featuresTitle": "Những gì người phụ trách đào tạo cần.",
+    "featuresTitle": "Điểm nổi bật của GAIA LEARNING",
     "features": [
       {
         "title": "Câu chuyện dễ nhớ",
@@ -63,15 +63,15 @@
     ],
     "featuredTitle": "Gợi ý tuần này",
     "featuredAll": "Xem toàn bộ thư viện",
-    "categoriesTitle": "Bạn sẽ học được gì",
-    "pricingTitle": "Giá đơn giản.",
+    "categoriesTitle": "Mục lục nội dung",
+    "pricingTitle": "Bảng giá",
     "pricingLead": "Cá nhân hay doanh nghiệp đều cùng một giá. Thêm nhân viên chỉ cần cộng thêm giá mỗi tài khoản.",
     "planMonthly": "Gói tháng",
     "planMonthlyDesc": "Bắt đầu với 1 tháng. Huỷ bất cứ lúc nào, vẫn dùng đến hết kỳ đã trả.",
     "planAnnual": "Gói năm",
     "planAnnualDesc": "12 tháng với giá 10 tháng, trả một lần mỗi năm.",
     "planAnnualBadge": "Tiết kiệm 2 tháng",
-    "planEnterprise": "Doanh nghiệp lớn",
+    "planEnterprise": "Báo giá riêng cho doanh nghiệp",
     "planEnterpriseDesc": "Từ 50 tài khoản, thanh toán theo hoá đơn hoặc làm chủ đề đào tạo riêng, hãy liên hệ.",
     "planEnterprisePrice": "Báo giá riêng",
     "planContact": "Liên hệ báo giá",
@@ -107,7 +107,11 @@
     "footerFaq": "Câu hỏi thường gặp",
     "ctaMonthly": "Đăng ký gói tháng",
     "ctaAnnual": "Đăng ký gói năm",
-    "ctaCalc": "Đăng ký theo lựa chọn này"
+    "ctaCalc": "Đăng ký theo lựa chọn này",
+    "heroTagline": "Bài học từ trái tim, cho mọi nơi làm việc.",
+    "footerContract": "Về hợp đồng",
+    "introVideoTitle": "Video giới thiệu",
+    "introVideoClose": "Đóng"
   },
   "library": {
     "title": "Thư viện video",
@@ -472,7 +476,12 @@
     "markNew": "Đánh dấu chưa xử lý",
     "statusNew": "Chưa xử lý",
     "statusDone": "Đã xử lý",
-    "replyByEmail": "Trả lời qua email"
+    "replyByEmail": "Trả lời qua email",
+    "fieldHeroTagline": "Câu khẩu hiệu (dưới tiêu đề)",
+    "cmsIntroVideo": "Video giới thiệu (link YouTube)",
+    "cmsIntroVideoHint": "Dán link video YouTube, nút 「紹介動画を見てみる」 ở đầu trang sẽ phát video này. Để trống thì nút dẫn tới thư viện video. Video để chế độ \"Không công khai\" (Unlisted) trên YouTube vẫn phát được.",
+    "cmsIntroVideoInvalid": "Không đọc được link này là video YouTube.",
+    "cmsLegal_contract": "Về hợp đồng (ご契約について)"
   },
   "auth": {
     "notConfigured": "Chức năng đăng nhập chưa được cài đặt (đang hiển thị bản prototype).",
@@ -615,14 +624,16 @@
       "alreadyActive": "Bạn đã có gói còn hiệu lực.",
       "generic": "Không xử lý được. Hãy thử lại sau ít phút.",
       "forbidden": "Bạn không có quyền làm thao tác này.",
-      "notPending": "Đơn này đã được xử lý."
+      "notPending": "Đơn này đã được xử lý.",
+      "agreeRequired": "Bạn cần đồng ý với Điều khoản sử dụng để đăng ký."
     },
     "bankCancel": "Huỷ gói (dùng đến hết kỳ)",
     "bankResume": "Huỷ yêu cầu huỷ gói",
     "step1": "Chọn gói",
     "step2": "Thanh toán",
     "step3": "Bắt đầu học",
-    "stepsLabel": "Các bước đăng ký"
+    "stepsLabel": "Các bước đăng ký",
+    "agreeLabel": "Tôi đã đọc và đồng ý với <terms>Điều khoản sử dụng</terms> và <contract>Thông tin hợp đồng</contract>."
   },
   "faq": {
     "title": "Câu hỏi thường gặp",

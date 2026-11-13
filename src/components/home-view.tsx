@@ -77,25 +77,22 @@ export function HomeView({ content, catalog, preview = false }: { content: SiteC
   );
   const featuresSection = (
         <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-          <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
-            <h2 className="font-serif text-3xl leading-snug font-bold sm:text-4xl lg:sticky lg:top-28 lg:self-start">{t("featuresTitle")}</h2>
-            <ul className="divide-y divide-navy-900/10">
-              {features.map((f, i) => {
-                const Icon = FEATURE_ICONS[i] ?? BookOpenCheck;
-                return (
-                  <li key={f.title} className="flex gap-6 py-8 first:pt-0">
-                    <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-navy-900 text-sun-300">
-                      <Icon size={26} aria-hidden />
-                    </span>
-                    <div>
-                      <h3 className="text-xl font-bold">{f.title}</h3>
-                      <p className="mt-2 max-w-xl text-navy-900/70">{f.body}</p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          {/* The features speak for themselves; the heading is kept for screen readers only. */}
+          <h2 className="sr-only">{t("featuresTitle")}</h2>
+          <ul className="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map((f, i) => {
+              const Icon = FEATURE_ICONS[i] ?? BookOpenCheck;
+              return (
+                <li key={f.title} className="border-t-2 border-navy-900 pt-6">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-900 text-sun-300">
+                    <Icon size={24} aria-hidden />
+                  </span>
+                  <h3 className="mt-5 text-lg font-bold">{f.title}</h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-navy-900/70">{f.body}</p>
+                </li>
+              );
+            })}
+          </ul>
         </section>
   );
   const charactersSection = (
@@ -245,6 +242,8 @@ function Hero({ content }: { content: SiteContent }) {
   const locale = useLocale();
   const title = pickText(content.heroTitle, locale) ?? undefined;
   const lead = pickText(content.heroLead, locale) ?? undefined;
+  const tagline = pickText(content.heroTagline, locale) ?? undefined;
+  const video = content.introVideoUrl;
   const layout = content.heroLayout === "overlay" && !content.heroImageUrl ? "textLeft" : content.heroLayout;
   const align = content.heroAlign;
 
@@ -256,7 +255,7 @@ function Hero({ content }: { content: SiteContent }) {
         <div aria-hidden className={align === "center" ? "absolute inset-0 -z-10 bg-navy-950/60" : "absolute inset-0 -z-10 bg-gradient-to-r from-navy-950/90 via-navy-950/60 to-navy-950/10"} />
         <div className={`mx-auto flex min-h-[560px] max-w-7xl items-center px-4 py-20 sm:px-6 lg:min-h-[640px] lg:px-8 ${align === "center" ? "justify-center" : ""}`}>
           <div className={align === "center" ? "max-w-3xl" : "max-w-2xl"}>
-            <HeroIntro title={title} lead={lead} align={align} onDark />
+            <HeroIntro title={title} lead={lead} tagline={tagline} video={video} align={align} onDark />
           </div>
         </div>
       </section>
@@ -270,7 +269,7 @@ function Hero({ content }: { content: SiteContent }) {
       />
       <div className={`relative mx-auto grid max-w-7xl gap-12 px-4 pt-14 pb-20 sm:px-6 lg:items-center lg:gap-14 lg:px-8 lg:pt-20 lg:pb-28 ${layout === "imageLeft" ? "lg:grid-cols-[1.08fr_1fr]" : "lg:grid-cols-[1fr_1.08fr]"}`}>
         <div className={layout === "imageLeft" ? "lg:order-2" : ""}>
-          <HeroIntro title={title} lead={lead} align={align} />
+          <HeroIntro title={title} lead={lead} tagline={tagline} video={video} align={align} />
         </div>
         <HeroArt />
       </div>

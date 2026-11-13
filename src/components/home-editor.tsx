@@ -12,7 +12,7 @@ import { SiteProvider } from "./site-context";
 import { EditProvider, uploadSiteImage } from "./edit-context";
 import { HomeView } from "./home-view";
 
-const LOCALIZED = new Set(["heroTitle", "heroLead", "introTitle", "introBody", "footerAbout"]);
+const LOCALIZED = new Set(["heroTitle", "heroLead", "heroTagline", "introTitle", "introBody", "footerAbout"]);
 
 /** Write `value` at a dotted path; text fields that differ per language are written for `locale`. */
 function setAt(c: SiteContent, path: string, value: string | null, locale: string): SiteContent {

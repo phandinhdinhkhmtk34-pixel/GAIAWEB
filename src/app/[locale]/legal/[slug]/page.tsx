@@ -15,6 +15,7 @@ const TITLES: Record<LegalSlug, string> = {
   tokushoho: "特定商取引法に基づく表記",
   privacy: "プライバシーポリシー",
   terms: "利用規約",
+  contract: "ご契約について",
 };
 
 export function generateStaticParams() {
