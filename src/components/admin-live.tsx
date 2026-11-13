@@ -757,7 +757,7 @@ export function LiveInquiries({ live }: { live: LiveAdmin }) {
           </div>
           <p className="mt-4 text-sm leading-relaxed whitespace-pre-line">{q.message}</p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <a href={`mailto:${q.email}?subject=${encodeURIComponent("Re: GAIA LEARNING")}`} className="inline-flex min-h-10 items-center rounded-lg bg-navy-900 px-3 text-sm font-semibold text-white hover:bg-navy-800">
+            <a href={`mailto:${q.email}?subject=${encodeURIComponent("Re: GAIA LAB")}`} className="inline-flex min-h-10 items-center rounded-lg bg-navy-900 px-3 text-sm font-semibold text-white hover:bg-navy-800">
               {t("replyByEmail")}
             </a>
             <form action={setInquiryStatusAction}>

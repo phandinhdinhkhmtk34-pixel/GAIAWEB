@@ -6,7 +6,7 @@ import "server-only";
  * on the free plan without a domain, Resend only delivers to the account owner (fine for admin alerts).
  */
 const KEY = process.env.RESEND_API_KEY;
-const FROM = process.env.EMAIL_FROM || "GAIA LEARNING <onboarding@resend.dev>";
+const FROM = process.env.EMAIL_FROM || "GAIA LAB <onboarding@resend.dev>";
 export const ADMIN_NOTIFY = process.env.ADMIN_NOTIFY_EMAIL || "";
 export const emailEnabled = Boolean(KEY);
 
@@ -16,7 +16,7 @@ export async function sendEmail(to: string, subject: string, lines: string[], li
   if (!KEY || !to) return false;
   const html = `<div style="font-family:sans-serif;line-height:1.7;color:#0d1a3a">${lines.map((l) => `<p>${esc(l)}</p>`).join("")}${
     link ? `<p><a href="${esc(link.href)}" style="display:inline-block;background:#e2a030;color:#070f26;padding:10px 18px;border-radius:10px;text-decoration:none;font-weight:bold">${esc(link.label)}</a></p>` : ""
-  }<p style="color:#6a7388;font-size:12px">GAIA LEARNING</p></div>`;
+  }<p style="color:#6a7388;font-size:12px">GAIA LAB</p></div>`;
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",

@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "GAIA LEARNING PREMIUM",
-    "description": "Anime-led video training for companies in Japan."
+    "title": "GAIA LAB",
+    "description": "Education of the heart in 90 seconds: training videos the whole company can learn from together."
   },
   "common": {
-    "brand": "GAIA LEARNING",
+    "brand": "GAIA LAB",
     "brandSub": "PREMIUM",
     "demo": "Demo",
     "demoBanner": "This is a prototype. Every number, person and transaction shown is demo data.",
@@ -38,9 +38,8 @@
     "heroSecondary": "Watch the introduction",
     "heroNote": "From ¥30,000 a month (tax incl.) for one account",
     "introTitle": "Training that reaches the people doing the work.",
-    "introBody": "No time to read manuals. Language gets in the way. GAIA LEARNING turns each topic into a 5–15 minute anime story that works on a phone during a break. Managers can see who has learned what at a glance.",
+    "introBody": "No time to read manuals. Language gets in the way. GAIA LAB turns each topic into a 5–15 minute anime story that works on a phone during a break. Managers can see who has learned what at a glance.",
     "introStat1": "Training categories",
-    "introStat2": "Languages",
     "introStat3": "Average length",
     "featuresTitle": "Three things that make GAIA LAB different",
     "features": [
@@ -77,10 +76,10 @@
     "planIncludes": "Includes 1 account",
     "planSeat": "Extra account {price}",
     "planFeatures": [
-      "Unlimited access to every video",
-      "Menus and subtitles in 7 languages",
+      "Unlimited access to every video (5 chapters, 100+ episodes)",
       "Learning records per employee",
-      "Receipts sent by email automatically"
+      "Use one account for group sessions too",
+      "Receipts and contracts as PDF"
     ],
     "calcTitle": "Estimate your price",
     "calcUsers": "Number of users",
@@ -90,7 +89,7 @@
     "calcAnnual": "Annual",
     "calcTotal": "Total",
     "calcBreakdown": "Base {base} + {extra} extra × {seat}",
-    "footerAbout": "GAIA LEARNING is video training for everyone working in Japan.",
+    "footerAbout": "GAIA LAB is video training for everyone working in Japan.",
     "footerService": "Service",
     "footerCompany": "Company",
     "footerLegal": "Terms and policies",
@@ -578,7 +577,7 @@
     "paymentLater": "Checkout is coming soon. Create your account first; once payment is confirmed, every video and your extra accounts unlock.",
     "agreeLabel": "I have read and agree to the <terms>Terms of service</terms> and the <privacy>Privacy policy</privacy>.",
     "agreeTitle": "Agree to the terms",
-    "agreeLead": "To use GAIA LEARNING, please read and agree to the Terms of service and the Privacy policy.",
+    "agreeLead": "To use GAIA LAB, please read and agree to the Terms of service and the Privacy policy.",
     "agreeButton": "Agree and continue"
   },
   "billing": {
@@ -690,6 +689,10 @@
         "a": "¥30,000 a month (tax incl.) including one account. Each extra employee is ¥3,000 a month (tax incl.). The annual plan gives 12 months for the price of 10."
       },
       {
+        "q": "What does the content cover?",
+        "a": "Five chapters and more than 100 episodes: the professional mindset, self-growth and character, relationships and inner growth, trusted leadership and building teams, and life and management that brings out people's best. Each episode is a short story of about 90 seconds that everyone from new hires to executives can learn from."
+      },
+      {
         "q": "Can individuals subscribe?",
         "a": "Yes. Individuals and companies pay the same price; individuals use one account."
       },
@@ -708,10 +711,6 @@
       {
         "q": "How do I add or remove employees?",
         "a": "The company manager invites employees by email from My page → Employees and buys extra accounts with “Add accounts”. Employees who leave can be removed at any time and their seat is free at once."
-      },
-      {
-        "q": "Which languages are supported?",
-        "a": "Seven: Japanese, Vietnamese, English, Burmese, Indonesian, Sinhala and Khmer. Switch with the globe icon at the top."
       },
       {
         "q": "Can I watch on my phone?",

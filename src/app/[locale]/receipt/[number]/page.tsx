@@ -41,8 +41,8 @@ export default async function ReceiptPage({ params }: { params: Promise<{ locale
   const tax = Math.floor((pay.amount_jpy * 10) / 110); // 内消費税（10%）
   const what =
     pay.kind === "seats"
-      ? `GAIA LEARNING 追加アカウント（${pay.seats ?? ""}名）利用料として`
-      : `GAIA LEARNING ${pay.period === "annual" ? "年額" : "月額"}プラン利用料として`;
+      ? `GAIA LAB 追加アカウント（${pay.seats ?? ""}名）利用料として`
+      : `GAIA LAB ${pay.period === "annual" ? "年額" : "月額"}プラン利用料として`;
 
   return (
     <main className="min-h-dvh bg-sky-50 px-4 py-10 print:bg-white print:p-0">

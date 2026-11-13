@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "GAIA LEARNING PREMIUM",
-    "description": "Nền tảng đào tạo doanh nghiệp bằng video anime."
+    "title": "GAIA LAB",
+    "description": "Giáo dục tâm hồn trong 90 giây. Video đào tạo để toàn công ty, từ nhân viên mới tới giám đốc, cùng học."
   },
   "common": {
-    "brand": "GAIA LEARNING",
+    "brand": "GAIA LAB",
     "brandSub": "PREMIUM",
     "demo": "Demo",
     "demoBanner": "Đây là bản prototype. Mọi số liệu, người dùng và giao dịch hiển thị đều là dữ liệu demo.",
@@ -38,9 +38,8 @@
     "heroSecondary": "Xem video giới thiệu",
     "heroNote": "Từ 30.000 yên/tháng (đã gồm thuế) cho 1 tài khoản",
     "introTitle": "Đào tạo đến tận tay người làm việc.",
-    "introBody": "Không có thời gian đọc tài liệu. Rào cản ngôn ngữ khiến khó truyền đạt. GAIA LEARNING biến mỗi chủ đề thành một câu chuyện anime 5–15 phút, xem được trên điện thoại trong giờ nghỉ. Quản lý thấy ngay ai đã học đến đâu.",
+    "introBody": "Không có thời gian đọc tài liệu. Rào cản ngôn ngữ khiến khó truyền đạt. GAIA LAB biến mỗi chủ đề thành một câu chuyện anime 5–15 phút, xem được trên điện thoại trong giờ nghỉ. Quản lý thấy ngay ai đã học đến đâu.",
     "introStat1": "Chủ đề đào tạo",
-    "introStat2": "Ngôn ngữ",
     "introStat3": "Độ dài trung bình",
     "featuresTitle": "3 điểm nổi bật của GAIA LAB",
     "features": [
@@ -77,10 +76,10 @@
     "planIncludes": "Gồm 1 tài khoản",
     "planSeat": "Thêm tài khoản {price}",
     "planFeatures": [
-      "Xem không giới hạn mọi video",
-      "Menu và phụ đề 7 ngôn ngữ",
+      "Xem không giới hạn mọi video (5 chương, 100+ tập)",
       "Hồ sơ học tập từng nhân viên",
-      "Tự động gửi 領収書 qua email"
+      "Dùng 1 tài khoản cho đào tạo tập thể",
+      "Xuất 領収書 và hợp đồng dạng PDF"
     ],
     "calcTitle": "Tính giá theo số người",
     "calcUsers": "Số người dùng",
@@ -90,7 +89,7 @@
     "calcAnnual": "Theo năm",
     "calcTotal": "Tổng thanh toán",
     "calcBreakdown": "Gói cơ bản {base} + {extra} người thêm × {seat}",
-    "footerAbout": "GAIA LEARNING là dịch vụ đào tạo bằng video cho mọi người làm việc tại Nhật.",
+    "footerAbout": "GAIA LAB là dịch vụ đào tạo bằng video cho mọi người làm việc tại Nhật.",
     "footerService": "Dịch vụ",
     "footerCompany": "Công ty",
     "footerLegal": "Điều khoản",
@@ -578,7 +577,7 @@
     "paymentLater": "Trang thanh toán đang được chuẩn bị. Hiện tại hãy tạo tài khoản trước. Khi thanh toán được xác nhận, bạn sẽ dùng được toàn bộ video và các tài khoản thêm.",
     "agreeLabel": "Tôi đã đọc và đồng ý với <terms>Điều khoản sử dụng</terms> và <privacy>Chính sách bảo mật</privacy>.",
     "agreeTitle": "Đồng ý điều khoản sử dụng",
-    "agreeLead": "Để sử dụng GAIA LEARNING, bạn cần đồng ý với Điều khoản sử dụng và Chính sách bảo mật. Vui lòng đọc và xác nhận.",
+    "agreeLead": "Để sử dụng GAIA LAB, bạn cần đồng ý với Điều khoản sử dụng và Chính sách bảo mật. Vui lòng đọc và xác nhận.",
     "agreeButton": "Đồng ý và bắt đầu sử dụng"
   },
   "billing": {
@@ -690,6 +689,10 @@
         "a": "30.000 yên/tháng (đã gồm thuế), gồm 1 tài khoản. Mỗi nhân viên thêm 3.000 yên/tháng (đã gồm thuế). Gói năm: dùng 12 tháng với giá 10 tháng."
       },
       {
+        "q": "Nội dung học gồm những gì?",
+        "a": "5 chương, hơn 100 tập: thái độ cơ bản của người đi làm, phát triển bản thân và nhân cách, quan hệ con người và trưởng thành nội tâm, lãnh đạo đáng tin cậy và xây dựng tổ chức, cuộc đời và quản trị phát huy con người. Mỗi tập là một câu chuyện ngắn khoảng 90 giây, từ nhân viên mới tới giám đốc đều cùng học được."
+      },
+      {
         "q": "Cá nhân có đăng ký được không?",
         "a": "Được. Cá nhân hay doanh nghiệp đều cùng giá. Cá nhân dùng 1 tài khoản."
       },
@@ -708,10 +711,6 @@
       {
         "q": "Thêm hoặc xoá nhân viên thế nào?",
         "a": "Quản lý công ty mời nhân viên qua email trong Trang cá nhân → Nhân viên. Mua thêm tài khoản bằng nút “Thêm tài khoản”. Nhân viên nghỉ việc thì xoá được ngay, ghế đó dùng cho người khác."
-      },
-      {
-        "q": "Hỗ trợ những ngôn ngữ nào?",
-        "a": "7 ngôn ngữ: Nhật, Việt, Anh, Myanmar, Indonesia, Sinhala, Khmer. Đổi bằng biểu tượng quả địa cầu ở góc trên."
       },
       {
         "q": "Xem trên điện thoại được không?",

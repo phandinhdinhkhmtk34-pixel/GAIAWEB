@@ -73,7 +73,7 @@ export async function startCardCheckoutAction(_: BillingState, fd: FormData): Pr
           currency: "jpy",
           unit_amount: p.base,
           recurring: { interval },
-          product_data: { name: "GAIA LEARNING 基本プラン（1アカウント込み・税込）" },
+          product_data: { name: "GAIA LAB 基本プラン（1アカウント込み・税込）" },
         },
       },
       ...(seats > p.included
@@ -84,7 +84,7 @@ export async function startCardCheckoutAction(_: BillingState, fd: FormData): Pr
                 currency: "jpy" as const,
                 unit_amount: p.seat,
                 recurring: { interval: interval as "month" | "year" },
-                product_data: { name: "GAIA LEARNING 追加アカウント（税込）" },
+                product_data: { name: "GAIA LAB 追加アカウント（税込）" },
               },
             },
           ]
@@ -270,7 +270,7 @@ export async function confirmBankPaymentAction(_: BillingState, fd: FormData): P
   const { data: sub } = pay ? await db.from("subscriptions").select("org_id").eq("id", pay.subscription_id).maybeSingle() : { data: null };
   const { data: owner } = sub ? await db.from("profiles").select("email, locale").eq("org_id", sub.org_id).eq("member_role", "owner").maybeSingle() : { data: null };
   if (owner?.email && pay?.receipt_number) {
-    await sendEmail(owner.email, "【GAIA LEARNING】ご入金を確認しました", [
+    await sendEmail(owner.email, "【GAIA LAB】ご入金を確認しました", [
       "ご入金を確認しました。すべての研修動画をご利用いただけます。",
       `金額: ¥${pay.amount_jpy.toLocaleString("ja-JP")}（税込）`,
       `領収書番号: ${pay.receipt_number}`,

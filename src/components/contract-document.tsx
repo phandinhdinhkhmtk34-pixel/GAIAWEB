@@ -65,7 +65,7 @@ export function ContractDocument({
       ? `${jpDate(sub.current_period_start)} 〜 ${jpDate(sub.current_period_end)}`
       : `お支払いの確認日から ${annual ? "12 か月" : "1 か月"}`;
   const party = company ? "御中" : "様";
-  const provider = issuer?.issuer_name || "GAIA LEARNING 運営会社";
+  const provider = issuer?.issuer_name || "GAIA LAB 運営会社";
 
   const row = (label: string, value: React.ReactNode) => (
     <tr className="border-b border-navy-900/10 last:border-0">
@@ -96,7 +96,7 @@ export function ContractDocument({
         {/* Masthead */}
         <header className="border-b-2 border-navy-950 pb-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
-            <p className="text-xs font-bold tracking-[0.3em] text-sun-700">GAIA LEARNING</p>
+            <p className="text-xs font-bold tracking-[0.3em] text-sun-700">GAIA LAB</p>
             <span className={`rounded-full px-3 py-1 text-xs font-bold ring-1 ${status.tone} print:hidden`}>{status.label}</span>
           </div>
           <h1 className="mt-4 text-center font-serif text-3xl font-bold tracking-[0.25em] sm:text-4xl">サービス利用契約書</h1>
@@ -108,7 +108,7 @@ export function ContractDocument({
         </header>
 
         <p className="mt-8 leading-loose">
-          {provider}（以下「甲」という。）と {a.customer_name}（以下「乙」という。）は、甲が提供する動画研修サービス「GAIA LEARNING」（以下「本サービス」という。）の利用について、次のとおり契約（以下「本契約」という。）を締結する。
+          {provider}（以下「甲」という。）と {a.customer_name}（以下「乙」という。）は、甲が提供する動画研修サービス「GAIA LAB」（以下「本サービス」という。）の利用について、次のとおり契約（以下「本契約」という。）を締結する。
         </p>
 
         {article(1, "契約の内容", (
@@ -117,7 +117,7 @@ export function ContractDocument({
             <div className="mt-3 overflow-x-auto">
               <table className="w-full min-w-[460px] border-collapse border-y border-navy-900/20 text-sm">
                 <tbody>
-                  {row("サービス名", "GAIA LEARNING（動画研修サービス）")}
+                  {row("サービス名", "GAIA LAB（動画研修サービス）")}
                   {row("プラン", `${annual ? "年額" : "月額"}プラン`)}
                   {row("利用アカウント数", `${a.seats} アカウント${extra ? `（基本 1 ＋ 追加 ${extra}）` : ""}`)}
                   {row("利用料金", (

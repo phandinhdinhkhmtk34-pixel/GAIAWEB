@@ -13,7 +13,7 @@ export function AuthShell({ title, lead, children }: { title: string; lead?: str
       <aside className="relative hidden overflow-hidden bg-navy-950 lg:block">
         <div aria-hidden className="absolute -top-40 -left-20 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle,rgb(240_188_85/0.35),transparent_65%)]" />
         <div className="relative flex h-full flex-col justify-between p-12">
-          <Link href="/" aria-label="GAIA LEARNING">
+          <Link href="/" aria-label="GAIA LAB">
             <Logo dark />
           </Link>
           <div className="mx-auto w-full max-w-xl">
@@ -24,7 +24,7 @@ export function AuthShell({ title, lead, children }: { title: string; lead?: str
       </aside>
       <main id="main" className="flex flex-col justify-center px-4 py-12 sm:px-10">
         <div className="mx-auto w-full max-w-md">
-          <Link href="/" className="mb-10 inline-block lg:hidden" aria-label="GAIA LEARNING">
+          <Link href="/" className="mb-10 inline-block lg:hidden" aria-label="GAIA LAB">
             <Logo />
           </Link>
           <h1 className="font-serif text-3xl font-bold">{title}</h1>

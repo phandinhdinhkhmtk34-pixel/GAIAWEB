@@ -16,7 +16,7 @@ export function Logo({ dark = false, className }: { dark?: boolean; className?: 
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={resized(logoUrl, 384)}
-        alt="GAIA LEARNING"
+        alt="GAIA LAB"
         style={{ "--logo-h": `${logoHeight}px` } as React.CSSProperties}
         // On phones the header stays compact (max 48px); from tablet width up the Admin setting applies.
         className={clsx("block h-[min(var(--logo-h),48px)] w-auto max-w-[220px] object-contain sm:h-[var(--logo-h)]", className)}
@@ -39,7 +39,7 @@ export function Logo({ dark = false, className }: { dark?: boolean; className?: 
       </svg>
       <span className="leading-none">
         <span className={clsx("block font-serif text-[17px] font-bold tracking-wide", dark ? "text-white" : "text-navy-900")}>GAIA</span>
-        <span className={clsx("block text-[10px] font-semibold tracking-[0.2em]", dark ? "text-sun-300" : "text-sun-700")}>LEARNING</span>
+        <span className={clsx("block text-[10px] font-semibold tracking-[0.2em]", dark ? "text-sun-300" : "text-sun-700")}>LAB</span>
       </span>
     </span>
   );
