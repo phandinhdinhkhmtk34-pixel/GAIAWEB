@@ -278,8 +278,6 @@ export function SiteEditor({ initial, canEditPrices }: { initial: SiteContent; c
             <p className="mt-1 text-xs text-navy-900/70">{t("cmsIntroVideoHint")}</p>
             {c.introVideoUrl && !youtubeId(c.introVideoUrl) && <p className="mt-1 text-xs text-seal">{t("cmsIntroVideoInvalid")}</p>}
           </div>
-          {textArea("introTitle", 2, t("cmsIntroTitle"))}
-          {textArea("introBody", 4, t("cmsIntroBody"))}
         </div>
         <p className="mt-3 text-xs text-navy-900/70">{t("cmsEmptyHint")}</p>
       </section>

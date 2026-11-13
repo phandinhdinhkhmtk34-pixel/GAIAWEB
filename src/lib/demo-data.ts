@@ -17,12 +17,11 @@ export interface Category {
 }
 
 export const categories: Category[] = [
-  { id: "manners", name: { ja: "ビジネスマナー", vi: "Tác phong công sở", en: "Business manners" }, hue: 38 },
-  { id: "safety", name: { ja: "安全衛生", vi: "An toàn lao động", en: "Workplace safety" }, hue: 8 },
-  { id: "japanese", name: { ja: "仕事の日本語", vi: "Tiếng Nhật công việc", en: "Japanese for work" }, hue: 212 },
-  { id: "it", name: { ja: "IT・デジタル", vi: "IT & kỹ năng số", en: "IT & digital" }, hue: 250 },
-  { id: "compliance", name: { ja: "コンプライアンス", vi: "Tuân thủ", en: "Compliance" }, hue: 160 },
-  { id: "service", name: { ja: "接客・サービス", vi: "Phục vụ khách hàng", en: "Customer service" }, hue: 330 },
+  { id: "ch1", name: { ja: "社会人としての基本姿勢", vi: "Thái độ cơ bản của người đi làm", en: "The professional mindset" }, hue: 38 },
+  { id: "ch2", name: { ja: "自己成長と人間力", vi: "Phát triển bản thân và nhân cách", en: "Self-growth and character" }, hue: 8 },
+  { id: "ch3", name: { ja: "人間関係と心の成長", vi: "Quan hệ con người và trưởng thành nội tâm", en: "Relationships and inner growth" }, hue: 212 },
+  { id: "ch4", name: { ja: "信頼されるリーダーと組織づくり", vi: "Lãnh đạo đáng tin cậy và xây dựng tổ chức", en: "Trusted leadership and building teams" }, hue: 250 },
+  { id: "ch5", name: { ja: "人生と人を生かす経営", vi: "Cuộc đời và quản trị phát huy con người", en: "Life, and management that brings out people's best" }, hue: 160 },
 ];
 
 /** Placeholder names for the eight GAIA V8 characters — replace with the official names. */
@@ -45,62 +44,62 @@ const ALL_SUBS = ["ja", "vi", "en", "my", "id", "si", "km"];
 
 export const videos: Video[] = [
   {
-    id: "v01", category: "manners", character: "Hikari", minutes: 8, premium: false, subtitles: ALL_SUBS, progress: 100,
+    id: "v01", category: "ch1", character: "Hikari", minutes: 8, premium: false, subtitles: ALL_SUBS, progress: 100,
     title: { ja: "初日のあいさつ", vi: "Lời chào ngày đầu tiên", en: "Greetings on day one" },
     summary: { ja: "ヒカリの入社初日。おじぎの角度と、名前を覚えてもらう自己紹介。", vi: "Ngày đầu đi làm của Hikari: góc cúi chào và cách tự giới thiệu để được nhớ tên.", en: "Hikari's first day: the right bow and a self-introduction people remember." },
   },
   {
-    id: "v02", category: "manners", character: "Ren", minutes: 12, premium: true, subtitles: ALL_SUBS, progress: 45,
+    id: "v02", category: "ch1", character: "Ren", minutes: 12, premium: true, subtitles: ALL_SUBS, progress: 45,
     title: { ja: "報・連・相のタイミング", vi: "Báo cáo – liên lạc – bàn bạc đúng lúc", en: "When to report, update and consult" },
     summary: { ja: "トラブルを一人で抱えたレンが、上司に相談するまで。", vi: "Ren ôm sự cố một mình, cho đến khi biết hỏi ý cấp trên.", en: "Ren keeps a problem to himself until he learns to ask his manager." },
   },
   {
-    id: "v03", category: "safety", character: "Daichi", minutes: 10, premium: true, subtitles: ALL_SUBS, isNew: true,
+    id: "v03", category: "ch1", character: "Daichi", minutes: 10, premium: true, subtitles: ALL_SUBS, isNew: true,
     title: { ja: "ヒヤリハットを報告する", vi: "Báo cáo sự cố suýt xảy ra", en: "Reporting near misses" },
     summary: { ja: "倉庫でのヒヤリとした瞬間。ダイチは何を記録し、誰に伝えたか。", vi: "Một khoảnh khắc suýt tai nạn trong kho: Daichi ghi lại gì và báo cho ai.", en: "A close call in the warehouse: what Daichi wrote down and who he told." },
   },
   {
-    id: "v04", category: "safety", character: "Mei", minutes: 7, premium: true, subtitles: ["ja", "vi", "en", "id"], progress: 80,
+    id: "v04", category: "ch1", character: "Mei", minutes: 7, premium: true, subtitles: ["ja", "vi", "en", "id"], progress: 80,
     title: { ja: "熱中症を防ぐ", vi: "Phòng say nắng", en: "Preventing heatstroke" },
     summary: { ja: "真夏の現場。メイが気づいた同僚の小さな変化。", vi: "Công trường giữa hè và thay đổi nhỏ ở đồng nghiệp mà Mei nhận ra.", en: "Midsummer on site, and the small change Mei notices in a coworker." },
   },
   {
-    id: "v05", category: "japanese", character: "Aoi", minutes: 15, premium: true, subtitles: ALL_SUBS,
+    id: "v05", category: "ch2", character: "Aoi", minutes: 15, premium: true, subtitles: ALL_SUBS,
     title: { ja: "電話の受け方", vi: "Cách nghe điện thoại", en: "Answering the phone" },
     summary: { ja: "「少々お待ちください」から伝言メモまで。アオイと練習。", vi: "Từ “xin chờ một chút” đến ghi lời nhắn, luyện cùng Aoi.", en: "From “one moment please” to taking a message, practised with Aoi." },
   },
   {
-    id: "v06", category: "japanese", character: "Sora", minutes: 9, premium: false, subtitles: ALL_SUBS, isNew: true,
+    id: "v06", category: "ch2", character: "Sora", minutes: 9, premium: false, subtitles: ALL_SUBS, isNew: true,
     title: { ja: "敬語のきほん", vi: "Kính ngữ cơ bản", en: "Keigo basics" },
     summary: { ja: "ソラが間違えやすい三つの敬語を、場面で覚える。", vi: "Ba lỗi kính ngữ Sora hay mắc, học qua tình huống.", en: "Three keigo slips Sora keeps making, learned through scenes." },
   },
   {
-    id: "v07", category: "it", character: "Kaito", minutes: 11, premium: true, subtitles: ["ja", "vi", "en"],
+    id: "v07", category: "ch3", character: "Kaito", minutes: 11, premium: true, subtitles: ["ja", "vi", "en"],
     title: { ja: "怪しいメールを見分ける", vi: "Nhận diện email lừa đảo", en: "Spotting phishing email" },
     summary: { ja: "カイトに届いた「至急」のメール。開く前に確認する 4 つの点。", vi: "Email “khẩn cấp” gửi Kaito: 4 điều cần kiểm tra trước khi mở.", en: "An “urgent” email reaches Kaito: four checks before opening it." },
   },
   {
-    id: "v08", category: "it", character: "Yui", minutes: 13, premium: true, subtitles: ALL_SUBS, isNew: true,
+    id: "v08", category: "ch3", character: "Yui", minutes: 13, premium: true, subtitles: ALL_SUBS, isNew: true,
     title: { ja: "チャットで伝わる書き方", vi: "Viết tin nhắn công việc rõ ràng", en: "Writing clear work chats" },
     summary: { ja: "ユイの一行メッセージが誤解された理由。", vi: "Vì sao tin nhắn một dòng của Yui bị hiểu lầm.", en: "Why Yui's one-line message was misunderstood." },
   },
   {
-    id: "v09", category: "compliance", character: "Ren", minutes: 10, premium: true, subtitles: ALL_SUBS,
+    id: "v09", category: "ch4", character: "Ren", minutes: 10, premium: true, subtitles: ALL_SUBS,
     title: { ja: "個人情報の扱い方", vi: "Xử lý thông tin cá nhân", en: "Handling personal data" },
     summary: { ja: "コピー機に残された書類。レンはどうする？", vi: "Tài liệu bị bỏ quên ở máy photo. Ren sẽ làm gì?", en: "Papers left on the copier. What does Ren do?" },
   },
   {
-    id: "v10", category: "compliance", character: "Hikari", minutes: 8, premium: true, subtitles: ["ja", "en", "vi", "my"],
+    id: "v10", category: "ch4", character: "Hikari", minutes: 8, premium: true, subtitles: ["ja", "en", "vi", "my"],
     title: { ja: "ハラスメントに気づく", vi: "Nhận biết quấy rối nơi làm việc", en: "Recognising harassment" },
     summary: { ja: "冗談のつもりの一言。ヒカリが相談窓口を使うまで。", vi: "Một câu “đùa” và hành trình Hikari tìm đến bộ phận hỗ trợ.", en: "A remark meant as a joke, and how Hikari uses the help desk." },
   },
   {
-    id: "v11", category: "service", character: "Mei", minutes: 9, premium: true, subtitles: ALL_SUBS, progress: 20,
+    id: "v11", category: "ch5", character: "Mei", minutes: 9, premium: true, subtitles: ALL_SUBS, progress: 20,
     title: { ja: "クレームへの最初の一言", vi: "Câu đầu tiên khi khách phàn nàn", en: "The first words to a complaint" },
     summary: { ja: "怒ったお客様の前で、メイが最初に言ったこと。", vi: "Điều đầu tiên Mei nói trước vị khách đang giận.", en: "What Mei says first to an angry customer." },
   },
   {
-    id: "v12", category: "service", character: "Aoi", minutes: 6, premium: false, subtitles: ALL_SUBS,
+    id: "v12", category: "ch5", character: "Aoi", minutes: 6, premium: false, subtitles: ALL_SUBS,
     title: { ja: "笑顔のお見送り", vi: "Tiễn khách với nụ cười", en: "Seeing customers off" },
     summary: { ja: "最後の 10 秒で印象が変わる。アオイのお見送り。", vi: "10 giây cuối thay đổi ấn tượng: Aoi tiễn khách.", en: "The last ten seconds change everything: Aoi sees a guest off." },
   },
@@ -122,9 +121,9 @@ export const demoMember = {
   favorites: ["v03", "v07", "v05"],
   history: ["v02", "v04", "v11", "v01"],
   completedCourses: [
-    { id: "manners", done: 3, total: 4 },
-    { id: "safety", done: 2, total: 5 },
-    { id: "japanese", done: 4, total: 6 },
+    { id: "ch1", done: 3, total: 4 },
+    { id: "ch2", done: 2, total: 5 },
+    { id: "ch3", done: 4, total: 6 },
   ],
 };
 
@@ -173,12 +172,11 @@ export const monthlyRevenue = [
 ];
 
 export const viewsByCategory = [
-  { id: "manners", views: 6240 },
-  { id: "safety", views: 5120 },
-  { id: "japanese", views: 4870 },
-  { id: "it", views: 3210 },
-  { id: "compliance", views: 2380 },
-  { id: "service", views: 1598 },
+  { id: "ch1", views: 6240 },
+  { id: "ch2", views: 5120 },
+  { id: "ch3", views: 4870 },
+  { id: "ch4", views: 3210 },
+  { id: "ch5", views: 2380 },
 ];
 
 export const pendingTransfers = [

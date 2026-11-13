@@ -33,7 +33,7 @@
   },
   "home": {
     "heroTitle": "When you change, your company changes.\nWhen companies change, society changes.",
-    "heroLead": "Short training videos on business manners, workplace safety, Japanese and IT, told by GAIA's eight characters. Available to international staff in seven languages.",
+    "heroLead": "A manager's dilemmas, growing your team, workplace relationships, a leader's worries. 90-second short stories for \"education of the heart\" that everyone, from new hires to executives, can learn from together.",
     "heroPrimary": "See pricing and subscribe",
     "heroSecondary": "Watch the introduction",
     "heroNote": "From ¥30,000 a month (tax incl.) for one account",
@@ -42,23 +42,22 @@
     "introStat1": "Training categories",
     "introStat2": "Languages",
     "introStat3": "Average length",
-    "featuresTitle": "Why GAIA LEARNING",
+    "featuresTitle": "Three things that make GAIA LAB different",
     "features": [
       {
-        "title": "Stories you remember",
-        "body": "Eight characters act out everyday workplace moments, so staff remember the situation, not a rule list."
+        "title": "Education of the heart, in 90 seconds",
+        "lead": "Insights for everyone, from new hires to executives.",
+        "body": "A manager's dilemmas, developing staff, workplace relationships, the worries of running a company: each told as a self-contained short story. Content the whole company can learn from together, whatever their role."
       },
       {
-        "title": "Seven languages",
-        "body": "Menus and subtitles in Japanese, Vietnamese, English, Burmese, Indonesian, Sinhala and Khmer."
+        "title": "More than 100 episodes",
+        "lead": "The right lesson for every workplace challenge.",
+        "body": "From professional basics to relationships and leadership, a wide range of themes in short videos. Pick what you need when you need it; new content is added continuously."
       },
       {
-        "title": "A record for every employee",
-        "body": "Each employee gets their own account. See viewing history and completion in one place."
-      },
-      {
-        "title": "Protected streaming",
-        "body": "Only accounts with an active subscription can play videos, and the server checks access on every request."
+        "title": "Learning together is how people grow",
+        "lead": "Less burden on trainers, a workplace that grows together.",
+        "body": "Coaching is harder than ever, so think, notice and learn together through video. Watch on your own, or use one account for group sessions, and make everyday training part of work."
       }
     ],
     "featuredTitle": "Picked for this week",
@@ -72,7 +71,7 @@
     "planAnnualDesc": "Twelve months for the price of ten, paid once a year.",
     "planAnnualBadge": "2 months free",
     "planEnterprise": "Custom quote for companies",
-    "planEnterpriseDesc": "For 50+ accounts, invoice billing or custom training categories, let's talk.",
+    "planEnterpriseDesc": "Invoice billing, custom content and more: please get in touch.",
     "planEnterprisePrice": "Custom quote",
     "planContact": "Ask for a quote",
     "planIncludes": "Includes 1 account",
@@ -111,7 +110,24 @@
     "heroTagline": "Learning for the heart, in every workplace.",
     "footerContract": "About your contract",
     "introVideoTitle": "Introduction video",
-    "introVideoClose": "Close"
+    "introVideoClose": "Close",
+    "stats": [
+      {
+        "label": "Content",
+        "value": "5 chapters"
+      },
+      {
+        "label": "Episodes",
+        "value": "100+"
+      },
+      {
+        "label": "Per episode",
+        "value": "~90 sec"
+      }
+    ],
+    "categoriesLead": "From professional basics to leadership and management: five chapters, 100 episodes.",
+    "chapterNo": "Chapter {n}",
+    "chapterEpisodes": "{count} episodes"
   },
   "library": {
     "title": "Video library",

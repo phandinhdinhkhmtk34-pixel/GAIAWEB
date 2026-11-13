@@ -15,7 +15,7 @@ export type HeroLayout = "textLeft" | "imageLeft" | "overlay";
 export type TextAlign = "left" | "center";
 
 /** Homepage sections below the banner, in display order. The banner always comes first. */
-export const HOME_SECTIONS = ["intro", "features", "characters", "featured", "categories", "pricing"] as const;
+export const HOME_SECTIONS = ["features", "characters", "featured", "categories", "pricing"] as const;
 export type HomeSectionId = (typeof HOME_SECTIONS)[number];
 export interface HomeSection {
   id: HomeSectionId;

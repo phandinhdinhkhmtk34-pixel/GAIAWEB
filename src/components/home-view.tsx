@@ -1,11 +1,11 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { BookOpenCheck, Languages, LineChart, ShieldCheck, ArrowRight, Lock, Clock } from "lucide-react";
+import { ArrowRight, Lock, Clock } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { DemoBanner, DemoTag } from "@/components/demo-banner";
+import { DemoBanner } from "@/components/demo-banner";
 import { HeroArt } from "@/components/hero-art";
 import { HeroIntro } from "@/components/hero-intro";
 import { Pricing } from "@/components/pricing";
@@ -19,14 +19,16 @@ import { Editable, EditableImage, useEdit } from "./edit-context";
 import { AdminEditButton } from "./admin-edit-button";
 import { responsive } from "@/lib/img";
 
-const FEATURE_ICONS = [BookOpenCheck, Languages, LineChart, ShieldCheck];
+/** Planned episodes per chapter (全20話). */
+const CHAPTER_EPISODES = 20;
 
 /** The homepage, rendered from site content (published for visitors, draft in the admin preview). */
 export function HomeView({ content, catalog, preview = false }: { content: SiteContent; catalog?: HomeCatalog | null; preview?: boolean }) {
   const t = useTranslations("home");
   const tc = useTranslations("common");
   const locale = useLocale();
-  const features = t.raw("features") as { title: string; body: string }[];
+  const features = t.raw("features") as { title: string; lead: string; body: string }[];
+  const stats = t.raw("stats") as { label: string; value: string }[];
   const catMap = Object.fromEntries(categories.map((c) => [c.id, c]));
   // Real catalogue when the site is connected; the demo set only in prototype mode.
   const live = isSupabaseConfigured;
@@ -43,56 +45,40 @@ export function HomeView({ content, catalog, preview = false }: { content: SiteC
           character: v.character,
           thumbnailUrl: null as string | null,
         }));
-  const categoryList = catalog
-    ? catalog.categories
+  // The five chapters from the database; the built-in list until migration 0013 has been run.
+  const chaptersInDb = Boolean(catalog?.categories.length) && catalog!.categories.every((c) => /^ch\d+$/.test(c.slug));
+  const categoryList = chaptersInDb
+    ? catalog!.categories
     : categories.map((c) => ({ slug: c.id, name: pick(c.name, locale), count: videos.filter((v) => v.category === c.id).length }));
-  const avgMinutes = catalog ? catalog.avgMinutes : 10;
   const editing = Boolean(useEdit());
   const ta = useTranslations("admin");
 
-  const introSection = (
+  // ガイアラボ 3つの特徴, then the catalogue at a glance.
+  const featuresSection = (
         <section className="border-y border-navy-900/8 bg-white">
-          <div className="mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
-            <div>
-              <Editable as="h2" path="introTitle" label={ta("cmsIntroTitle")} value={pickText(content.introTitle, locale) ?? t("introTitle")} className="block font-serif text-3xl leading-snug font-bold sm:text-4xl" />
-              <Editable as="p" multiline path="introBody" label={ta("cmsIntroBody")} value={pickText(content.introBody, locale) ?? t("introBody")} className="mt-6 block max-w-xl text-lg leading-relaxed whitespace-pre-line text-navy-900/75" />
-            </div>
-            <div className="space-y-4 self-end">
-            <dl className="grid grid-cols-3 gap-4">
-              {[
-                { v: String(categoryList.length), l: t("introStat1") },
-                { v: "7", l: t("introStat2") },
-                ...(avgMinutes ? [{ v: tc("minutes", { count: avgMinutes }), l: t("introStat3") }] : []),
-              ].map((s) => (
-                <div key={s.l} className="border-l-2 border-sun-400 pl-4">
-                  <dt className="text-sm text-navy-900/70">{s.l}</dt>
-                  <dd className="mt-1 font-serif text-2xl font-bold tabular-nums sm:text-4xl">{s.v}</dd>
+          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+            <h2 className="font-serif text-3xl font-bold sm:text-4xl">{t("featuresTitle")}</h2>
+            <ol className="mt-12 grid gap-6 lg:grid-cols-3">
+              {features.map((f, i) => (
+                <li key={f.title} className="flex flex-col rounded-3xl border border-navy-900/10 bg-sky-50/60 p-7 sm:p-8">
+                  <span className="font-serif text-5xl leading-none font-bold text-sun-500 tabular-nums" aria-hidden>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="mt-6 font-serif text-2xl leading-snug font-bold">{f.title}</h3>
+                  <p className="mt-3 font-semibold text-navy-900">{f.lead}</p>
+                  <p className="mt-3 leading-relaxed text-navy-900/75">{f.body}</p>
+                </li>
+              ))}
+            </ol>
+            <dl className="mt-14 grid grid-cols-3 gap-4 border-t border-navy-900/10 pt-10">
+              {stats.map((x) => (
+                <div key={x.label} className="border-l-2 border-sun-400 pl-4">
+                  <dt className="text-sm text-navy-900/70">{x.label}</dt>
+                  <dd className="mt-1 font-serif text-2xl font-bold sm:text-4xl">{x.value}</dd>
                 </div>
               ))}
             </dl>
-            {!live && <DemoTag />}
-            </div>
           </div>
-        </section>
-  );
-  const featuresSection = (
-        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-          {/* The features speak for themselves; the heading is kept for screen readers only. */}
-          <h2 className="sr-only">{t("featuresTitle")}</h2>
-          <ul className="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-            {features.map((f, i) => {
-              const Icon = FEATURE_ICONS[i] ?? BookOpenCheck;
-              return (
-                <li key={f.title} className="border-t-2 border-navy-900 pt-6">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-900 text-sun-300">
-                    <Icon size={24} aria-hidden />
-                  </span>
-                  <h3 className="mt-5 text-lg font-bold">{f.title}</h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-navy-900/70">{f.body}</p>
-                </li>
-              );
-            })}
-          </ul>
         </section>
   );
   const charactersSection = (
@@ -170,31 +156,28 @@ export function HomeView({ content, catalog, preview = false }: { content: SiteC
           </div>
         </section>
   );
+  // コンテンツ目次: the five chapters, in order.
   const categoriesSection = (
         <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
           <h2 className="font-serif text-3xl font-bold sm:text-4xl">{t("categoriesTitle")}</h2>
-          <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {categoryList.map((c) => {
-              return (
-                <li key={c.slug}>
-                  <Link
-                    href={`/library?c=${c.slug}`}
-                    className="group flex min-h-24 items-center justify-between gap-3 rounded-2xl border border-navy-900/10 bg-white px-5 py-5 transition-colors hover:border-navy-900/30"
-                  >
-                    <span>
-                      <span className="block text-lg font-bold">{c.name}</span>
-                      <span className="text-sm text-navy-900/70">{t("videoCount", { count: c.count })}</span>
-                    </span>
-                    <span
-                      aria-hidden
-                      className="h-10 w-10 shrink-0 rounded-full"
-                      style={{ background: `linear-gradient(135deg, hsl(${catMap[c.slug]?.hue ?? 220} 55% 30%), #F0BC55)` }}
-                    />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <p className="mt-4 max-w-2xl text-lg text-navy-900/70">{t("categoriesLead")}</p>
+          <ol className="mt-10 divide-y divide-navy-900/10 border-y border-navy-900/10">
+            {categoryList.map((c, i) => (
+              <li key={c.slug}>
+                <Link
+                  href={`/library?c=${c.slug}`}
+                  className="group grid grid-cols-[auto_1fr_auto] items-center gap-x-5 gap-y-1 py-6 sm:gap-x-8"
+                >
+                  <span className="font-serif text-sm font-bold tracking-widest text-sun-700 sm:text-base">{t("chapterNo", { n: i + 1 })}</span>
+                  <span className="font-serif text-xl font-bold group-hover:text-navy-700 sm:text-2xl">{c.name}</span>
+                  <span className="flex items-center gap-3 text-sm text-navy-900/70">
+                    <span className="hidden sm:inline">{t("chapterEpisodes", { count: CHAPTER_EPISODES })}</span>
+                    <ArrowRight size={18} aria-hidden className="transition-transform group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
         </section>
   );
   const pricingSection = (
@@ -211,7 +194,6 @@ export function HomeView({ content, catalog, preview = false }: { content: SiteC
         </section>
   );
   const byId: Record<HomeSectionId, React.ReactNode> = {
-    intro: introSection,
     features: featuresSection,
     characters: charactersSection,
     featured: featured.length ? featuredSection : null,

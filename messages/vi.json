@@ -33,7 +33,7 @@
   },
   "home": {
     "heroTitle": "Khi bản thân thay đổi, công ty sẽ thay đổi.\nKhi công ty thay đổi, xã hội sẽ thay đổi.",
-    "heroLead": "Video đào tạo ngắn về tác phong công sở, an toàn lao động, tiếng Nhật và IT, do 8 nhân vật của GAIA thể hiện. Nhân viên nước ngoài xem được bằng 7 ngôn ngữ.",
+    "heroLead": "Nỗi trăn trở của cấp trên, việc đào tạo cấp dưới, quan hệ nơi làm việc, nỗi lo của người quản lý. Video \"giáo dục tâm hồn\" dạng truyện ngắn 90 giây, để toàn bộ nhân viên, từ người mới vào tới giám đốc, cùng học.",
     "heroPrimary": "Xem giá và đăng ký",
     "heroSecondary": "Xem video giới thiệu",
     "heroNote": "Từ 30.000 yên/tháng (đã gồm thuế) cho 1 tài khoản",
@@ -42,23 +42,22 @@
     "introStat1": "Chủ đề đào tạo",
     "introStat2": "Ngôn ngữ",
     "introStat3": "Độ dài trung bình",
-    "featuresTitle": "Điểm nổi bật của GAIA LEARNING",
+    "featuresTitle": "3 điểm nổi bật của GAIA LAB",
     "features": [
       {
-        "title": "Câu chuyện dễ nhớ",
-        "body": "8 nhân vật diễn lại những tình huống quen thuộc nơi làm việc, giúp nhớ bằng tình huống thay vì quy tắc."
+        "title": "Giáo dục tâm hồn trong 90 giây",
+        "lead": "Mang lại sự thức tỉnh cho tất cả mọi người, từ nhân viên mới tới giám đốc.",
+        "body": "Nỗi trăn trở của cấp trên, đào tạo cấp dưới, quan hệ nơi làm việc, nỗi lo của người quản lý… mỗi vấn đề được kể trong một câu chuyện ngắn trọn vẹn. Nội dung để toàn công ty cùng học, không phân biệt chức vụ."
       },
       {
-        "title": "7 ngôn ngữ",
-        "body": "Menu và phụ đề tiếng Nhật, Việt, Anh, Myanmar, Indonesia, Sinhala và Khmer."
+        "title": "Hơn 100 video phong phú",
+        "lead": "Bài học cần thiết cho mọi vấn đề nơi làm việc.",
+        "body": "Từ thái độ cơ bản của người đi làm tới quan hệ con người và năng lực lãnh đạo, gói gọn trong các video ngắn. Chọn đúng bài học vào đúng lúc cần, nội dung được bổ sung liên tục."
       },
       {
-        "title": "Hồ sơ học tập cho từng nhân viên",
-        "body": "Mỗi nhân viên có tài khoản riêng. Xem lịch sử và tiến độ hoàn thành ở cùng một nơi."
-      },
-      {
-        "title": "Phát video được bảo vệ",
-        "body": "Chỉ tài khoản có gói còn hiệu lực mới xem được, máy chủ kiểm tra quyền mỗi lần phát."
+        "title": "\"Cùng nhau học\" chính là đào tạo nhân lực",
+        "lead": "Giảm gánh nặng giảng dạy, hướng tới nơi làm việc cùng trưởng thành.",
+        "body": "Chính vì việc hướng dẫn ngày càng khó, hãy cùng suy nghĩ, nhận ra và học hỏi lẫn nhau qua video. Xem cá nhân, hoặc dùng 1 tài khoản để đào tạo tập thể, giúp việc đào tạo hằng ngày gần gũi hơn."
       }
     ],
     "featuredTitle": "Gợi ý tuần này",
@@ -72,7 +71,7 @@
     "planAnnualDesc": "12 tháng với giá 10 tháng, trả một lần mỗi năm.",
     "planAnnualBadge": "Tiết kiệm 2 tháng",
     "planEnterprise": "Báo giá riêng cho doanh nghiệp",
-    "planEnterpriseDesc": "Từ 50 tài khoản, thanh toán theo hoá đơn hoặc làm chủ đề đào tạo riêng, hãy liên hệ.",
+    "planEnterpriseDesc": "Thanh toán theo hoá đơn, sản xuất nội dung riêng… vui lòng liên hệ.",
     "planEnterprisePrice": "Báo giá riêng",
     "planContact": "Liên hệ báo giá",
     "planIncludes": "Gồm 1 tài khoản",
@@ -111,7 +110,24 @@
     "heroTagline": "Bài học từ trái tim, cho mọi nơi làm việc.",
     "footerContract": "Về hợp đồng",
     "introVideoTitle": "Video giới thiệu",
-    "introVideoClose": "Đóng"
+    "introVideoClose": "Đóng",
+    "stats": [
+      {
+        "label": "Nội dung",
+        "value": "5 chương"
+      },
+      {
+        "label": "Số video",
+        "value": "100+ tập"
+      },
+      {
+        "label": "Mỗi tập",
+        "value": "~90 giây"
+      }
+    ],
+    "categoriesLead": "Từ nền tảng của người đi làm tới quản trị doanh nghiệp: 5 chương, 100 tập, học có hệ thống.",
+    "chapterNo": "Chương {n}",
+    "chapterEpisodes": "{count} tập"
   },
   "library": {
     "title": "Thư viện video",
