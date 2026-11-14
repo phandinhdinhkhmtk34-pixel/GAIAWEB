@@ -74,6 +74,20 @@ Tab **お問い合わせ**: tin nhắn từ trang Liên hệ.
 
 ---
 
+## Ra lệnh cho trợ lý Claude (sửa code)
+
+1. Mở **https://claude.ai/code** → bấm tạo phiên mới → chọn kho **GAIAWEB**.
+2. Gõ một trong các lệnh:
+
+| Lệnh | Dùng khi | Ví dụ |
+|---|---|---|
+| `/sua-web <yêu cầu>` | Muốn sửa chữ, bố cục, thêm tính năng | `/sua-web đổi nút 申し込む thành 今すぐ申し込む` |
+| `/kiem-tra-web` | Muốn biết web có lỗi gì không | `/kiem-tra-web` |
+| (nói bình thường) | Hỏi đáp, nhờ giải thích | `Làm sao để đổi ảnh nhân vật?` |
+
+3. Có thể gửi kèm **ảnh chụp** (khoanh tròn chỗ cần sửa, gạch chéo chỗ cần bỏ) hoặc dán nguyên tin nhắn LINE.
+4. Claude tự sửa, kiểm tra, đưa lên web và báo cáo. Nếu cần chạy SQL, Claude sẽ dán sẵn đoạn SQL để bạn copy.
+
 ## Khi nào cần nhờ sửa code?
 
 Những thay đổi **không** có trong Admin — ví dụ thêm trang mới, đổi bố cục một phần, thêm tính năng,
